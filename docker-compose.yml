@@ -1,0 +1,38 @@
+services:
+  hcai-engine:
+    build: .
+    image: hcai-compliance-engine:latest
+    container_name: hcai-engine
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      - NOTIFY_MIN_SEVERITY=${NOTIFY_MIN_SEVERITY:-Critical}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      # Persist ChromaDB knowledge base across restarts
+      - chroma_data:/app/chroma_db
+      # Mount input PDFs from host
+      - ./input:/app/input:ro
+      # Write reports to host
+      - ./output:/app/output
+      # Persist logs
+      - ./logs:/app/logs
+    command: ["demo"]
+
+  # Optional: index knowledge base on first run
+  hcai-index:
+    build: .
+    image: hcai-compliance-engine:latest
+    container_name: hcai-index
+    environment:
+      - LOG_LEVEL=INFO
+    volumes:
+      - chroma_data:/app/chroma_db
+    command: ["index-kb"]
+    profiles:
+      - setup
+
+volumes:
+  chroma_data:
+    driver: local

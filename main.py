@@ -74,7 +74,7 @@ def cli() -> None:
 @click.option("--input", "-i", "input_path", required=False, help="Path to PDF or text file to review.")
 @click.option("--text", "-t", "raw_text", default=None, help="Inline project description text (alternative to file).")
 @click.option("--name", "-n", "project_name", default="Healthcare Project", help="Project name for report.")
-@click.option("--format", "-f", "fmt", type=click.Choice(["text", "json", "html", "all"]), default="all", help="Output format.")
+@click.option("--format", "-f", "fmt", type=click.Choice(["text", "json", "html", "pdf", "all"]), default="all", help="Output format.")
 @click.option("--output-dir", "-o", default=None, help="Directory for output files.")
 @click.option("--no-rag", is_flag=True, default=False, help="Skip RAG/Claude enrichment (faster, template-based).")
 @click.option("--validate", "run_validation", is_flag=True, default=False, help="Run validation checklist after review.")
@@ -96,8 +96,17 @@ def review(
     from src.parser.pdf_parser import PDFParser
     from src.parser.condition_extractor import ConditionExtractor
     from src.engine.decision_engine import DecisionEngine
+    from src.engine.confidence_scorer import ConfidenceScorer
     from src.rag.generator import AHJCommentGenerator
     from src.reports.report_generator import ReportWriter
+    from src.reports.pdf_report_generator import render_pdf_report
+    from src.monitoring.metrics import SessionMetrics
+    from src.notifications.webhook import WebhookNotifier
+    from src.monitoring.logger import get_logger
+
+    log = get_logger("main")
+    metrics = SessionMetrics()
+    scorer = ConfidenceScorer()
 
     # Step 1 — Parse
     _print("[bold]Step 1:[/bold] Automated Data Extraction..." if HAS_RICH else "Step 1: Automated Data Extraction...")
@@ -109,25 +118,33 @@ def review(
         if not path.exists():
             _print(f"[red]Error: File not found: {input_path}[/red]" if HAS_RICH else f"Error: File not found: {input_path}")
             sys.exit(1)
-        doc = parser.parse(path)
+        with metrics.timer("pdf_parse"):
+            doc = parser.parse(path)
+        metrics.pages_processed = doc.total_pages
         _print(f"  Parsed {doc.total_pages} page(s) from [cyan]{path.name}[/cyan]" if HAS_RICH else f"  Parsed {doc.total_pages} pages from {path.name}")
     elif raw_text:
-        doc = parser.parse_text_input(raw_text, source_name=project_name)
+        with metrics.timer("pdf_parse"):
+            doc = parser.parse_text_input(raw_text, source_name=project_name)
         _print("  Using inline text input.")
     else:
         _print("[red]Error: Provide --input or --text[/red]" if HAS_RICH else "Error: Provide --input or --text")
         sys.exit(1)
 
-    conditions = extractor.extract(doc)
+    with metrics.timer("condition_extraction"):
+        conditions = extractor.extract(doc)
+
+    extraction_confidence = scorer.score_extraction(conditions)
     _print(f"  Occupancy : [green]{conditions.occupancy_type or 'Not detected'}[/green]" if HAS_RICH else f"  Occupancy : {conditions.occupancy_type or 'Not detected'}")
     _print(f"  Seismic   : Zone {conditions.seismic.seismic_zone or 'N/A'}, SDS={conditions.seismic.sds}")
     _print(f"  Rooms     : {len(conditions.room_types)} types identified")
     _print(f"  Systems   : HVAC({len(conditions.hvac_systems)}) Elec({len(conditions.electrical_systems)}) Plumb({len(conditions.plumbing_systems)}) MedGas({len(conditions.medical_gas_systems)})")
+    _print(f"  Extraction confidence: [bold]{extraction_confidence * 100:.0f}%[/bold]" if HAS_RICH else f"  Extraction confidence: {extraction_confidence * 100:.0f}%")
 
     # Step 2 — Decision Engine
     _print("\n[bold]Step 2:[/bold] Intelligent Decision Mapping..." if HAS_RICH else "\nStep 2: Intelligent Decision Mapping...")
     engine = DecisionEngine()
-    violations = engine.evaluate(conditions)
+    with metrics.timer("decision_engine"):
+        violations = engine.evaluate(conditions)
     summary = engine.summary(violations)
     _print(f"  Found [bold]{summary['total']}[/bold] violations: " +
            f"Critical={summary['by_severity']['Critical']} "
@@ -152,16 +169,40 @@ def review(
             _print(f"  [yellow]Warning: RAG KB unavailable ({e}). Using fallback.[/yellow]" if HAS_RICH else f"  Warning: RAG KB unavailable ({e}). Using fallback.")
 
     generator = AHJCommentGenerator(knowledge_base=kb)
-    enriched = generator.enrich(violations)
+    with metrics.timer("ahj_generation"):
+        enriched = generator.enrich(violations)
+    metrics.record_violations(enriched)
     _print(f"  Generated AHJ comments for {len(enriched)} violations.")
 
     # Output
     _print("\n[bold]Output:[/bold] Writing reports..." if HAS_RICH else "\nOutput: Writing reports...")
     writer = ReportWriter(output_dir=output_dir)
-    paths = writer.write_all(enriched, conditions, project_name=project_name)
+    with metrics.timer("report_writing"):
+        paths = writer.write_all(enriched, conditions, project_name=project_name)
+
+    # PDF report
+    try:
+        out_dir = Path(output_dir) if output_dir else config.OUTPUT_DIR
+        pdf_path = render_pdf_report(enriched, conditions, project_name=project_name,
+                                     output_path=out_dir / "hcai_report.pdf")
+        paths["pdf"] = pdf_path
+    except ImportError:
+        pass  # reportlab optional
 
     for ftype, fpath in paths.items():
         _print(f"  [{ftype.upper()}] → {fpath}")
+
+    # Webhook notifications
+    notifier = WebhookNotifier()
+    notifier.send_review_alert(enriched, project_name, report_paths=paths)
+
+    # Metrics summary
+    metrics.log_summary()
+    m = metrics.summary()
+    _print(f"\n  [dim]Elapsed: {m['total_elapsed_ms']:.0f} ms | "
+           f"API calls: {m['api_calls']} | "
+           f"Est. cost: ${m['estimated_cost_usd']:.4f}[/dim]" if HAS_RICH
+           else f"\n  Elapsed: {m['total_elapsed_ms']:.0f} ms | API calls: {m['api_calls']}")
 
     # Validation
     if run_validation:
@@ -233,7 +274,7 @@ def index_kb() -> None:
 # ---------------------------------------------------------------------------
 
 @cli.command()
-@click.option("--format", "-f", "fmt", type=click.Choice(["text", "json", "html", "all"]), default="text")
+@click.option("--format", "-f", "fmt", type=click.Choice(["text", "json", "html", "pdf", "all"]), default="text")
 def demo(fmt: str) -> None:
     """Run a demo review on a synthetic occupied hospital project."""
     _banner()
