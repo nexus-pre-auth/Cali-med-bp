@@ -1,0 +1,90 @@
+[
+  {
+    "id": "PIN-25-04",
+    "source": "HCAI Policy Intent Notice",
+    "section": "PIN 25-04",
+    "type": "policy",
+    "discipline": "Infection Control",
+    "text": "HCAI Policy Intent Notice 25-04: Airborne Infection Isolation Rooms. All airborne infection isolation rooms in licensed hospitals shall maintain a negative pressure differential of at least -0.01 inches of water gauge relative to adjacent corridors and anteroom (if provided). A continuous monitoring system with visual indicators viewable from the corridor shall be installed. Monitor alarms shall be connected to the nurse call system."
+  },
+  {
+    "id": "PIN-24-02",
+    "source": "HCAI Policy Intent Notice",
+    "section": "PIN 24-02",
+    "type": "policy",
+    "discipline": "Pharmacy",
+    "text": "HCAI Policy Intent Notice 24-02: Hospital Pharmacy Compounding Areas. Pharmacy compounding clean rooms shall comply with USP <797> and <800> standards. HCAI requires verification that the HVAC system serving pharmacy compounding areas provides ISO Class 7 conditions (at minimum), positive pressure relative to the general pharmacy, and HEPA filtration. Construction documents shall include certification testing protocol."
+  },
+  {
+    "id": "PIN-23-03",
+    "source": "HCAI Policy Intent Notice",
+    "section": "PIN 23-03",
+    "type": "policy",
+    "discipline": "Medical Gas",
+    "text": "HCAI Policy Intent Notice 23-03: Medical Gas System Documentation. All construction documents for projects including new or modified medical gas systems shall include a complete medical gas system riser diagram. Zone valve box locations, master alarm panels, and area alarm panels shall be clearly labeled. Gas outlet type, quantity, and room assignments shall be provided in a medical gas schedule."
+  },
+  {
+    "id": "PIN-22-01",
+    "source": "HCAI Policy Intent Notice",
+    "section": "PIN 22-01",
+    "type": "policy",
+    "discipline": "Electrical",
+    "text": "HCAI Policy Intent Notice 22-01: Essential Electrical System Documentation. Construction documents for hospital projects with new or modified EES shall include a single-line electrical diagram clearly identifying all three branches (Life Safety, Critical, Equipment). Each branch shall show the transfer switch, generator connection, and loads served. Transfer time for the Life Safety Branch shall be documented as 10 seconds or less."
+  },
+  {
+    "id": "PIN-21-04",
+    "source": "HCAI Policy Intent Notice",
+    "section": "PIN 21-04",
+    "type": "policy",
+    "discipline": "Electrical",
+    "text": "HCAI Policy Intent Notice 21-04: Patient Care Area Electrical Requirements. In general care patient sleeping rooms, a minimum of 8 receptacles shall be provided with at least two circuits from separate branch panels. In critical care spaces (ICU, NICU), a minimum of 14 receptacles shall be provided. Isolated ground receptacles shall be installed in wet procedure areas."
+  },
+  {
+    "id": "PIN-20-03",
+    "source": "HCAI Policy Intent Notice",
+    "section": "PIN 20-03",
+    "type": "policy",
+    "discipline": "Structural / Seismic",
+    "text": "HCAI Policy Intent Notice 20-03: Seismic Ceiling System Requirements. Suspended acoustical tile ceilings in patient care areas shall use OSHPD pre-approved seismic ceiling systems. The construction documents shall specify the manufacturer, model, and pre-approval number. Perimeter conditions, hanger spacing, and seismic cross-bracing locations shall be shown on reflected ceiling plans."
+  },
+  {
+    "id": "PIN-19-02",
+    "source": "HCAI Policy Intent Notice",
+    "section": "PIN 19-02",
+    "type": "policy",
+    "discipline": "Structural / Seismic",
+    "text": "HCAI Policy Intent Notice 19-02: Seismic Anchorage of Equipment. All mechanical, electrical, and plumbing equipment shall be seismically anchored using either engineered calculations or OSHPD pre-approved anchorage systems. Equipment weighing more than 400 pounds (181 kg) shall require a separate anchorage calculation submittal. OSHPD pre-approved anchorage product documentation shall be included in the project submittal."
+  },
+  {
+    "id": "PIN-18-01",
+    "source": "HCAI Policy Intent Notice",
+    "section": "PIN 18-01",
+    "type": "policy",
+    "discipline": "Architecture",
+    "text": "HCAI Policy Intent Notice 18-01: Patient Corridor Width Measurement. Minimum 8-foot patient corridor width is measured as clear width between walls, exclusive of handrails, crash rails, and recessed equipment storage. Nursing station counters, equipment alcoves, and doorways that project into the corridor shall be located such that the 8-foot minimum clear width is maintained."
+  },
+  {
+    "id": "CAN-3-2021",
+    "source": "HCAI Construction Advisory Notice",
+    "section": "CAN 3-2021",
+    "type": "advisory",
+    "discipline": "Plumbing",
+    "text": "HCAI Construction Advisory Notice 3-2021: Legionella Water Management in Healthcare. Hospitals shall develop and implement a Water Management Program (WMP) as required by CMS conditions of participation. The WMP shall address domestic hot water distribution, cooling towers, decorative fountains, and other water systems with Legionella risk. Construction documents shall note WMP requirements and specify compliant system design (minimum 120°F storage, ASSE 1070 mixing valves at fixtures)."
+  },
+  {
+    "id": "CAN-2-2022",
+    "source": "HCAI Construction Advisory Notice",
+    "section": "CAN 2-2022",
+    "type": "advisory",
+    "discipline": "Infection Control",
+    "text": "HCAI Construction Advisory Notice 2-2022: Operating Room Ventilation Verification. Prior to occupancy, operating rooms and procedure rooms shall undergo HVAC performance verification testing including: air change rate measurement, pressure differential verification, HEPA filter integrity testing, and temperature/humidity verification. Test results shall be submitted to HCAI prior to final approval."
+  },
+  {
+    "id": "CAN-1-2020",
+    "source": "HCAI Construction Advisory Notice",
+    "section": "CAN 1-2020",
+    "type": "advisory",
+    "discipline": "Plumbing",
+    "text": "HCAI Construction Advisory Notice 1-2020: Surgical Scrub Sink Requirements. A minimum of one surgical scrub sink station shall be provided for each operating room. Scrub stations shall be hands-free operable using knee, foot, or sensor actuation. Scrub sinks shall be located immediately adjacent to the operating room entry. Scrub sink faucets shall include a wrist-blade handle option per FGI Guidelines 2018."
+  }
+]
