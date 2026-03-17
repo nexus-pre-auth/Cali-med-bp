@@ -1,0 +1,98 @@
+[
+  {
+    "id": "T24-P2-1224.1",
+    "source": "Title 24 Part 2",
+    "section": "1224.1",
+    "type": "mandatory",
+    "discipline": "Architecture",
+    "text": "Corridors serving patient care areas in acute care hospitals shall have a minimum clear width of 8 feet (2438 mm). Corridors in other occupancy groups within healthcare facilities shall comply with CBC Section 1005.1."
+  },
+  {
+    "id": "T24-P2-1224.36",
+    "source": "Title 24 Part 2",
+    "section": "1224.36",
+    "type": "mandatory",
+    "discipline": "Fire / Life Safety",
+    "text": "Smoke compartments in Group I-2 Condition 2 occupancies (hospitals) shall not exceed 22,500 square feet. The maximum travel distance from any point to a smoke barrier door shall not exceed 200 feet. Smoke barriers shall be constructed as fire barriers with a minimum 1-hour fire-resistance rating."
+  },
+  {
+    "id": "T24-P2-1226.5",
+    "source": "Title 24 Part 2",
+    "section": "1226.5",
+    "type": "mandatory",
+    "discipline": "Ventilation / Infection Control",
+    "text": "Mechanical ventilation systems in healthcare facilities shall be designed and installed to provide positive-pressure rooms for operating suites and other areas requiring aseptic conditions, and negative-pressure rooms for airborne infection isolation. Minimum ventilation rates shall comply with ASHRAE Standard 170."
+  },
+  {
+    "id": "T24-P2-1226.6",
+    "source": "Title 24 Part 2",
+    "section": "1226.6",
+    "type": "mandatory",
+    "discipline": "Medical Gas",
+    "text": "Medical gas and vacuum systems shall be installed in accordance with NFPA 99, Health Care Facilities Code, and Title 24 Part 5 (California Plumbing Code). Zone shutoff valves shall be installed to permit isolation of medical gas to individual rooms or zones. Master alarm panels and area alarm panels are required."
+  },
+  {
+    "id": "T24-P2-1632A",
+    "source": "Title 24 Part 2",
+    "section": "1632A",
+    "type": "mandatory",
+    "discipline": "Structural / Seismic",
+    "text": "In essential facilities (Seismic Importance Factor Ip = 1.5), all nonstructural components including HVAC equipment, medical gas piping, electrical distribution systems, and suspended ceiling systems shall be seismically restrained in accordance with CBC Chapter 13. OSHPD pre-approved anchorage systems are required."
+  },
+  {
+    "id": "T24-P3-517",
+    "source": "Title 24 Part 3 (CEC)",
+    "section": "Article 517",
+    "type": "mandatory",
+    "discipline": "Electrical",
+    "text": "Health care facilities shall provide an Essential Electrical System (EES) consisting of two separate systems capable of supplying a limited amount of lighting, power, and special power needs essential for safety to patients and personnel. The EES shall consist of the Life Safety Branch, the Critical Branch, and the Equipment System."
+  },
+  {
+    "id": "T24-P4-ASHRAE170-7",
+    "source": "Title 24 Part 4 (ASHRAE 170)",
+    "section": "Table 7.1",
+    "type": "mandatory",
+    "discipline": "Mechanical / Ventilation",
+    "text": "ASHRAE Standard 170-2021 Table 7.1 (adopted by Title 24 Part 4) specifies minimum ventilation requirements for healthcare spaces. Operating Rooms: 20 ACH total (4 ACH OA), positive pressure, HEPA filtration. ICU patient rooms: 6 ACH OA minimum. Airborne infection isolation rooms: 12 ACH total (2 ACH OA), negative pressure (-0.01 in. w.g. minimum). All air from soiled utility rooms and decontamination areas shall be exhausted directly outdoors."
+  },
+  {
+    "id": "T24-P5-418A",
+    "source": "Title 24 Part 5 (CPC)",
+    "section": "418A",
+    "type": "mandatory",
+    "discipline": "Plumbing",
+    "text": "In healthcare facilities, hot water systems serving patient care areas shall maintain a minimum storage temperature of 120°F to control Legionella growth. Point-of-use thermostatic mixing valves complying with ASSE 1070 shall be provided at patient-accessible lavatories, showers, and bathing facilities, limiting delivered water temperature to a maximum of 110°F."
+  },
+  {
+    "id": "T24-P2-CBC-11B",
+    "source": "Title 24 Part 2 (CBC Chapter 11B)",
+    "section": "Chapter 11B",
+    "type": "mandatory",
+    "discipline": "Accessibility",
+    "text": "California Building Code Chapter 11B requires that all newly constructed healthcare facilities provide full accessibility compliance. Patient rooms, toilet rooms, bathing facilities, waiting areas, and public corridors shall meet CBC Chapter 11B requirements including accessible routes, turning spaces (60-inch minimum diameter), reach ranges, grab bar specifications, and accessible door hardware."
+  },
+  {
+    "id": "T24-P2-CBC-407",
+    "source": "Title 24 Part 2 (CBC Section 407)",
+    "section": "407",
+    "type": "mandatory",
+    "discipline": "Fire / Life Safety",
+    "text": "Group I-2 Condition 2 (Hospital) occupancies shall be divided into smoke compartments. Each smoke compartment shall not exceed 22,500 square feet (2090 m²). Smoke barriers shall be constructed to a minimum 1-hour fire-resistance rating. Openings through smoke barriers shall be protected by listed smoke door assemblies that are self-closing or automatic-closing."
+  },
+  {
+    "id": "T24-P2-CBC-13",
+    "source": "Title 24 Part 2 (CBC Chapter 13)",
+    "section": "Chapter 13",
+    "type": "mandatory",
+    "discipline": "Structural / Seismic",
+    "text": "Nonstructural components in essential facilities (hospitals with Ip=1.5) must be designed and anchored to resist seismic forces. This includes mechanical equipment, electrical panels, piping systems, duct systems, suspended ceiling systems, and medical equipment. Prescriptive anchorage using OSHPD pre-approved systems is an acceptable alternative to a full engineered analysis."
+  },
+  {
+    "id": "T24-P2-1114B",
+    "source": "Title 24 Part 2",
+    "section": "1114B",
+    "type": "mandatory",
+    "discipline": "Accessibility",
+    "text": "Toilet rooms and bathing rooms required to be accessible in healthcare facilities shall provide maneuvering clearance, turning space, accessible fixtures, and grab bars as specified in CBC Chapter 11B. Accessible patient toilet rooms shall provide a minimum 60-inch turning diameter or T-shaped turning space."
+  }
+]

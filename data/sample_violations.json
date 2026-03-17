@@ -1,0 +1,38 @@
+[
+  {
+    "rule_id": "RULE-001",
+    "severity": "Critical",
+    "discipline": "Infection Control",
+    "keywords_in_ahj": ["negative pressure", "isolation", "monitoring"]
+  },
+  {
+    "rule_id": "RULE-002",
+    "severity": "Critical",
+    "discipline": "Infection Control",
+    "keywords_in_ahj": ["positive pressure", "HEPA", "operating room", "ACH"]
+  },
+  {
+    "rule_id": "RULE-003",
+    "severity": "Critical",
+    "discipline": "Structural / Seismic",
+    "keywords_in_ahj": ["seismic", "anchorage", "OSHPD"]
+  },
+  {
+    "rule_id": "RULE-004",
+    "severity": "Critical",
+    "discipline": "Essential Electrical System",
+    "keywords_in_ahj": ["essential electrical", "Life Safety", "Critical Branch"]
+  },
+  {
+    "rule_id": "RULE-005",
+    "severity": "Critical",
+    "discipline": "Medical Gas",
+    "keywords_in_ahj": ["zone valve", "alarm panel", "NFPA 99"]
+  },
+  {
+    "rule_id": "RULE-012",
+    "severity": "Critical",
+    "discipline": "Fire Protection",
+    "keywords_in_ahj": ["smoke barrier", "compartment", "22,500"]
+  }
+]
