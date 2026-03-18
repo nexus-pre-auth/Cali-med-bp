@@ -31,27 +31,26 @@ try:
         Table,
         TableStyle,
     )
+    # ---------------------------------------------------------------------------
+    # Colour palette matching the HTML report
+    # ---------------------------------------------------------------------------
+    _SEVERITY_COLORS = {
+        "Critical": colors.HexColor("#E53E3E"),
+        "High":     colors.HexColor("#DD6B20"),
+        "Medium":   colors.HexColor("#D69E2E"),
+        "Low":      colors.HexColor("#38A169"),
+    }
+    _NAVY     = colors.HexColor("#1A365D")
+    _LIGHT_BG = colors.HexColor("#F7FAFC")
+    _BORDER   = colors.HexColor("#E2E8F0")
+    _BLUE_BG  = colors.HexColor("#EBF8FF")
+    _GREEN_BG = colors.HexColor("#F0FFF4")
+    _GREY     = colors.HexColor("#718096")
     HAS_REPORTLAB = True
 except ImportError:
     HAS_REPORTLAB = False
-
-
-# ---------------------------------------------------------------------------
-# Colour palette matching the HTML report
-# ---------------------------------------------------------------------------
-
-_SEVERITY_COLORS = {
-    "Critical": colors.HexColor("#E53E3E"),
-    "High":     colors.HexColor("#DD6B20"),
-    "Medium":   colors.HexColor("#D69E2E"),
-    "Low":      colors.HexColor("#38A169"),
-}
-_NAVY     = colors.HexColor("#1A365D")
-_LIGHT_BG = colors.HexColor("#F7FAFC")
-_BORDER   = colors.HexColor("#E2E8F0")
-_BLUE_BG  = colors.HexColor("#EBF8FF")
-_GREEN_BG = colors.HexColor("#F0FFF4")
-_GREY     = colors.HexColor("#718096")
+    _SEVERITY_COLORS = {}
+    _NAVY = _LIGHT_BG = _BORDER = _BLUE_BG = _GREEN_BG = _GREY = None
 
 
 def _styles():

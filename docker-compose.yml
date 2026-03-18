@@ -1,24 +1,28 @@
 services:
-  hcai-engine:
+  hcai-api:
     build: .
     image: hcai-compliance-engine:latest
-    container_name: hcai-engine
+    container_name: hcai-api
+    ports:
+      - "${API_PORT:-8000}:8000"
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - API_KEYS=${API_KEYS:-}
       - WEBHOOK_URL=${WEBHOOK_URL:-}
       - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
       - NOTIFY_MIN_SEVERITY=${NOTIFY_MIN_SEVERITY:-Critical}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
     volumes:
-      # Persist ChromaDB knowledge base across restarts
       - chroma_data:/app/chroma_db
-      # Mount input PDFs from host
-      - ./input:/app/input:ro
-      # Write reports to host
       - ./output:/app/output
-      # Persist logs
       - ./logs:/app/logs
-    command: ["demo"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Optional: index knowledge base on first run
   hcai-index:

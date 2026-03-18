@@ -31,5 +31,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD python -c "from src.engine.decision_engine import DecisionEngine; DecisionEngine()" || exit 1
 
-ENTRYPOINT ["python", "main.py"]
-CMD ["--help"]
+EXPOSE 8000
+
+# Default: start the API server
+ENTRYPOINT ["python", "serve.py"]
+CMD ["--host", "0.0.0.0", "--port", "8000"]
