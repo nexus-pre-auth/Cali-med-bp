@@ -27,6 +27,12 @@ from src.api.models import (
 )
 from src.engine.confidence_scorer import ConfidenceScorer
 from src.engine.decision_engine import DecisionEngine
+from src.monitoring.audit import (
+    log_report_generated,
+    log_review_complete,
+    log_review_failed,
+    log_violation_detected,
+)
 from src.monitoring.logger import get_logger
 from src.monitoring.metrics import SessionMetrics
 from src.notifications.webhook import WebhookNotifier
@@ -197,12 +203,45 @@ def run_review(
         job.status      = JobStatus.complete
         job.completed_at = datetime.now(timezone.utc)
 
+        # Audit — per-violation records
+        for ev in enriched:
+            log_violation_detected(
+                job_id=job_id,
+                rule_id=ev.violation.rule_id,
+                discipline=ev.violation.discipline,
+                severity=ev.violation.severity.value,
+                trigger_condition=ev.violation.trigger_condition,
+                confidence=conf_map.get(ev.violation.rule_id, 0.0),
+            )
+
+        # Audit — report files
+        for fmt, path in paths.items():
+            p = Path(path)
+            log_report_generated(
+                job_id=job_id,
+                fmt=fmt,
+                path=str(p),
+                size_bytes=p.stat().st_size if p.exists() else 0,
+            )
+
+        # Audit — review complete
+        log_review_complete(
+            job_id=job_id,
+            project_name=project_name,
+            occupancy_type=conditions.occupancy_type,
+            total_violations=len(enriched),
+            by_severity=metrics.violations_by_severity,
+            elapsed_ms=metrics.total_elapsed_ms(),
+            extraction_confidence=extraction_conf,
+        )
+
         # Webhooks
         WebhookNotifier().send_review_alert(enriched, project_name, report_paths=paths)
         metrics.log_summary()
 
     except Exception as exc:
         log.error("Job %s failed: %s\n%s", job_id, exc, traceback.format_exc())
+        log_review_failed(job_id=job_id, project_name=project_name, error=str(exc))
         job.status    = JobStatus.failed
         job.error     = str(exc)
         job.completed_at = datetime.now(timezone.utc)

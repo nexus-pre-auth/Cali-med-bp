@@ -39,6 +39,7 @@ from src.api.models import (
     ChecklistItemResponse,
 )
 from src.api.runner import run_review
+from src.monitoring.audit import log_review_submitted, read_audit_log
 from src.monitoring.logger import get_logger
 
 log = get_logger(__name__)
@@ -148,6 +149,12 @@ def _register_routes(app: FastAPI) -> None:
         )
 
         log.info("Review job %s created for project '%s'", job.job_id, request_body.project_name)
+        log_review_submitted(
+            job_id=job.job_id,
+            project_name=request_body.project_name,
+            source="api_text",
+            api_key_hint=(_api_key[:8] if _api_key and _api_key != "dev-mode" else "dev-mode"),
+        )
         return job
 
     # -------------------------------------------------- POST /review/upload (PDF)
@@ -202,6 +209,13 @@ def _register_routes(app: FastAPI) -> None:
         )
 
         log.info("PDF review job %s created — file: %s", job.job_id, file.filename)
+        log_review_submitted(
+            job_id=job.job_id,
+            project_name=project_name,
+            source="api_pdf",
+            api_key_hint=(_api_key[:8] if _api_key and _api_key != "dev-mode" else "dev-mode"),
+            filename=file.filename,
+        )
         return job
 
     # ----------------------------------------------- GET /review/{job_id}
@@ -377,6 +391,86 @@ def _register_routes(app: FastAPI) -> None:
                 )
                 for i in result.items
             ],
+        )
+
+    # ------------------------------------------------------- GET /rules
+    @app.get(
+        "/rules",
+        tags=["Rules"],
+        response_model=list[dict],
+    )
+    async def list_rules(
+        discipline: Optional[str] = None,
+        active_only: bool = True,
+        _api_key: str = Depends(require_api_key),
+    ) -> list[dict]:
+        """List compliance rules from the persistent store."""
+        from src.db.rules_store import get_rules_store
+        store = get_rules_store()
+        if discipline:
+            return store.get_by_discipline(discipline, active_only=active_only)
+        rules = store.get_all_active() if active_only else store.get_all_active()
+        return rules
+
+    @app.get("/rules/{rule_id}", tags=["Rules"])
+    async def get_rule(
+        rule_id: str,
+        _api_key: str = Depends(require_api_key),
+    ) -> dict:
+        """Get a single rule by ID."""
+        from src.db.rules_store import get_rules_store
+        rule = get_rules_store().get_by_id(rule_id)
+        if not rule:
+            raise HTTPException(status_code=404, detail=f"Rule '{rule_id}' not found.")
+        return rule
+
+    @app.patch("/rules/{rule_id}/active", tags=["Rules"])
+    async def set_rule_active(
+        rule_id: str,
+        active: bool,
+        _api_key: str = Depends(require_api_key),
+    ) -> dict:
+        """Enable or disable a rule without deleting it."""
+        from src.db.rules_store import get_rules_store
+        found = get_rules_store().set_active(rule_id, active)
+        if not found:
+            raise HTTPException(status_code=404, detail=f"Rule '{rule_id}' not found.")
+        return {"rule_id": rule_id, "active": active}
+
+    @app.post("/rules", status_code=status.HTTP_201_CREATED, tags=["Rules"])
+    async def upsert_rule(
+        rule: dict,
+        _api_key: str = Depends(require_api_key),
+    ) -> dict:
+        """Insert or update a rule. Must include 'id', 'discipline', 'description'."""
+        if not rule.get("id") or not rule.get("discipline") or not rule.get("description"):
+            raise HTTPException(status_code=422, detail="Fields 'id', 'discipline', 'description' are required.")
+        from src.db.rules_store import get_rules_store
+        get_rules_store().upsert_rule(rule)
+        return {"status": "ok", "rule_id": rule["id"]}
+
+    # ------------------------------------------------------- GET /audit
+    @app.get(
+        "/audit",
+        tags=["Audit"],
+        response_model=list[dict],
+    )
+    async def get_audit_log(
+        event: Optional[str] = None,
+        job_id: Optional[str] = None,
+        limit: int = 100,
+        _api_key: str = Depends(require_api_key),
+    ) -> list[dict]:
+        """
+        Read the compliance audit trail.
+
+        Optionally filter by `event` type (e.g. REVIEW_SUBMITTED, VIOLATION_DETECTED)
+        or by `job_id`. Returns most recent entries first.
+        """
+        return read_audit_log(
+            event_filter=event,
+            job_id_filter=job_id,
+            limit=min(limit, 500),
         )
 
 

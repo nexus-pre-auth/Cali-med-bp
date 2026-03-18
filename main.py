@@ -212,6 +212,32 @@ def review(
 
 
 # ---------------------------------------------------------------------------
+# migrate-db command
+# ---------------------------------------------------------------------------
+
+@cli.command("migrate-db")
+@click.option("--seed/--no-seed", default=True, show_default=True,
+              help="Seed rules from JSON after migrating.")
+def migrate_db(seed: bool) -> None:
+    """Run database migrations and optionally seed rules from JSON."""
+    _banner()
+    from src.db.rules_store import RulesStore
+    _print("Running database migrations...")
+    store = RulesStore()
+    total = store.count(active_only=False)
+    _print(f"  Schema up to date. {total} rules in database.")
+    if seed:
+        added = store.seed_from_json()
+        if added:
+            _print(f"  Seeded {added} new rules from hcai_rules.json.")
+        else:
+            _print("  No new rules to seed (all already present).")
+    _print(f"\n  Active rules: {store.count()}")
+    _print(f"  Disciplines : {', '.join(store.list_disciplines())}")
+    _print("\n[bold green]✓ Database ready.[/bold green]\n" if HAS_RICH else "\n✓ Database ready.\n")
+
+
+# ---------------------------------------------------------------------------
 # validate command
 # ---------------------------------------------------------------------------
 

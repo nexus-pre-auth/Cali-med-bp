@@ -47,11 +47,21 @@ class RuleMatcher:
     """Loads HCAI rules and returns violations that apply to the given conditions."""
 
     def __init__(self, rules_file: str | Path) -> None:
+        # Try SQLite store first (persistent, queryable)
+        try:
+            from src.db.rules_store import get_rules_store
+            store = get_rules_store()
+            self._rules: list[dict] = store.get_all_active()
+            return
+        except Exception:
+            pass  # Fall back to JSON
+
+        # JSON fallback
         rules_path = Path(rules_file)
         if not rules_path.exists():
             raise FileNotFoundError(f"Rules file not found: {rules_file}")
         with open(rules_path) as f:
-            self._rules: list[dict] = json.load(f)
+            self._rules = json.load(f)
 
     def match(self, conditions: ProjectConditions) -> list[MatchedViolation]:
         violations: list[MatchedViolation] = []
