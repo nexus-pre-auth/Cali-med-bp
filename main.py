@@ -362,6 +362,31 @@ def cleanup(jobs_days: int, audit_days: int, dry_run: bool) -> None:
         removed = trim_audit_log(keep_days=audit_days)
         _print(f"Removed {removed} audit log entry/entries older than {audit_days} day(s).")
 
+    # Output directory cleanup — remove report folders for deleted jobs
+    import shutil
+    import config as _config
+    output_dir = _config.OUTPUT_DIR
+    if output_dir.exists():
+        # Collect surviving job IDs from the DB (or skip if in-memory store)
+        surviving_ids: set[str] = set()
+        try:
+            from src.db.job_store import get_sqlite_job_store as _get_store
+            _s = _get_store()
+            surviving_ids = {str(j.job_id) for j in _s.list_recent(limit=10_000)}
+        except Exception:
+            pass
+
+        orphaned = [
+            d for d in output_dir.iterdir()
+            if d.is_dir() and d.name not in surviving_ids
+        ]
+        if dry_run:
+            _print(f"Would remove {len(orphaned)} orphaned report director{'y' if len(orphaned)==1 else 'ies'} from output/.")
+        else:
+            for d in orphaned:
+                shutil.rmtree(d, ignore_errors=True)
+            _print(f"Removed {len(orphaned)} orphaned report director{'y' if len(orphaned)==1 else 'ies'} from output/.")
+
 
 # ---------------------------------------------------------------------------
 # demo command

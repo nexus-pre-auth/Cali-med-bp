@@ -134,6 +134,47 @@ class HealthResponse(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Rules request / response
+# ---------------------------------------------------------------------------
+
+class RuleResponse(BaseModel):
+    """Full rule record returned by GET /rules and GET /rules/{id}."""
+    id: str
+    discipline: str
+    description: str
+    violation_template: str = ""
+    fix_template: str = ""
+    severity_override: Optional[str] = None
+    min_licensed_beds: Optional[int] = None
+    is_active: bool = True
+    trigger_occupancies: list[str] = []
+    trigger_systems: list[str] = []
+    trigger_rooms: list[str] = []
+    trigger_seismic_zones: list[str] = []
+    trigger_construction_types: list[str] = []
+    trigger_sprinklered: Optional[bool] = None
+    code_references: list[str] = []
+
+
+class RuleCreateRequest(BaseModel):
+    """Payload for POST /rules (insert or update a rule)."""
+    id: str = Field(..., description="Unique rule identifier, e.g. RULE-042")
+    discipline: str = Field(..., description="Discipline category, e.g. 'Infection Control'")
+    description: str = Field(..., description="Human-readable rule description")
+    violation_template: str = Field(default="", description="Template text for the violation message")
+    fix_template: str = Field(default="", description="Template text for remediation guidance")
+    severity_override: Optional[SeverityEnum] = Field(default=None, description="Force severity level (null = auto-scored)")
+    min_licensed_beds: Optional[int] = Field(default=None, ge=1, description="Minimum licensed beds for rule to apply")
+    trigger_occupancies: list[str] = Field(default_factory=list)
+    trigger_systems: list[str] = Field(default_factory=list)
+    trigger_rooms: list[str] = Field(default_factory=list)
+    trigger_seismic_zones: list[str] = Field(default_factory=list)
+    trigger_construction_types: list[str] = Field(default_factory=list)
+    trigger_sprinklered: Optional[bool] = Field(default=None, description="True=sprinklered only, False=non-sprinklered only, null=either")
+    code_references: list[str] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------------------
 # Validation request / response
 # ---------------------------------------------------------------------------
 

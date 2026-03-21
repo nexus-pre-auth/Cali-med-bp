@@ -32,6 +32,13 @@ _DB_PATH = config.BASE_DIR / "hcai_rules.db"
 _lock = threading.Lock()
 
 
+def _bool_to_int(value) -> Optional[int]:
+    """Convert Python bool/None to SQLite INTEGER (1/0/NULL)."""
+    if value is None:
+        return None
+    return 1 if value else 0
+
+
 # ---------------------------------------------------------------------------
 # Connection factory
 # ---------------------------------------------------------------------------
@@ -113,6 +120,12 @@ class RulesStore:
             ).fetchall()
             return [self._hydrate(conn, row) for row in rows]
 
+    def get_all(self) -> list[dict]:
+        """Return all rules (active and inactive) ordered by id."""
+        with _get_conn(self._db_path) as conn:
+            rows = conn.execute("SELECT * FROM rules ORDER BY id").fetchall()
+            return [self._hydrate(conn, row) for row in rows]
+
     def get_by_id(self, rule_id: str) -> Optional[dict]:
         with _get_conn(self._db_path) as conn:
             row = conn.execute(
@@ -157,17 +170,19 @@ class RulesStore:
             conn.execute("""
                 INSERT INTO rules
                     (id, discipline, description, violation_template, fix_template,
-                     severity_override, min_licensed_beds, is_active, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))
+                     severity_override, min_licensed_beds, trigger_sprinklered,
+                     is_active, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))
                 ON CONFLICT(id) DO UPDATE SET
-                    discipline         = excluded.discipline,
-                    description        = excluded.description,
-                    violation_template = excluded.violation_template,
-                    fix_template       = excluded.fix_template,
-                    severity_override  = excluded.severity_override,
-                    min_licensed_beds  = excluded.min_licensed_beds,
-                    is_active          = 1,
-                    updated_at         = datetime('now')
+                    discipline          = excluded.discipline,
+                    description         = excluded.description,
+                    violation_template  = excluded.violation_template,
+                    fix_template        = excluded.fix_template,
+                    severity_override   = excluded.severity_override,
+                    min_licensed_beds   = excluded.min_licensed_beds,
+                    trigger_sprinklered = excluded.trigger_sprinklered,
+                    is_active           = 1,
+                    updated_at          = datetime('now')
             """, (
                 rule["id"],
                 rule.get("discipline", "General"),
@@ -176,6 +191,7 @@ class RulesStore:
                 rule.get("fix_template", ""),
                 rule.get("severity_override"),
                 rule.get("min_licensed_beds"),
+                _bool_to_int(rule.get("trigger_sprinklered")),
             ))
             self._insert_children(conn, rule)
             conn.commit()
@@ -198,8 +214,8 @@ class RulesStore:
         conn.execute("""
             INSERT OR IGNORE INTO rules
                 (id, discipline, description, violation_template, fix_template,
-                 severity_override, min_licensed_beds)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+                 severity_override, min_licensed_beds, trigger_sprinklered)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             rule["id"],
             rule.get("discipline", "General"),
@@ -208,6 +224,7 @@ class RulesStore:
             rule.get("fix_template", ""),
             rule.get("severity_override"),
             rule.get("min_licensed_beds"),
+            _bool_to_int(rule.get("trigger_sprinklered")),
         ))
         self._insert_children(conn, rule)
 
@@ -235,6 +252,7 @@ class RulesStore:
                 f"SELECT {col} FROM {tbl} WHERE rule_id = ?", (rid,)
             ).fetchall()]
 
+        raw_sprinkled = row["trigger_sprinklered"] if "trigger_sprinklered" in row.keys() else None
         return {
             "id":                         row["id"],
             "discipline":                 row["discipline"],
@@ -243,6 +261,7 @@ class RulesStore:
             "fix_template":               row["fix_template"],
             "severity_override":          row["severity_override"],
             "min_licensed_beds":          row["min_licensed_beds"],
+            "trigger_sprinklered":        None if raw_sprinkled is None else bool(raw_sprinkled),
             "is_active":                  bool(row["is_active"]),
             "trigger_occupancies":        _fetch("rule_occupancies", "occupancy"),
             "trigger_systems":            _fetch("rule_systems", "system"),

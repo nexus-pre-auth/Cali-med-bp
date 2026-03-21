@@ -155,6 +155,12 @@ class RuleMatcher:
             if c.licensed_beds is None or c.licensed_beds < min_beds:
                 return False
 
+        # Sprinkler status filter (None = applies regardless)
+        req_sprinkled = rule.get("trigger_sprinklered")
+        if req_sprinkled is not None and c.sprinklered is not None:
+            if bool(req_sprinkled) != c.sprinklered:
+                return False
+
         return True
 
     def _render(self, template: str, c: ProjectConditions) -> str:

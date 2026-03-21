@@ -138,6 +138,22 @@ def _m3(conn: sqlite3.Connection) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Migration 4 — sprinkler trigger
+# ---------------------------------------------------------------------------
+
+@migration(4, "Add trigger_sprinklered column to rules")
+def _m4(conn: sqlite3.Connection) -> None:
+    """
+    NULL  = rule applies regardless of sprinkler status (default)
+    1     = rule applies only when facility IS sprinklered
+    0     = rule applies only when facility is NOT sprinklered
+    """
+    conn.executescript("""
+        ALTER TABLE rules ADD COLUMN trigger_sprinklered INTEGER DEFAULT NULL;
+    """)
+
+
+# ---------------------------------------------------------------------------
 # Migration runner
 # ---------------------------------------------------------------------------
 

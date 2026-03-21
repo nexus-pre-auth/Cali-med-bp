@@ -313,5 +313,47 @@
       "NFPA 13-2022 Section 8.15"
     ],
     "severity_override": "High"
+  },
+  {
+    "id": "RULE-019",
+    "discipline": "Fire and Life Safety",
+    "description": "Non-sprinklered healthcare occupancies must comply with CBC Table 1004.5 reduced occupant load factors and more restrictive travel distance and egress width requirements.",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Clinic", "Skilled Nursing Facility"],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "trigger_construction_types": [],
+    "trigger_sprinklered": false,
+    "min_licensed_beds": null,
+    "violation_template": "{occupancy} is indicated as non-sprinklered. Verify that egress travel distances comply with the more restrictive non-sprinklered limits per CBC Table 1017.2 (exit access travel distance ≤150 ft for Group I-2) and that egress widths and occupant loads reflect the non-sprinklered factors in CBC Table 1004.5.",
+    "fix_template": "1. Confirm facility is non-sprinklered on the code summary sheet; if sprinklers are present update sprinkler status.\n2. Verify exit access travel distance ≤150 ft (non-sprinklered limit for I-2) on all floor plans.\n3. Recalculate occupant load using non-sprinklered factors from CBC Table 1004.5.\n4. Show egress width calculations (0.3 in/occupant for corridors, 0.2 in/occupant for doors) per CBC Section 1005.",
+    "code_references": [
+      "CBC 2022 Table 1017.2",
+      "CBC 2022 Table 1004.5",
+      "CBC 2022 Section 1005.1",
+      "Title 24 Part 2 Section 1226.4"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "RULE-020",
+    "discipline": "Fire and Life Safety",
+    "description": "Sprinklered healthcare facilities must provide a complete NFPA 13 sprinkler system schedule and hydraulic calculations stamped by a licensed fire protection engineer.",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Clinic", "Skilled Nursing Facility", "Ambulatory Surgery Center"],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "trigger_construction_types": [],
+    "trigger_sprinklered": true,
+    "min_licensed_beds": null,
+    "violation_template": "{occupancy} is indicated as fully sprinklered (NFPA 13). Verify that the fire sprinkler drawings include: a complete sprinkler head schedule with K-factors and temperature ratings, hydraulic calculation summary, and riser diagram. All fire sprinkler work must bear the stamp of a California-licensed Fire Protection Engineer or C-16 contractor.",
+    "fix_template": "1. Provide a sprinkler head schedule on fire protection drawings including head type, K-factor, temperature rating, and coverage area.\n2. Include hydraulic calculation summary table (design area, density, residual pressure, flow demand).\n3. Show the riser diagram with backflow preventer, OS&Y valve, flow switch, and inspector's test connection.\n4. Confirm drawings bear the stamp of a licensed Fire Protection Engineer (PE) or C-16 contractor as required by California Health and Safety Code Section 13145.",
+    "code_references": [
+      "NFPA 13-2022 Section 7.3",
+      "California Health and Safety Code Section 13145",
+      "Title 24 Part 9 Chapter 9",
+      "HCAI CAN 3-2020"
+    ],
+    "severity_override": "High"
   }
 ]

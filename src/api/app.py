@@ -37,6 +37,8 @@ from src.api.models import (
     OutputFormat,
     ReviewRequest,
     ReviewResponse,
+    RuleResponse,
+    RuleCreateRequest,
     ValidationRequest,
     ValidationResponse,
     ChecklistItemResponse,
@@ -468,23 +470,32 @@ def _register_routes(app: FastAPI) -> None:
     # ------------------------------------------------------- GET /rules
     @app.get(
         "/rules",
+        response_model=list[RuleResponse],
         tags=["Rules"],
-        response_model=list[dict],
     )
     async def list_rules(
         discipline: Optional[str] = None,
         active_only: bool = True,
         _api_key: str = Depends(require_api_key),
     ) -> list[dict]:
-        """List compliance rules from the persistent store."""
+        """
+        List compliance rules from the persistent store.
+
+        - `active_only=true` (default) — returns only enabled rules
+        - `active_only=false` — returns all rules including disabled ones
+        - `discipline` — filter by discipline name (e.g. `Infection Control`)
+        """
         from src.db.rules_store import get_rules_store
         store = get_rules_store()
         if discipline:
             return store.get_by_discipline(discipline, active_only=active_only)
-        rules = store.get_all_active() if active_only else store.get_all_active()
-        return rules
+        return store.get_all_active() if active_only else store.get_all()
 
-    @app.get("/rules/{rule_id}", tags=["Rules"])
+    @app.get(
+        "/rules/{rule_id}",
+        response_model=RuleResponse,
+        tags=["Rules"],
+    )
     async def get_rule(
         rule_id: str,
         _api_key: str = Depends(require_api_key),
@@ -509,17 +520,27 @@ def _register_routes(app: FastAPI) -> None:
             raise HTTPException(status_code=404, detail=f"Rule '{rule_id}' not found.")
         return {"rule_id": rule_id, "active": active}
 
-    @app.post("/rules", status_code=status.HTTP_201_CREATED, tags=["Rules"])
+    @app.post(
+        "/rules",
+        status_code=status.HTTP_201_CREATED,
+        response_model=RuleResponse,
+        tags=["Rules"],
+    )
     async def upsert_rule(
-        rule: dict,
+        rule: RuleCreateRequest,
         _api_key: str = Depends(require_api_key),
     ) -> dict:
-        """Insert or update a rule. Must include 'id', 'discipline', 'description'."""
-        if not rule.get("id") or not rule.get("discipline") or not rule.get("description"):
-            raise HTTPException(status_code=422, detail="Fields 'id', 'discipline', 'description' are required.")
+        """
+        Insert or update a rule.
+
+        All trigger lists default to empty (applies to all). Set
+        `trigger_construction_types`, `min_licensed_beds`, or
+        `trigger_sprinklered` to scope the rule precisely.
+        """
         from src.db.rules_store import get_rules_store
-        get_rules_store().upsert_rule(rule)
-        return {"status": "ok", "rule_id": rule["id"]}
+        store = get_rules_store()
+        store.upsert_rule(rule.model_dump())
+        return store.get_by_id(rule.id)
 
     # ------------------------------------------------------- GET /audit
     @app.get(
