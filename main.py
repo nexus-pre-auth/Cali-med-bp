@@ -108,27 +108,31 @@ def review(
     metrics = SessionMetrics()
     scorer = ConfidenceScorer()
 
-    # Step 1 — Parse
-    _print("[bold]Step 1:[/bold] Automated Data Extraction..." if HAS_RICH else "Step 1: Automated Data Extraction...")
-    parser = PDFParser()
-    extractor = ConditionExtractor()
+    # Validate inputs before any processing output
+    if not input_path and not raw_text:
+        _print("[red]Error: Provide --input or --text[/red]" if HAS_RICH else "Error: Provide --input or --text")
+        sys.exit(1)
 
     if input_path:
         path = Path(input_path)
         if not path.exists():
             _print(f"[red]Error: File not found: {input_path}[/red]" if HAS_RICH else f"Error: File not found: {input_path}")
             sys.exit(1)
+
+    # Step 1 — Parse
+    _print("[bold]Step 1:[/bold] Automated Data Extraction..." if HAS_RICH else "Step 1: Automated Data Extraction...")
+    parser = PDFParser()
+    extractor = ConditionExtractor()
+
+    if input_path:
         with metrics.timer("pdf_parse"):
             doc = parser.parse(path)
         metrics.pages_processed = doc.total_pages
         _print(f"  Parsed {doc.total_pages} page(s) from [cyan]{path.name}[/cyan]" if HAS_RICH else f"  Parsed {doc.total_pages} pages from {path.name}")
-    elif raw_text:
+    else:
         with metrics.timer("pdf_parse"):
             doc = parser.parse_text_input(raw_text, source_name=project_name)
         _print("  Using inline text input.")
-    else:
-        _print("[red]Error: Provide --input or --text[/red]" if HAS_RICH else "Error: Provide --input or --text")
-        sys.exit(1)
 
     with metrics.timer("condition_extraction"):
         conditions = extractor.extract(doc)
@@ -178,16 +182,17 @@ def review(
     _print("\n[bold]Output:[/bold] Writing reports..." if HAS_RICH else "\nOutput: Writing reports...")
     writer = ReportWriter(output_dir=output_dir)
     with metrics.timer("report_writing"):
-        paths = writer.write_all(enriched, conditions, project_name=project_name)
+        paths = writer.write_all(enriched, conditions, project_name=project_name, formats=fmt)
 
-    # PDF report
-    try:
-        out_dir = Path(output_dir) if output_dir else config.OUTPUT_DIR
-        pdf_path = render_pdf_report(enriched, conditions, project_name=project_name,
-                                     output_path=out_dir / "hcai_report.pdf")
-        paths["pdf"] = pdf_path
-    except ImportError:
-        pass  # reportlab optional
+    # PDF report — only when fmt is "pdf" or "all"
+    if fmt in ("pdf", "all"):
+        try:
+            out_dir = Path(output_dir) if output_dir else config.OUTPUT_DIR
+            pdf_path = render_pdf_report(enriched, conditions, project_name=project_name,
+                                         output_path=out_dir / "hcai_report.pdf")
+            paths["pdf"] = pdf_path
+        except ImportError:
+            pass  # reportlab optional
 
     for ftype, fpath in paths.items():
         _print(f"  [{ftype.upper()}] → {fpath}")
