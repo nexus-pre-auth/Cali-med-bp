@@ -16,6 +16,8 @@ from __future__ import annotations
 
 import mimetypes
 import os
+import time
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional
 from uuid import UUID
@@ -23,6 +25,7 @@ from uuid import UUID
 from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
 import config
 from src.api.auth import require_api_key
@@ -45,6 +48,64 @@ from src.monitoring.logger import get_logger
 log = get_logger(__name__)
 
 # ---------------------------------------------------------------------------
+# Per-IP rate-limit middleware
+# ---------------------------------------------------------------------------
+
+_DEFAULT_RATE_LIMIT_RPM = 60
+_DEFAULT_RATE_LIMIT_BURST = 10
+
+# Paths exempt from rate limiting (health, docs)
+_EXEMPT_PREFIXES = ("/health", "/docs", "/redoc", "/openapi")
+
+
+class _RateLimitMiddleware(BaseHTTPMiddleware):
+    """
+    Token-bucket rate limiter applied per client IP.
+
+    Each IP gets RATE_LIMIT_RPM tokens/minute refilled continuously.
+    RATE_LIMIT_BURST controls the maximum number of queued tokens so a
+    single IP cannot bank up unlimited requests.
+    """
+
+    def __init__(self, app, calls_per_minute: int, burst: int) -> None:
+        super().__init__(app)
+        self._rpm = calls_per_minute
+        self._burst = burst
+        self._refill_rate = calls_per_minute / 60.0  # tokens/second
+        # {ip: [tokens, last_refill_ts]}
+        self._buckets: dict[str, list] = defaultdict(
+            lambda: [float(burst), time.monotonic()]
+        )
+        import threading
+        self._lock = threading.Lock()
+
+    async def dispatch(self, request: Request, call_next):
+        path = request.url.path
+        if any(path.startswith(p) for p in _EXEMPT_PREFIXES):
+            return await call_next(request)
+
+        ip = request.client.host if request.client else "unknown"
+
+        with self._lock:
+            bucket = self._buckets[ip]
+            now = time.monotonic()
+            elapsed = now - bucket[1]
+            bucket[0] = min(self._burst, bucket[0] + elapsed * self._refill_rate)
+            bucket[1] = now
+
+            if bucket[0] < 1.0:
+                retry_after = int((1.0 - bucket[0]) / self._refill_rate) + 1
+                return JSONResponse(
+                    status_code=429,
+                    content={"detail": "Rate limit exceeded. Try again shortly."},
+                    headers={"Retry-After": str(retry_after)},
+                )
+            bucket[0] -= 1.0
+
+        return await call_next(request)
+
+
+# ---------------------------------------------------------------------------
 # App factory
 # ---------------------------------------------------------------------------
 
@@ -61,6 +122,17 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
     )
+
+    # Rate limiting — applied before auth so abusive clients are dropped early
+    # Read at create_app() time so tests can override via env vars
+    rate_limit_rpm = int(os.getenv("RATE_LIMIT_RPM", str(_DEFAULT_RATE_LIMIT_RPM)))
+    rate_limit_burst = int(os.getenv("RATE_LIMIT_BURST", str(_DEFAULT_RATE_LIMIT_BURST)))
+    if rate_limit_rpm > 0:
+        app.add_middleware(
+            _RateLimitMiddleware,
+            calls_per_minute=rate_limit_rpm,
+            burst=rate_limit_burst,
+        )
 
     app.add_middleware(
         CORSMiddleware,

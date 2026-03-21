@@ -95,6 +95,29 @@ def _m1(conn: sqlite3.Connection) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Migration 2 — jobs table
+# ---------------------------------------------------------------------------
+
+@migration(2, "Create jobs table for persistent async job storage")
+def _m2(conn: sqlite3.Connection) -> None:
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS jobs (
+            job_id       TEXT    PRIMARY KEY,
+            project_name TEXT    NOT NULL,
+            status       TEXT    NOT NULL DEFAULT 'pending',
+            created_at   TEXT    NOT NULL,
+            updated_at   TEXT    NOT NULL,
+            completed_at TEXT,
+            result_json  TEXT,
+            error        TEXT
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_jobs_status     ON jobs(status);
+        CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at DESC);
+    """)
+
+
+# ---------------------------------------------------------------------------
 # Migration runner
 # ---------------------------------------------------------------------------
 

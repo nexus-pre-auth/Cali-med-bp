@@ -1,22 +1,28 @@
 """
-In-memory job store for async review processing.
+Job store for async review processing.
 
-Each review is submitted as a background job so the POST /review
-endpoint returns immediately with a job_id. Clients poll
+Defaults to the SQLite-backed store (survives restarts).
+Falls back to the in-memory store if the DB is unavailable
+(e.g. read-only filesystem or unit tests that don't need persistence).
+
+Each review is submitted as a background job so POST /review
+returns immediately with a job_id. Clients poll
 GET /review/{job_id} for results.
-
-For production scale, replace with Redis + Celery or similar.
 """
 
 from __future__ import annotations
 
 import threading
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Union
 from uuid import UUID, uuid4
 
 from src.api.models import JobStatus, ReviewResponse
 
+
+# ---------------------------------------------------------------------------
+# In-memory fallback (also used by tests directly)
+# ---------------------------------------------------------------------------
 
 class JobStore:
     """Thread-safe in-memory store for review jobs."""
@@ -53,9 +59,22 @@ class JobStore:
         return len(self._jobs)
 
 
-# Module-level singleton — shared across all requests
-_store = JobStore()
+# ---------------------------------------------------------------------------
+# Module-level singleton — SQLite-backed by default, in-memory as fallback
+# ---------------------------------------------------------------------------
+
+_store: Optional[Union[JobStore, "SQLiteJobStore"]] = None  # noqa: F821
+_store_lock = threading.Lock()
 
 
-def get_job_store() -> JobStore:
+def get_job_store() -> Union[JobStore, "SQLiteJobStore"]:  # noqa: F821
+    global _store
+    if _store is None:
+        with _store_lock:
+            if _store is None:
+                try:
+                    from src.db.job_store import get_sqlite_job_store
+                    _store = get_sqlite_job_store()
+                except Exception:
+                    _store = JobStore()
     return _store

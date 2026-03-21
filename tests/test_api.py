@@ -21,7 +21,10 @@ from src.api.app import create_app
 
 @pytest.fixture(scope="module")
 def client():
+    import os
+    os.environ["RATE_LIMIT_RPM"] = "0"  # disable rate limiting for API tests
     app = create_app()
+    os.environ.pop("RATE_LIMIT_RPM", None)
     with TestClient(app, raise_server_exceptions=True) as c:
         yield c
 
