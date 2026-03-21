@@ -150,19 +150,22 @@ class RulesStore:
         with _lock, _get_conn(self._db_path) as conn:
             # Remove existing child rows
             for tbl in ("rule_occupancies", "rule_systems", "rule_rooms",
-                        "rule_seismic_zones", "rule_code_references"):
+                        "rule_seismic_zones", "rule_code_references",
+                        "rule_construction_types"):
                 conn.execute(f"DELETE FROM {tbl} WHERE rule_id = ?", (rule["id"],))
             # Upsert main row
             conn.execute("""
                 INSERT INTO rules
-                    (id, discipline, description, violation_template, fix_template, severity_override, is_active, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, 1, datetime('now'))
+                    (id, discipline, description, violation_template, fix_template,
+                     severity_override, min_licensed_beds, is_active, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))
                 ON CONFLICT(id) DO UPDATE SET
                     discipline         = excluded.discipline,
                     description        = excluded.description,
                     violation_template = excluded.violation_template,
                     fix_template       = excluded.fix_template,
                     severity_override  = excluded.severity_override,
+                    min_licensed_beds  = excluded.min_licensed_beds,
                     is_active          = 1,
                     updated_at         = datetime('now')
             """, (
@@ -172,6 +175,7 @@ class RulesStore:
                 rule.get("violation_template", ""),
                 rule.get("fix_template", ""),
                 rule.get("severity_override"),
+                rule.get("min_licensed_beds"),
             ))
             self._insert_children(conn, rule)
             conn.commit()
@@ -193,8 +197,9 @@ class RulesStore:
     def _insert_rule(self, conn: sqlite3.Connection, rule: dict) -> None:
         conn.execute("""
             INSERT OR IGNORE INTO rules
-                (id, discipline, description, violation_template, fix_template, severity_override)
-            VALUES (?, ?, ?, ?, ?, ?)
+                (id, discipline, description, violation_template, fix_template,
+                 severity_override, min_licensed_beds)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         """, (
             rule["id"],
             rule.get("discipline", "General"),
@@ -202,6 +207,7 @@ class RulesStore:
             rule.get("violation_template", ""),
             rule.get("fix_template", ""),
             rule.get("severity_override"),
+            rule.get("min_licensed_beds"),
         ))
         self._insert_children(conn, rule)
 
@@ -217,6 +223,8 @@ class RulesStore:
             conn.execute("INSERT OR IGNORE INTO rule_seismic_zones VALUES (?, ?)", (rid, zone))
         for ref in rule.get("code_references", []):
             conn.execute("INSERT OR IGNORE INTO rule_code_references VALUES (?, ?)", (rid, ref))
+        for ct in rule.get("trigger_construction_types", []):
+            conn.execute("INSERT OR IGNORE INTO rule_construction_types VALUES (?, ?)", (rid, ct))
 
     def _hydrate(self, conn: sqlite3.Connection, row: sqlite3.Row) -> dict:
         """Reconstruct a full rule dict from the database row + child tables."""
@@ -228,18 +236,20 @@ class RulesStore:
             ).fetchall()]
 
         return {
-            "id":                   row["id"],
-            "discipline":           row["discipline"],
-            "description":          row["description"],
-            "violation_template":   row["violation_template"],
-            "fix_template":         row["fix_template"],
-            "severity_override":    row["severity_override"],
-            "is_active":            bool(row["is_active"]),
-            "trigger_occupancies":  _fetch("rule_occupancies", "occupancy"),
-            "trigger_systems":      _fetch("rule_systems", "system"),
-            "trigger_rooms":        _fetch("rule_rooms", "room"),
-            "trigger_seismic_zones": _fetch("rule_seismic_zones", "seismic_zone"),
-            "code_references":      _fetch("rule_code_references", "reference"),
+            "id":                         row["id"],
+            "discipline":                 row["discipline"],
+            "description":                row["description"],
+            "violation_template":         row["violation_template"],
+            "fix_template":               row["fix_template"],
+            "severity_override":          row["severity_override"],
+            "min_licensed_beds":          row["min_licensed_beds"],
+            "is_active":                  bool(row["is_active"]),
+            "trigger_occupancies":        _fetch("rule_occupancies", "occupancy"),
+            "trigger_systems":            _fetch("rule_systems", "system"),
+            "trigger_rooms":              _fetch("rule_rooms", "room"),
+            "trigger_seismic_zones":      _fetch("rule_seismic_zones", "seismic_zone"),
+            "trigger_construction_types": _fetch("rule_construction_types", "construction_type"),
+            "code_references":            _fetch("rule_code_references", "reference"),
         }
 
 

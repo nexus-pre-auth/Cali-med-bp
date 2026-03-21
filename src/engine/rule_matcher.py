@@ -6,20 +6,23 @@ Each rule in hcai_rules.json has:
     "id": "RULE-001",
     "discipline": "Infection Control",
     "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
-    "trigger_systems": [],           // empty = applies to all
+    "trigger_systems": [],              // empty = applies to all
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
+    "trigger_construction_types": [],   // empty = applies to all construction types
+    "min_licensed_beds": null,          // null = no bed-count threshold
     "description": "...",
     "violation_template": "...",
     "fix_template": "...",
     "code_references": ["Title 24 Part 2 Section 420.3", "PIN 25-04"],
-    "severity_override": null        // null = auto-scored
+    "severity_override": null           // null = auto-scored
   }
 """
 
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -70,7 +73,13 @@ class RuleMatcher:
             if not self._applies(rule, conditions):
                 continue
 
-            trigger = conditions.occupancy_type or "General Healthcare"
+            # Build a human-readable trigger string for the report
+            trigger_parts = [conditions.occupancy_type or "General Healthcare"]
+            if conditions.construction_type:
+                trigger_parts.append(conditions.construction_type)
+            if conditions.licensed_beds:
+                trigger_parts.append(f"{conditions.licensed_beds} beds")
+            trigger = ", ".join(trigger_parts)
             description = rule.get("description", "")
             discipline  = rule.get("discipline", "General")
 
@@ -129,6 +138,23 @@ class RuleMatcher:
         if seismic_filter and c.seismic.seismic_zone not in seismic_filter:
             return False
 
+        # Construction type filter (any match = include).
+        # Use word-boundary regex so "I-A" does not match "II-A".
+        ct_filter = rule.get("trigger_construction_types", [])
+        if ct_filter and c.construction_type:
+            ct_lower = c.construction_type.lower()
+            if not any(
+                re.search(r"\b" + re.escape(cf.lower()) + r"\b", ct_lower)
+                for cf in ct_filter
+            ):
+                return False
+
+        # Licensed beds threshold
+        min_beds = rule.get("min_licensed_beds")
+        if min_beds is not None:
+            if c.licensed_beds is None or c.licensed_beds < min_beds:
+                return False
+
         return True
 
     def _render(self, template: str, c: ProjectConditions) -> str:
@@ -139,6 +165,7 @@ class RuleMatcher:
             "{seismic_zone}": c.seismic.seismic_zone or "N/A",
             "{county}": c.county or "the county",
             "{city}": c.city or "the jurisdiction",
+            "{licensed_beds}": str(c.licensed_beds) if c.licensed_beds else "unknown",
         }
         result = template
         for placeholder, value in replacements.items():

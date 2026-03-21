@@ -118,6 +118,26 @@ def _m2(conn: sqlite3.Connection) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Migration 3 — construction type and licensed-bed triggers
+# ---------------------------------------------------------------------------
+
+@migration(3, "Add rule_construction_types table and min_licensed_beds column")
+def _m3(conn: sqlite3.Connection) -> None:
+    conn.executescript("""
+        ALTER TABLE rules ADD COLUMN min_licensed_beds INTEGER DEFAULT NULL;
+
+        CREATE TABLE IF NOT EXISTS rule_construction_types (
+            rule_id           TEXT NOT NULL REFERENCES rules(id) ON DELETE CASCADE,
+            construction_type TEXT NOT NULL,
+            PRIMARY KEY (rule_id, construction_type)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_rule_construction_types
+            ON rule_construction_types(rule_id);
+    """)
+
+
+# ---------------------------------------------------------------------------
 # Migration runner
 # ---------------------------------------------------------------------------
 

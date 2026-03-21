@@ -253,5 +253,65 @@
       "HCAI PIN 21-04"
     ],
     "severity_override": "High"
+  },
+  {
+    "id": "RULE-016",
+    "discipline": "Structural / Seismic",
+    "description": "Type V (wood-frame) and Type III construction is prohibited for OSHPD-1 acute care occupancies above one story per California Building Code.",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "trigger_construction_types": ["Type III", "Type V", "III-A", "III-B", "V-A", "V-B"],
+    "min_licensed_beds": null,
+    "violation_template": "{construction_type} construction is not permitted for {occupancy} facilities subject to OSHPD-1 review. California Health and Safety Code Section 1250 requires non-combustible (Type I or Type II) construction for licensed general acute care hospitals.",
+    "fix_template": "1. Revise construction type to Type I-A, I-B, II-A, or II-B on the cover sheet and applicable code analysis sheets.\n2. Provide a structural system narrative demonstrating non-combustible framing throughout.\n3. Re-submit code analysis table showing compliance with CBC Section 504 height and area limits for the revised construction type.",
+    "code_references": [
+      "CBC 2022 Table 504.3",
+      "California Health and Safety Code Section 1250",
+      "Title 24 Part 2 Section 1226.1",
+      "HCAI CAN 1-2019"
+    ],
+    "severity_override": "Critical"
+  },
+  {
+    "id": "RULE-017",
+    "discipline": "Structural / Seismic",
+    "description": "Hospitals with 100 or more licensed beds must meet IBC Risk Category IV seismic performance requirements with enhanced inspections and special inspections program.",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "trigger_construction_types": [],
+    "min_licensed_beds": 100,
+    "violation_template": "This {licensed_beds}-bed {occupancy} facility exceeds the 100-bed threshold requiring IBC Risk Category IV structural performance. Verify that the structural design criteria, drift limits, and redundancy factors satisfy Risk Category IV per ASCE 7-22.",
+    "fix_template": "1. Update structural calculations cover sheet to declare IBC Risk Category IV.\n2. Revise seismic drift limits to h/100 (ASCE 7-22 Table 12.12-1, Risk Category IV).\n3. Prepare Special Inspections Program per CBC Chapter 17 covering moment frames, shear walls, anchor bolts, and welding.\n4. Confirm redundancy factor ρ = 1.3 is applied unless qualifying exception is documented.",
+    "code_references": [
+      "ASCE 7-22 Table 1.5-1 Risk Category IV",
+      "CBC 2022 Section 1616.3",
+      "Title 24 Part 2 Section 1613A.4",
+      "HCAI PIN 19-02"
+    ],
+    "severity_override": "Critical"
+  },
+  {
+    "id": "RULE-018",
+    "discipline": "Fire and Life Safety",
+    "description": "Type I-A and I-B construction requires all structural members and exterior wall assemblies to have a minimum 2-hour fire-resistance rating with no combustible concealed spaces.",
+    "trigger_occupancies": [],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "trigger_construction_types": ["Type I-A", "Type I-B", "I-A", "I-B"],
+    "min_licensed_beds": null,
+    "violation_template": "{construction_type} construction requires all primary structural members (columns, beams, bearing walls) and exterior walls to carry a minimum 2-hour fire-resistance rating per CBC Table 601. Verify fire-resistance assemblies are listed in the UL Directory or equivalent.",
+    "fix_template": "1. Provide a fire-resistance assembly schedule on architectural drawings referencing UL listing numbers or CBC Table 720.\n2. Ensure floor-ceiling assemblies match the 2-hour rating; address any through-penetrations with listed firestop systems.\n3. Show no combustible concealed spaces; where unavoidable, provide automatic sprinkler protection per NFPA 13 and note on drawings.",
+    "code_references": [
+      "CBC 2022 Table 601",
+      "CBC 2022 Section 706 (Fire Walls)",
+      "Title 24 Part 2 Section 708A",
+      "NFPA 13-2022 Section 8.15"
+    ],
+    "severity_override": "High"
   }
 ]

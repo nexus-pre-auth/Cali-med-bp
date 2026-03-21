@@ -301,6 +301,69 @@ def index_kb() -> None:
 
 
 # ---------------------------------------------------------------------------
+# cleanup command
+# ---------------------------------------------------------------------------
+
+@cli.command()
+@click.option("--jobs-days", default=90, show_default=True,
+              help="Remove completed/failed jobs older than this many days.")
+@click.option("--audit-days", default=90, show_default=True,
+              help="Remove audit log entries older than this many days.")
+@click.option("--dry-run", is_flag=True, default=False,
+              help="Report what would be deleted without making any changes.")
+def cleanup(jobs_days: int, audit_days: int, dry_run: bool) -> None:
+    """Remove old jobs and trim the audit log to control disk usage."""
+    _banner()
+    if dry_run:
+        _print("[yellow]Dry-run mode — no data will be deleted.[/yellow]\n" if HAS_RICH
+               else "Dry-run mode — no data will be deleted.\n")
+
+    # Jobs cleanup
+    try:
+        from src.db.job_store import get_sqlite_job_store
+        store = get_sqlite_job_store()
+        if dry_run:
+            from datetime import timedelta, datetime, timezone
+            cutoff = (datetime.now(timezone.utc) - timedelta(days=jobs_days)).isoformat()
+            import sqlite3
+            conn = sqlite3.connect(str(store._db_path))
+            count = conn.execute(
+                "SELECT COUNT(*) FROM jobs WHERE status IN ('complete','failed') AND created_at < ?",
+                (cutoff,),
+            ).fetchone()[0]
+            conn.close()
+            _print(f"Would remove {count} job(s) older than {jobs_days} day(s).")
+        else:
+            removed = store.cleanup_old_jobs(keep_days=jobs_days)
+            _print(f"Removed {removed} job(s) older than {jobs_days} day(s).")
+    except Exception as e:
+        _print(f"Job cleanup skipped (in-memory store or error): {e}")
+
+    # Audit log trim
+    from src.monitoring.audit import trim_audit_log, _AUDIT_PATH
+    if not _AUDIT_PATH.exists():
+        _print("Audit log does not exist — nothing to trim.")
+    elif dry_run:
+        from datetime import timedelta, datetime, timezone
+        import json as _json
+        cutoff_ts = (datetime.now(timezone.utc)).timestamp() - audit_days * 86_400
+        old_count = 0
+        with open(_AUDIT_PATH, encoding="utf-8") as f:
+            for line in f:
+                try:
+                    rec = _json.loads(line.strip())
+                    from datetime import datetime as _dt
+                    if _dt.fromisoformat(rec["ts"]).timestamp() < cutoff_ts:
+                        old_count += 1
+                except Exception:
+                    pass
+        _print(f"Would remove {old_count} audit entry/entries older than {audit_days} day(s).")
+    else:
+        removed = trim_audit_log(keep_days=audit_days)
+        _print(f"Removed {removed} audit log entry/entries older than {audit_days} day(s).")
+
+
+# ---------------------------------------------------------------------------
 # demo command
 # ---------------------------------------------------------------------------
 

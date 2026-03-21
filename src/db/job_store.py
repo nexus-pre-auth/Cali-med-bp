@@ -122,6 +122,23 @@ class SQLiteJobStore:
         with self._connect() as conn:
             return conn.execute("SELECT COUNT(*) FROM jobs").fetchone()[0]
 
+    def cleanup_old_jobs(self, keep_days: int = 90) -> int:
+        """
+        Delete completed or failed jobs older than *keep_days* days.
+        Pending and processing jobs are never deleted.
+        Returns the number of rows removed.
+        """
+        from datetime import timedelta
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=keep_days)).isoformat()
+        with self._lock, self._connect() as conn:
+            cur = conn.execute(
+                """DELETE FROM jobs
+                   WHERE status IN ('complete', 'failed')
+                   AND created_at < ?""",
+                (cutoff,),
+            )
+            return cur.rowcount
+
     # ------------------------------------------------------------------
     # Internal
     # ------------------------------------------------------------------

@@ -202,3 +202,49 @@ def read_audit_log(
 
     # Most recent first, capped
     return entries[-limit:][::-1]
+
+
+# ---------------------------------------------------------------------------
+# Rotation / trimming
+# ---------------------------------------------------------------------------
+
+def trim_audit_log(keep_days: int = 90) -> int:
+    """
+    Remove audit entries older than *keep_days* days.
+    Rewrites the log file in place (thread-safe).
+    Returns the number of entries removed.
+
+    Parameters
+    ----------
+    keep_days : Only retain entries whose ``ts`` field is within this many
+                days of now. Entries with unparseable timestamps are kept.
+    """
+    if not _AUDIT_PATH.exists():
+        return 0
+
+    cutoff = datetime.now(timezone.utc).timestamp() - keep_days * 86_400
+    kept: list[str] = []
+    removed = 0
+
+    with open(_AUDIT_PATH, encoding="utf-8") as f:
+        for line in f:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                record = json.loads(stripped)
+                ts_str = record.get("ts", "")
+                ts = datetime.fromisoformat(ts_str).timestamp()
+                if ts < cutoff:
+                    removed += 1
+                    continue
+            except Exception:
+                pass  # keep entries with bad timestamps
+            kept.append(line if line.endswith("\n") else line + "\n")
+
+    if removed:
+        with _lock:
+            with open(_AUDIT_PATH, "w", encoding="utf-8") as f:
+                f.writelines(kept)
+
+    return removed
