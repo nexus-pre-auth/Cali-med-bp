@@ -25,6 +25,7 @@ from uuid import UUID
 from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
 import config
@@ -144,11 +145,67 @@ def create_app() -> FastAPI:
     )
 
     _register_routes(app)
+
+    # Serve the SPA frontend from static/ — must come AFTER API routes
+    _static_dir = Path(__file__).parent.parent.parent / "static"
+    if _static_dir.exists():
+        app.mount("/", StaticFiles(directory=str(_static_dir), html=True), name="static")
+
     return app
 
 
 def _base_url(request) -> str:
     return str(request.base_url).rstrip("/")
+
+
+# ---------------------------------------------------------------------------
+# Email completion helper (runs in background thread)
+# ---------------------------------------------------------------------------
+
+def _send_completion_email_when_ready(
+    job_id: str,
+    customer_email: str,
+    project_name: str,
+    store,
+    *,
+    max_wait_seconds: int = 300,
+    poll_interval: int = 5,
+) -> None:
+    """Poll until the job completes, then send the PDF report email."""
+    import time
+    from uuid import UUID
+    from src.api.email_delivery import send_report_email
+
+    uid = UUID(job_id)
+    waited = 0
+    while waited < max_wait_seconds:
+        time.sleep(poll_interval)
+        waited += poll_interval
+        job = store.get(uid)
+        if not job:
+            return
+        if job.status.value in ("complete", "failed"):
+            break
+
+    job = store.get(uid)
+    if not job or job.status.value != "complete":
+        return
+
+    import config
+    pdf_path = config.OUTPUT_DIR / job_id / "report.pdf"
+    total    = job.summary.total if job.summary else 0
+    critical = (job.summary.by_severity.Critical if job.summary else 0) or 0
+    high     = (job.summary.by_severity.High     if job.summary else 0) or 0
+
+    send_report_email(
+        to_email=customer_email,
+        project_name=project_name,
+        job_id=job_id,
+        pdf_path=pdf_path if pdf_path.exists() else None,
+        total_violations=total,
+        critical_count=critical,
+        high_count=high,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -578,6 +635,154 @@ def _register_routes(app: FastAPI) -> None:
             "total": len(jobs),
             "by_status": counts,
         }
+
+    # ---------------------------------------- POST /checkout/create (billing)
+    @app.post("/checkout/create", tags=["Billing"])
+    async def checkout_create(
+        request: Request,
+        background_tasks: BackgroundTasks,
+        store: JobStore = Depends(get_job_store),
+        project_name: str = Form(...),
+        email: str = Form(...),
+        file: Optional[UploadFile] = File(default=None),
+        text: Optional[str] = Form(default=None),
+    ) -> dict:
+        """
+        Create a Stripe Checkout session and (in dev mode) start a review job.
+
+        Returns { checkout_url, job_id }. If Stripe is not configured,
+        checkout_url is null and the job starts immediately.
+        """
+        from src.api.billing import create_checkout_session
+        import uuid
+
+        if not file and not (text and text.strip()):
+            raise HTTPException(status_code=400, detail="Provide a file or text.")
+
+        job_id = str(uuid.uuid4())
+
+        # Save uploaded file to temp location
+        temp_file_path: Optional[str] = None
+        pasted_text: Optional[str] = None
+
+        if file and file.filename:
+            import tempfile, os as _os
+            suffix = Path(file.filename).suffix or ".pdf"
+            with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+                tmp.write(await file.read())
+                temp_file_path = tmp.name
+        elif text and text.strip():
+            pasted_text = text.strip()
+
+        # Try to create Stripe Checkout session
+        checkout_url = create_checkout_session(
+            job_id=job_id,
+            project_name=project_name,
+            customer_email=email,
+            temp_file_path=temp_file_path,
+            pasted_text=pasted_text,
+        )
+
+        if checkout_url:
+            # Payment required — job starts after webhook fires
+            return {"checkout_url": checkout_url, "job_id": job_id}
+
+        # Dev mode — no Stripe configured, start job immediately
+        job = store.create(project_name)
+        # Override the auto-generated UUID so job_id matches what we advertised
+        import config
+        from uuid import UUID
+        job.job_id = UUID(job_id)
+        store.update(job)
+
+        pdf_bytes: Optional[bytes] = None
+        if temp_file_path:
+            with open(temp_file_path, "rb") as f:
+                pdf_bytes = f.read()
+            import os as _os2
+            _os2.unlink(temp_file_path)
+
+        background_tasks.add_task(
+            run_review,
+            job_id=UUID(job_id),
+            store=store,
+            project_name=project_name,
+            text=pasted_text,
+            pdf_bytes=pdf_bytes,
+            pdf_filename=None,
+            no_rag=False,
+            fmt=OutputFormat.pdf,
+            base_url=_base_url(request),
+        )
+
+        return {"checkout_url": None, "job_id": job_id}
+
+    # --------------------------------------- POST /checkout/webhook (Stripe)
+    @app.post("/checkout/webhook", tags=["Billing"], include_in_schema=False)
+    async def checkout_webhook(
+        request: Request,
+        background_tasks: BackgroundTasks,
+        store: JobStore = Depends(get_job_store),
+    ) -> dict:
+        """Stripe webhook — fires after successful payment, starts the review job."""
+        from src.api.billing import handle_webhook
+        from uuid import UUID
+
+        payload    = await request.body()
+        sig_header = request.headers.get("stripe-signature", "")
+
+        order = handle_webhook(payload, sig_header)
+        if not order:
+            # Not a payment event we care about, or already handled
+            return {"received": True}
+
+        # Retrieve or create job
+        job = store.get(UUID(order.job_id))
+        if not job:
+            job = store.create(order.project_name)
+            job.job_id = UUID(order.job_id)
+            store.update(job)
+
+        pdf_bytes: Optional[bytes] = None
+        if order.temp_file_path:
+            import os as _os3
+            try:
+                with open(order.temp_file_path, "rb") as f:
+                    pdf_bytes = f.read()
+            finally:
+                _os3.unlink(order.temp_file_path)
+
+        background_tasks.add_task(
+            run_review,
+            job_id=UUID(order.job_id),
+            store=store,
+            project_name=order.project_name,
+            text=order.pasted_text,
+            pdf_bytes=pdf_bytes,
+            pdf_filename=None,
+            no_rag=False,
+            fmt=OutputFormat.pdf,
+            base_url=str(request.base_url).rstrip("/"),
+        )
+
+        # Send email when complete — piggyback on a completion hook via background task
+        background_tasks.add_task(
+            _send_completion_email_when_ready,
+            job_id=order.job_id,
+            customer_email=order.customer_email,
+            project_name=order.project_name,
+            store=store,
+        )
+
+        return {"received": True}
+
+    # --------------------------------------- GET /checkout/status
+    @app.get("/checkout/status", tags=["Billing"])
+    async def checkout_status(session_id: str) -> dict:
+        """Look up the job_id for a completed Stripe Checkout session."""
+        from src.api.billing import lookup_job_for_session
+        job_id = lookup_job_for_session(session_id)
+        return {"paid": job_id is not None, "job_id": job_id}
 
     # ------------------------------------------------------- GET /audit
     @app.get(
