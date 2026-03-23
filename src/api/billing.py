@@ -45,7 +45,7 @@ STRIPE_SECRET_KEY      = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET  = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 STRIPE_PRICE_ID        = os.getenv("STRIPE_PRICE_ID", "")   # Recurring subscription
 REPORT_PRICE_CENTS     = int(os.getenv("REPORT_PRICE_CENTS", "4900"))  # $49.00
-REPORT_PRICE_NAME      = os.getenv("REPORT_PRICE_NAME", "HCAI Compliance Report")
+REPORT_PRICE_NAME      = os.getenv("REPORT_PRICE_NAME", "BlueprintIQ Compliance Report")
 SUCCESS_URL_BASE       = os.getenv("APP_BASE_URL", "http://localhost:8000")
 
 _stripe_available = False

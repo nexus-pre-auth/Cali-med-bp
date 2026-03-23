@@ -70,7 +70,7 @@ def send_report_email(
         )
         return False
 
-    subject = f"Your HCAI Compliance Report — {project_name}"
+    subject = f"Your BlueprintIQ Compliance Report — {project_name}"
     results_url = f"{APP_BASE_URL}/?job_id={job_id}"
 
     # ── Build HTML body ──────────────────────────────────────────────────
@@ -86,7 +86,7 @@ def send_report_email(
 <head><meta charset="UTF-8"/></head>
 <body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#2D3748;">
   <div style="background:#1A365D;padding:24px 32px;border-radius:8px 8px 0 0;">
-    <h1 style="color:white;margin:0;font-size:20px;">HCAI Compliance Report Ready</h1>
+    <h1 style="color:white;margin:0;font-size:20px;">BlueprintIQ Compliance Report Ready</h1>
     <p style="color:#BEE3F8;margin:6px 0 0;font-size:14px;">{project_name}</p>
   </div>
   <div style="background:#F7FAFC;padding:24px 32px;border:1px solid #E2E8F0;border-top:none;border-radius:0 0 8px 8px;">
@@ -118,7 +118,7 @@ def send_report_email(
       architectural review. Consult a California-licensed professional before submitting to HCAI.
     </p>
     <p style="font-size:12px;color:#A0AEC0;margin-top:8px;">
-      Questions? Reply to this email or contact <a href="mailto:hello@hcaireview.com" style="color:#4299E1;">hello@hcaireview.com</a>
+      Questions? Reply to this email or contact <a href="mailto:hello@blueprintiq.net" style="color:#4299E1;">hello@blueprintiq.net</a>
     </p>
   </div>
 </body>
