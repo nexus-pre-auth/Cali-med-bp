@@ -164,25 +164,28 @@ class RulesStore:
             # Remove existing child rows
             for tbl in ("rule_occupancies", "rule_systems", "rule_rooms",
                         "rule_seismic_zones", "rule_code_references",
-                        "rule_construction_types"):
+                        "rule_construction_types", "rule_counties", "rule_cities"):
                 conn.execute(f"DELETE FROM {tbl} WHERE rule_id = ?", (rule["id"],))
             # Upsert main row
             conn.execute("""
                 INSERT INTO rules
                     (id, discipline, description, violation_template, fix_template,
                      severity_override, min_licensed_beds, trigger_sprinklered,
+                     min_building_height_ft, min_stories,
                      is_active, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))
                 ON CONFLICT(id) DO UPDATE SET
-                    discipline          = excluded.discipline,
-                    description         = excluded.description,
-                    violation_template  = excluded.violation_template,
-                    fix_template        = excluded.fix_template,
-                    severity_override   = excluded.severity_override,
-                    min_licensed_beds   = excluded.min_licensed_beds,
-                    trigger_sprinklered = excluded.trigger_sprinklered,
-                    is_active           = 1,
-                    updated_at          = datetime('now')
+                    discipline             = excluded.discipline,
+                    description            = excluded.description,
+                    violation_template     = excluded.violation_template,
+                    fix_template           = excluded.fix_template,
+                    severity_override      = excluded.severity_override,
+                    min_licensed_beds      = excluded.min_licensed_beds,
+                    trigger_sprinklered    = excluded.trigger_sprinklered,
+                    min_building_height_ft = excluded.min_building_height_ft,
+                    min_stories            = excluded.min_stories,
+                    is_active              = 1,
+                    updated_at             = datetime('now')
             """, (
                 rule["id"],
                 rule.get("discipline", "General"),
@@ -192,6 +195,8 @@ class RulesStore:
                 rule.get("severity_override"),
                 rule.get("min_licensed_beds"),
                 _bool_to_int(rule.get("trigger_sprinklered")),
+                rule.get("min_building_height_ft"),
+                rule.get("min_stories"),
             ))
             self._insert_children(conn, rule)
             conn.commit()
@@ -214,8 +219,9 @@ class RulesStore:
         conn.execute("""
             INSERT OR IGNORE INTO rules
                 (id, discipline, description, violation_template, fix_template,
-                 severity_override, min_licensed_beds, trigger_sprinklered)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                 severity_override, min_licensed_beds, trigger_sprinklered,
+                 min_building_height_ft, min_stories)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             rule["id"],
             rule.get("discipline", "General"),
@@ -225,6 +231,8 @@ class RulesStore:
             rule.get("severity_override"),
             rule.get("min_licensed_beds"),
             _bool_to_int(rule.get("trigger_sprinklered")),
+            rule.get("min_building_height_ft"),
+            rule.get("min_stories"),
         ))
         self._insert_children(conn, rule)
 
@@ -242,17 +250,22 @@ class RulesStore:
             conn.execute("INSERT OR IGNORE INTO rule_code_references VALUES (?, ?)", (rid, ref))
         for ct in rule.get("trigger_construction_types", []):
             conn.execute("INSERT OR IGNORE INTO rule_construction_types VALUES (?, ?)", (rid, ct))
+        for county in rule.get("trigger_counties", []):
+            conn.execute("INSERT OR IGNORE INTO rule_counties VALUES (?, ?)", (rid, county))
+        for city in rule.get("trigger_cities", []):
+            conn.execute("INSERT OR IGNORE INTO rule_cities VALUES (?, ?)", (rid, city))
 
     def _hydrate(self, conn: sqlite3.Connection, row: sqlite3.Row) -> dict:
         """Reconstruct a full rule dict from the database row + child tables."""
         rid = row["id"]
+        keys = row.keys()
 
         def _fetch(tbl: str, col: str) -> list[str]:
             return [r[0] for r in conn.execute(
                 f"SELECT {col} FROM {tbl} WHERE rule_id = ?", (rid,)
             ).fetchall()]
 
-        raw_sprinkled = row["trigger_sprinklered"] if "trigger_sprinklered" in row.keys() else None
+        raw_sprinkled = row["trigger_sprinklered"] if "trigger_sprinklered" in keys else None
         return {
             "id":                         row["id"],
             "discipline":                 row["discipline"],
@@ -262,12 +275,16 @@ class RulesStore:
             "severity_override":          row["severity_override"],
             "min_licensed_beds":          row["min_licensed_beds"],
             "trigger_sprinklered":        None if raw_sprinkled is None else bool(raw_sprinkled),
+            "min_building_height_ft":     row["min_building_height_ft"] if "min_building_height_ft" in keys else None,
+            "min_stories":                row["min_stories"] if "min_stories" in keys else None,
             "is_active":                  bool(row["is_active"]),
             "trigger_occupancies":        _fetch("rule_occupancies", "occupancy"),
             "trigger_systems":            _fetch("rule_systems", "system"),
             "trigger_rooms":              _fetch("rule_rooms", "room"),
             "trigger_seismic_zones":      _fetch("rule_seismic_zones", "seismic_zone"),
             "trigger_construction_types": _fetch("rule_construction_types", "construction_type"),
+            "trigger_counties":           _fetch("rule_counties", "county"),
+            "trigger_cities":             _fetch("rule_cities", "city"),
             "code_references":            _fetch("rule_code_references", "reference"),
         }
 
@@ -283,6 +300,5 @@ def get_rules_store() -> RulesStore:
     global _store
     if _store is None:
         _store = RulesStore()
-        if _store.count() == 0:
-            _store.seed_from_json()
+        _store.seed_from_json()  # no-op for rules already in DB; picks up new rules on upgrade
     return _store

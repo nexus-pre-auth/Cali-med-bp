@@ -154,6 +154,47 @@ def _m4(conn: sqlite3.Connection) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Migration 5 — building height and stories triggers
+# ---------------------------------------------------------------------------
+
+@migration(5, "Add min_building_height_ft and min_stories columns to rules")
+def _m5(conn: sqlite3.Connection) -> None:
+    """
+    min_building_height_ft : rule only fires when building height >= this value (ft)
+    min_stories            : rule only fires when stories above grade >= this value
+    Both NULL = no height/story threshold (applies to all buildings).
+    """
+    conn.executescript("""
+        ALTER TABLE rules ADD COLUMN min_building_height_ft REAL DEFAULT NULL;
+        ALTER TABLE rules ADD COLUMN min_stories            INTEGER DEFAULT NULL;
+    """)
+
+
+# ---------------------------------------------------------------------------
+# Migration 6 — county and city triggers
+# ---------------------------------------------------------------------------
+
+@migration(6, "Add rule_counties and rule_cities tables for local-amendment triggers")
+def _m6(conn: sqlite3.Connection) -> None:
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS rule_counties (
+            rule_id TEXT NOT NULL REFERENCES rules(id) ON DELETE CASCADE,
+            county  TEXT NOT NULL,
+            PRIMARY KEY (rule_id, county)
+        );
+
+        CREATE TABLE IF NOT EXISTS rule_cities (
+            rule_id TEXT NOT NULL REFERENCES rules(id) ON DELETE CASCADE,
+            city    TEXT NOT NULL,
+            PRIMARY KEY (rule_id, city)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_rule_counties ON rule_counties(rule_id);
+        CREATE INDEX IF NOT EXISTS idx_rule_cities   ON rule_cities(rule_id);
+    """)
+
+
+# ---------------------------------------------------------------------------
 # Migration runner
 # ---------------------------------------------------------------------------
 

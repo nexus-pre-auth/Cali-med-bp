@@ -491,6 +491,19 @@ def _register_routes(app: FastAPI) -> None:
             return store.get_by_discipline(discipline, active_only=active_only)
         return store.get_all_active() if active_only else store.get_all()
 
+    # ------------------------------------------------- GET /rules/disciplines
+    @app.get(
+        "/rules/disciplines",
+        response_model=list[str],
+        tags=["Rules"],
+    )
+    async def list_disciplines(
+        _api_key: str = Depends(require_api_key),
+    ) -> list[str]:
+        """Return the distinct discipline names present in the active rule set."""
+        from src.db.rules_store import get_rules_store
+        return get_rules_store().list_disciplines()
+
     @app.get(
         "/rules/{rule_id}",
         response_model=RuleResponse,
@@ -541,6 +554,30 @@ def _register_routes(app: FastAPI) -> None:
         store = get_rules_store()
         store.upsert_rule(rule.model_dump())
         return store.get_by_id(rule.id)
+
+    # ------------------------------------------------------- GET /jobs/stats
+    @app.get(
+        "/jobs/stats",
+        tags=["Review"],
+    )
+    async def job_stats(
+        store: JobStore = Depends(get_job_store),
+        _api_key: str = Depends(require_api_key),
+    ) -> dict:
+        """
+        Return a summary of job counts grouped by status.
+
+        Useful for monitoring dashboards and health checks.
+        """
+        jobs = store.list_recent(limit=10_000)
+        counts: dict[str, int] = {}
+        for job in jobs:
+            key = job.status.value
+            counts[key] = counts.get(key, 0) + 1
+        return {
+            "total": len(jobs),
+            "by_status": counts,
+        }
 
     # ------------------------------------------------------- GET /audit
     @app.get(

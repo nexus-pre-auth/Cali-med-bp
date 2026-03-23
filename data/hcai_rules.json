@@ -355,5 +355,81 @@
       "HCAI CAN 3-2020"
     ],
     "severity_override": "High"
+  },
+  {
+    "id": "RULE-021",
+    "discipline": "Fire and Life Safety",
+    "description": "Buildings exceeding 55 ft in height (OSHPD high-rise threshold) must comply with CBC Section 403 high-rise provisions including a fire command center, voice/alarm communication system, and fire service access elevator.",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Skilled Nursing Facility"],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "trigger_construction_types": [],
+    "trigger_sprinklered": null,
+    "min_building_height_ft": 55,
+    "min_stories": null,
+    "min_licensed_beds": null,
+    "trigger_counties": [],
+    "trigger_cities": [],
+    "violation_template": "This {height_ft}-ft {occupancy} exceeds the 55-ft OSHPD high-rise threshold. CBC Section 403 provisions apply: a fire command center, an approved voice/alarm communication system, and at least one fire service access elevator must be provided and shown on the drawings.",
+    "fix_template": "1. Designate a fire command center on the ground floor per CBC Section 403.4.6; show location and equipment list.\n2. Design and document a voice/alarm communication system (two-way) per CBC Section 403.4.4 covering all floors.\n3. Provide at least one fire service access elevator per CBC Section 403.6; show hoistway dimensions and recall panel location.\n4. Confirm sprinkler system extends to all floors including mechanical penthouses per NFPA 13.\n5. Coordinate high-rise provisions checklist with HCAI plan reviewer at pre-application meeting.",
+    "code_references": [
+      "CBC 2022 Section 403",
+      "CBC 2022 Section 403.4.4 (Voice/Alarm)",
+      "CBC 2022 Section 403.6 (Fire Service Access Elevator)",
+      "Title 24 Part 2 Section 403A",
+      "HCAI PIN 20-01"
+    ],
+    "severity_override": "Critical"
+  },
+  {
+    "id": "RULE-022",
+    "discipline": "Fire and Life Safety",
+    "description": "Buildings of four or more stories above grade with healthcare occupancies require a stairway pressurization system (smoke-proof enclosures) per CBC Section 909.20.",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Skilled Nursing Facility"],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "trigger_construction_types": [],
+    "trigger_sprinklered": null,
+    "min_building_height_ft": null,
+    "min_stories": 4,
+    "min_licensed_beds": null,
+    "trigger_counties": [],
+    "trigger_cities": [],
+    "violation_template": "This {stories}-story {occupancy} requires stair enclosures to be designed as smoke-proof enclosures per CBC Section 909.20. Natural ventilation, mechanical pressurization, or vestibule approach must be shown on mechanical and architectural drawings.",
+    "fix_template": "1. Select a smoke-proof enclosure approach (natural ventilation, mechanical pressurization at ≥0.05 in. w.g., or vestibule) per CBC Section 909.20.\n2. Show stair vestibule dimensions and door hardware (self-closing, positive-latch) on architectural plans.\n3. If mechanical pressurization: provide fan schedule, ductwork layout, and controls sequence on mechanical drawings.\n4. Coordinate smoke-proof enclosure design with the overall smoke control/management plan per CBC Section 909.",
+    "code_references": [
+      "CBC 2022 Section 909.20",
+      "CBC 2022 Section 1023.11",
+      "Title 24 Part 2 Section 909A",
+      "NFPA 92-2021"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "RULE-023",
+    "discipline": "Structural / Seismic",
+    "description": "Los Angeles County local amendment requires peer review of seismic design for OSHPD-1 hospitals by a county-approved structural engineer in addition to HCAI review.",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "trigger_construction_types": [],
+    "trigger_sprinklered": null,
+    "min_building_height_ft": null,
+    "min_stories": null,
+    "min_licensed_beds": null,
+    "trigger_counties": ["Los Angeles"],
+    "trigger_cities": [],
+    "violation_template": "Project is located in {county} County. LA County Building and Safety requires an independent peer review of the lateral force-resisting system by an LA County pre-qualified structural engineer, in addition to standard HCAI review. Confirm peer review engagement and include peer reviewer's acceptance letter with the permit application.",
+    "fix_template": "1. Retain an LA County pre-qualified structural engineer for peer review per LA County Code Section 110.3.3.\n2. Provide the peer reviewer with the full structural package (calculations, drawings, geotechnical report).\n3. Incorporate all peer review comments before HCAI final submittal.\n4. Include the peer reviewer's acceptance letter and comment/response log in the permit application.",
+    "code_references": [
+      "LA County Building Code Section 110.3.3",
+      "CBC 2022 Chapter 16A",
+      "HCAI PIN 19-02",
+      "Title 24 Part 2 Section 1613A"
+    ],
+    "severity_override": "High"
   }
 ]

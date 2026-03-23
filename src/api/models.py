@@ -146,6 +146,8 @@ class RuleResponse(BaseModel):
     fix_template: str = ""
     severity_override: Optional[str] = None
     min_licensed_beds: Optional[int] = None
+    min_building_height_ft: Optional[float] = None
+    min_stories: Optional[int] = None
     is_active: bool = True
     trigger_occupancies: list[str] = []
     trigger_systems: list[str] = []
@@ -153,6 +155,8 @@ class RuleResponse(BaseModel):
     trigger_seismic_zones: list[str] = []
     trigger_construction_types: list[str] = []
     trigger_sprinklered: Optional[bool] = None
+    trigger_counties: list[str] = []
+    trigger_cities: list[str] = []
     code_references: list[str] = []
 
 
@@ -165,12 +169,16 @@ class RuleCreateRequest(BaseModel):
     fix_template: str = Field(default="", description="Template text for remediation guidance")
     severity_override: Optional[SeverityEnum] = Field(default=None, description="Force severity level (null = auto-scored)")
     min_licensed_beds: Optional[int] = Field(default=None, ge=1, description="Minimum licensed beds for rule to apply")
+    min_building_height_ft: Optional[float] = Field(default=None, gt=0, description="Minimum building height (ft) for rule to apply")
+    min_stories: Optional[int] = Field(default=None, ge=1, description="Minimum stories above grade for rule to apply")
     trigger_occupancies: list[str] = Field(default_factory=list)
     trigger_systems: list[str] = Field(default_factory=list)
     trigger_rooms: list[str] = Field(default_factory=list)
     trigger_seismic_zones: list[str] = Field(default_factory=list)
     trigger_construction_types: list[str] = Field(default_factory=list)
     trigger_sprinklered: Optional[bool] = Field(default=None, description="True=sprinklered only, False=non-sprinklered only, null=either")
+    trigger_counties: list[str] = Field(default_factory=list, description="County names for local amendment scoping")
+    trigger_cities: list[str] = Field(default_factory=list, description="City names for local amendment scoping")
     code_references: list[str] = Field(default_factory=list)
 
 

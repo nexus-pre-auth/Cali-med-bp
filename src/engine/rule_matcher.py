@@ -161,6 +161,32 @@ class RuleMatcher:
             if bool(req_sprinkled) != c.sprinklered:
                 return False
 
+        # Building height threshold
+        min_height = rule.get("min_building_height_ft")
+        if min_height is not None:
+            if c.building_height_ft is None or c.building_height_ft < min_height:
+                return False
+
+        # Stories above grade threshold
+        min_stories = rule.get("min_stories")
+        if min_stories is not None:
+            if c.stories_above_grade is None or c.stories_above_grade < min_stories:
+                return False
+
+        # County filter (any match = include; empty = all counties)
+        # When county filter is set, unknown county does NOT satisfy the rule.
+        county_filter = rule.get("trigger_counties", [])
+        if county_filter:
+            if not c.county or not any(cf.lower() == c.county.lower() for cf in county_filter):
+                return False
+
+        # City filter (any match = include; empty = all cities)
+        # When city filter is set, unknown city does NOT satisfy the rule.
+        city_filter = rule.get("trigger_cities", [])
+        if city_filter:
+            if not c.city or not any(cf.lower() == c.city.lower() for cf in city_filter):
+                return False
+
         return True
 
     def _render(self, template: str, c: ProjectConditions) -> str:
@@ -172,6 +198,8 @@ class RuleMatcher:
             "{county}": c.county or "the county",
             "{city}": c.city or "the jurisdiction",
             "{licensed_beds}": str(c.licensed_beds) if c.licensed_beds else "unknown",
+            "{height_ft}": str(int(c.building_height_ft)) if c.building_height_ft else "unknown",
+            "{stories}": str(c.stories_above_grade) if c.stories_above_grade else "unknown",
         }
         result = template
         for placeholder, value in replacements.items():
