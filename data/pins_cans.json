@@ -69,7 +69,7 @@
     "section": "CAN 3-2021",
     "type": "advisory",
     "discipline": "Plumbing",
-    "text": "HCAI Construction Advisory Notice 3-2021: Legionella Water Management in Healthcare. Hospitals shall develop and implement a Water Management Program (WMP) as required by CMS conditions of participation. The WMP shall address domestic hot water distribution, cooling towers, decorative fountains, and other water systems with Legionella risk. Construction documents shall note WMP requirements and specify compliant system design (minimum 120°F storage, ASSE 1070 mixing valves at fixtures)."
+    "text": "HCAI Construction Advisory Notice 3-2021: Legionella Water Management in Healthcare. Hospitals shall develop and implement a Water Management Program (WMP) as required by CMS conditions of participation. The WMP shall address domestic hot water distribution, cooling towers, decorative fountains, and other water systems with Legionella risk. Construction documents shall note WMP requirements and specify compliant system design (minimum 120\u00b0F storage, ASSE 1070 mixing valves at fixtures)."
   },
   {
     "id": "CAN-2-2022",
@@ -86,5 +86,13 @@
     "type": "advisory",
     "discipline": "Plumbing",
     "text": "HCAI Construction Advisory Notice 1-2020: Surgical Scrub Sink Requirements. A minimum of one surgical scrub sink station shall be provided for each operating room. Scrub stations shall be hands-free operable using knee, foot, or sensor actuation. Scrub sinks shall be located immediately adjacent to the operating room entry. Scrub sink faucets shall include a wrist-blade handle option per FGI Guidelines 2018."
+  },
+  {
+    "id": "CAN-2-2024",
+    "source": "HCAI Code Application Notice",
+    "section": "CAN 2-2024",
+    "type": "policy",
+    "discipline": "Medical Gas",
+    "text": "HCAI Code Application Notice CAN 2-2024: Medical Gas Zone Valve Box (ZVB) Placement and Accessibility. Zone valve boxes must be clearly identified on construction documents with the system type (oxygen, vacuum, medical air, WAGD, nitrous oxide, nitrogen) and the zone served. A minimum 36-inch clear working space on the accessible side must be dimensioned on floor plans. ZVBs must be located within 50 feet of the zone served, measured along the path of egress travel. HCAI plan reviewers will cite NFPA 99-2021 Section 5.1.14.2.1 when ZVB clearances or proximity to the served area are not confirmed on drawings. Provide a medical gas legend and riser diagram on the construction documents to facilitate review."
   }
 ]

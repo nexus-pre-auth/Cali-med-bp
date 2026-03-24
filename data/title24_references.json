@@ -61,7 +61,7 @@
     "section": "418A",
     "type": "mandatory",
     "discipline": "Plumbing",
-    "text": "In healthcare facilities, hot water systems serving patient care areas shall maintain a minimum storage temperature of 120°F to control Legionella growth. Point-of-use thermostatic mixing valves complying with ASSE 1070 shall be provided at patient-accessible lavatories, showers, and bathing facilities, limiting delivered water temperature to a maximum of 110°F."
+    "text": "In healthcare facilities, hot water systems serving patient care areas shall maintain a minimum storage temperature of 120\u00b0F to control Legionella growth. Point-of-use thermostatic mixing valves complying with ASSE 1070 shall be provided at patient-accessible lavatories, showers, and bathing facilities, limiting delivered water temperature to a maximum of 110\u00b0F."
   },
   {
     "id": "T24-P2-CBC-11B",
@@ -77,7 +77,7 @@
     "section": "407",
     "type": "mandatory",
     "discipline": "Fire / Life Safety",
-    "text": "Group I-2 Condition 2 (Hospital) occupancies shall be divided into smoke compartments. Each smoke compartment shall not exceed 22,500 square feet (2090 m²). Smoke barriers shall be constructed to a minimum 1-hour fire-resistance rating. Openings through smoke barriers shall be protected by listed smoke door assemblies that are self-closing or automatic-closing."
+    "text": "Group I-2 Condition 2 (Hospital) occupancies shall be divided into smoke compartments. Each smoke compartment shall not exceed 22,500 square feet (2090 m\u00b2). Smoke barriers shall be constructed to a minimum 1-hour fire-resistance rating. Openings through smoke barriers shall be protected by listed smoke door assemblies that are self-closing or automatic-closing."
   },
   {
     "id": "T24-P2-CBC-13",
@@ -94,5 +94,13 @@
     "type": "mandatory",
     "discipline": "Accessibility",
     "text": "Toilet rooms and bathing rooms required to be accessible in healthcare facilities shall provide maneuvering clearance, turning space, accessible fixtures, and grab bars as specified in CBC Chapter 11B. Accessible patient toilet rooms shall provide a minimum 60-inch turning diameter or T-shaped turning space."
+  },
+  {
+    "id": "NFPA-99-5.1.14.2.1",
+    "source": "NFPA 99-2021",
+    "section": "5.1.14.2.1",
+    "type": "mandatory",
+    "discipline": "Medical Gas",
+    "text": "Zone valve boxes shall be located in the immediate vicinity of the areas they serve and within 50 ft (15 m) of those areas. The working space on the access side of a zone valve box shall have a minimum clear space of 36 in. (914 mm) in width and 36 in. (914 mm) in depth. Zone valve boxes shall be accessible at all times and shall not require the use of a tool for access."
   }
 ]

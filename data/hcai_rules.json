@@ -3,9 +3,15 @@
     "id": "RULE-001",
     "discipline": "Infection Control",
     "description": "Occupied hospitals require negative pressure isolation rooms for airborne infection control per HCAI requirements.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
     "trigger_systems": [],
-    "trigger_rooms": ["isolation room", "negative pressure room"],
+    "trigger_rooms": [
+      "isolation room",
+      "negative pressure room"
+    ],
     "trigger_seismic_zones": [],
     "violation_template": "{occupancy} project includes isolation rooms. Verify negative pressure design (minimum -0.01 in. w.g.) is shown on drawings with pressure differential monitoring and visual indicators at room entry.",
     "fix_template": "Provide pressure differential diagram on mechanical drawings. Show monitoring device location and alarm setpoints per Title 24 Part 4 and ASHRAE 170.",
@@ -20,9 +26,18 @@
     "id": "RULE-002",
     "discipline": "Infection Control",
     "description": "Operating rooms and procedure rooms require positive pressure with minimum air changes per hour (ACH) and HEPA filtration.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Surgical Center", "Ambulatory Surgery Center"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Surgical Center",
+      "Ambulatory Surgery Center"
+    ],
     "trigger_systems": [],
-    "trigger_rooms": ["operating room", "OR", "procedure room"],
+    "trigger_rooms": [
+      "operating room",
+      "OR",
+      "procedure room"
+    ],
     "trigger_seismic_zones": [],
     "violation_template": "Operating/procedure rooms in {occupancy} must maintain positive pressure relative to adjacent corridors with minimum 20 ACH total (4 ACH outside air). HEPA filtration (99.97% at 0.3 micron) is required.",
     "fix_template": "1. Revise mechanical schedules to confirm 20 ACH minimum (4 ACH OA) for OR/procedure rooms.\n2. Provide HEPA filter schedule with efficiency rating.\n3. Show pressure relationship diagram indicating positive pressure to adjacent spaces.",
@@ -40,7 +55,10 @@
     "trigger_occupancies": [],
     "trigger_systems": [],
     "trigger_rooms": [],
-    "trigger_seismic_zones": ["D", "E"],
+    "trigger_seismic_zones": [
+      "D",
+      "E"
+    ],
     "violation_template": "Project is in Seismic Zone {seismic_zone}. All nonstructural components (HVAC units, med gas equipment, electrical distribution) must be anchored per CBC Chapter 13 with OSHPD preapproved hardware.",
     "fix_template": "1. Provide seismic anchorage calculations for all equipment >400 lbs or vibration-producing equipment.\n2. Specify OSHPD pre-approved anchorage manufacturer and model.\n3. Show anchorage details on structural drawings referencing CBC 2022 Chapter 13.",
     "code_references": [
@@ -54,12 +72,20 @@
     "id": "RULE-004",
     "discipline": "Essential Electrical System",
     "description": "Hospitals must have a code-compliant Essential Electrical System (EES) with separated Critical, Life Safety, and Equipment branches.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
-    "trigger_systems": ["essential electrical", "EES", "generator", "critical branch"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
+    "trigger_systems": [
+      "essential electrical",
+      "EES",
+      "generator",
+      "critical branch"
+    ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
     "violation_template": "Essential Electrical System for {occupancy} must comply with NFPA 99-2021 Chapter 6 and Title 24 Part 3. Drawings must show three separate EES branches: Life Safety, Critical, and Equipment.",
-    "fix_template": "1. Provide single-line diagram clearly labeled with Life Safety, Critical, and Equipment branch separations.\n2. Show transfer time ≤10 seconds for Life Safety branch per NFPA 99.\n3. Label all receptacles and equipment served by each EES branch on electrical plans.",
+    "fix_template": "1. Provide single-line diagram clearly labeled with Life Safety, Critical, and Equipment branch separations.\n2. Show transfer time \u226410 seconds for Life Safety branch per NFPA 99.\n3. Label all receptacles and equipment served by each EES branch on electrical plans.",
     "code_references": [
       "NFPA 99-2021 Chapter 6",
       "Title 24 Part 3 Article 517",
@@ -71,8 +97,18 @@
     "id": "RULE-005",
     "discipline": "Medical Gas",
     "description": "Medical gas systems including oxygen, vacuum, medical air, and WAGD require NFPA 99 compliance with zone valves and master alarm panels.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Surgical Center", "Ambulatory Surgery Center"],
-    "trigger_systems": ["medical gas", "oxygen", "vacuum", "WAGD"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Surgical Center",
+      "Ambulatory Surgery Center"
+    ],
+    "trigger_systems": [
+      "medical gas",
+      "oxygen",
+      "vacuum",
+      "WAGD"
+    ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
     "violation_template": "Medical gas systems in {occupancy} must comply with NFPA 99-2021 Chapter 5. Zone valve boxes (ZVBs), master alarm panels (MAPs), and area alarm panels must be shown on drawings.",
@@ -88,12 +124,24 @@
     "id": "RULE-006",
     "discipline": "Plumbing",
     "description": "Healthcare facilities require ASSE 1070 thermostatic mixing valves at patient-use fixtures to prevent Legionella and scalding.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Clinic", "Skilled Nursing Facility"],
-    "trigger_systems": ["hot water", "water heater"],
-    "trigger_rooms": ["patient room", "ICU", "patient care"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Clinic",
+      "Skilled Nursing Facility"
+    ],
+    "trigger_systems": [
+      "hot water",
+      "water heater"
+    ],
+    "trigger_rooms": [
+      "patient room",
+      "ICU",
+      "patient care"
+    ],
     "trigger_seismic_zones": [],
-    "violation_template": "Patient-accessible lavatories and showers in {occupancy} require ASSE 1070-compliant thermostatic mixing valves with 110°F maximum delivery temperature to prevent scalding and Legionella growth.",
-    "fix_template": "1. Specify ASSE 1070 mixing valves at all patient-accessible fixtures.\n2. Set domestic hot water supply at 140°F minimum (Legionella control) with point-of-use tempering to 110°F max.\n3. Provide water temperature management plan per Title 22 CCR.",
+    "violation_template": "Patient-accessible lavatories and showers in {occupancy} require ASSE 1070-compliant thermostatic mixing valves with 110\u00b0F maximum delivery temperature to prevent scalding and Legionella growth.",
+    "fix_template": "1. Specify ASSE 1070 mixing valves at all patient-accessible fixtures.\n2. Set domestic hot water supply at 140\u00b0F minimum (Legionella control) with point-of-use tempering to 110\u00b0F max.\n3. Provide water temperature management plan per Title 22 CCR.",
     "code_references": [
       "Title 24 Part 5 Section 418A.5",
       "ASSE 1070",
@@ -106,12 +154,23 @@
     "id": "RULE-007",
     "discipline": "Ventilation",
     "description": "ICU patient rooms require minimum 6 ACH outside air and controlled pressure relationships per ASHRAE 170.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
-    "trigger_systems": ["HVAC", "AHU", "VAV"],
-    "trigger_rooms": ["ICU", "intensive care", "NICU"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
+    "trigger_systems": [
+      "HVAC",
+      "AHU",
+      "VAV"
+    ],
+    "trigger_rooms": [
+      "ICU",
+      "intensive care",
+      "NICU"
+    ],
     "trigger_seismic_zones": [],
     "violation_template": "ICU/NICU patient rooms in {occupancy} require minimum 6 ACH outside air with positive pressure to corridor per ASHRAE 170 Table 7.1. Current drawings do not confirm compliance.",
-    "fix_template": "1. Update mechanical schedules to show 6 ACH OA minimum for ICU rooms.\n2. Provide pressure relationship diagram showing positive pressure (+0.01 in. w.g. min).\n3. Confirm 100% exhaust — no air recirculation from ICU patient rooms.",
+    "fix_template": "1. Update mechanical schedules to show 6 ACH OA minimum for ICU rooms.\n2. Provide pressure relationship diagram showing positive pressure (+0.01 in. w.g. min).\n3. Confirm 100% exhaust \u2014 no air recirculation from ICU patient rooms.",
     "code_references": [
       "Title 24 Part 4 ASHRAE 170 Table 7.1",
       "FGI Guidelines 2018 Section 2.1-7.2"
@@ -122,7 +181,10 @@
     "id": "RULE-008",
     "discipline": "Life Safety / Egress",
     "description": "Hospital patient corridors must maintain minimum 8-foot clear width for emergency egress and equipment movement.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
@@ -141,7 +203,12 @@
     "description": "Patient rooms, restrooms, and public areas must comply with CBC Chapter 11B accessibility requirements.",
     "trigger_occupancies": [],
     "trigger_systems": [],
-    "trigger_rooms": ["patient room", "toilet room", "shower room", "waiting room"],
+    "trigger_rooms": [
+      "patient room",
+      "toilet room",
+      "shower room",
+      "waiting room"
+    ],
     "trigger_seismic_zones": [],
     "violation_template": "Patient rooms and associated toilet rooms must comply with CBC Chapter 11B accessibility requirements including turning radius, grab bars, knee clearances, and door hardware.",
     "fix_template": "1. Provide accessibility compliance notes on architectural drawings referencing CBC Chapter 11B.\n2. Show 60-inch turning diameter in patient toilet rooms.\n3. Dimension grab bar locations and heights (33\"-36\" AFF).\n4. Specify lever door hardware throughout accessible routes.",
@@ -156,12 +223,21 @@
     "id": "RULE-010",
     "discipline": "Plumbing",
     "description": "Scrub sinks adjacent to ORs must be hands-free operable and meet minimum quantity requirements per FGI Guidelines.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Surgical Center", "Ambulatory Surgery Center"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Surgical Center",
+      "Ambulatory Surgery Center"
+    ],
     "trigger_systems": [],
-    "trigger_rooms": ["operating room", "OR", "procedure room"],
+    "trigger_rooms": [
+      "operating room",
+      "OR",
+      "procedure room"
+    ],
     "trigger_seismic_zones": [],
     "violation_template": "Scrub sink stations adjacent to operating/procedure rooms in {occupancy} must be hands-free (knee or sensor-actuated) with minimum one scrub station per OR per FGI Guidelines 2018.",
-    "fix_template": "1. Specify hands-free scrub sinks (knee/sensor actuated) at each OR.\n2. Locate scrub sinks adjacent to OR entry — confirm on floor plans.\n3. Provide minimum one scrub station per operating room.\n4. Note ASSE 1070 compliance for water temperature.",
+    "fix_template": "1. Specify hands-free scrub sinks (knee/sensor actuated) at each OR.\n2. Locate scrub sinks adjacent to OR entry \u2014 confirm on floor plans.\n3. Provide minimum one scrub station per operating room.\n4. Note ASSE 1070 compliance for water temperature.",
     "code_references": [
       "FGI Guidelines 2018 Section 2.1-8.5.1",
       "Title 24 Part 5 Section 416A",
@@ -173,10 +249,22 @@
     "id": "RULE-011",
     "discipline": "Structural / Seismic",
     "description": "Suspended ceilings in patient care areas must be seismically restrained per OSHPD requirements.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
     "trigger_systems": [],
-    "trigger_rooms": ["patient room", "ICU", "operating room", "emergency room"],
-    "trigger_seismic_zones": ["C", "D", "E"],
+    "trigger_rooms": [
+      "patient room",
+      "ICU",
+      "operating room",
+      "emergency room"
+    ],
+    "trigger_seismic_zones": [
+      "C",
+      "D",
+      "E"
+    ],
     "violation_template": "Suspended ceiling systems in patient care areas of {occupancy} (Seismic Zone {seismic_zone}) require seismic restraint per CBC Chapter 25 and OSHPD-preapproved ceiling system documentation.",
     "fix_template": "1. Specify OSHPD pre-approved seismic ceiling system (e.g., USG Donn DX or equivalent).\n2. Provide ceiling suspension details with seismic bracing per CBC Chapter 25.\n3. Show hanger wire spacing, perimeter angle, and seismic bracing on reflected ceiling plans.",
     "code_references": [
@@ -190,12 +278,18 @@
     "id": "RULE-012",
     "discipline": "Fire Protection",
     "description": "Smoke compartmentalization is required in hospitals with corridor smoke barriers at maximum 200-foot intervals.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
-    "trigger_systems": ["sprinkler", "fire protection"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
+    "trigger_systems": [
+      "sprinkler",
+      "fire protection"
+    ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
     "violation_template": "Smoke barriers in {occupancy} must divide the building into smoke compartments not exceeding 22,500 sq ft with maximum 200-foot travel distance per CBC Section 407.4 and Title 24 Part 2.",
-    "fix_template": "1. Show smoke barrier locations on all floor plans.\n2. Dimension smoke compartments — confirm ≤22,500 sq ft and ≤200 ft travel distance.\n3. Specify smoke-rated door assemblies (S-rated) at smoke barrier openings.\n4. Show smoke damper locations at HVAC penetrations of smoke barriers.",
+    "fix_template": "1. Show smoke barrier locations on all floor plans.\n2. Dimension smoke compartments \u2014 confirm \u226422,500 sq ft and \u2264200 ft travel distance.\n3. Specify smoke-rated door assemblies (S-rated) at smoke barrier openings.\n4. Show smoke damper locations at HVAC penetrations of smoke barriers.",
     "code_references": [
       "CBC 2022 Section 407.4",
       "Title 24 Part 2 Section 1224.36",
@@ -207,9 +301,17 @@
     "id": "RULE-013",
     "discipline": "Ventilation",
     "description": "Sterile Processing Departments (SPD) require a minimum of 4 ACH outside air with negative pressure and specific air distribution.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
     "trigger_systems": [],
-    "trigger_rooms": ["sterile processing", "SPD", "CSSD", "soiled utility"],
+    "trigger_rooms": [
+      "sterile processing",
+      "SPD",
+      "CSSD",
+      "soiled utility"
+    ],
     "trigger_seismic_zones": [],
     "violation_template": "Sterile Processing / Soiled Utility areas in {occupancy} require negative pressure with minimum 10 ACH total air changes. Decontamination area must be at negative pressure relative to clean areas.",
     "fix_template": "1. Show negative pressure in decontamination/soiled areas relative to clean/sterile areas.\n2. Confirm 10 ACH minimum total air changes in mechanical schedules.\n3. Provide pressure relationship diagram showing airflow direction from clean to soiled.",
@@ -224,9 +326,16 @@
     "id": "RULE-014",
     "discipline": "Pharmacy",
     "description": "Hospital pharmacies with compounding areas require ISO Class 7 cleanroom conditions with HEPA filtration.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
-    "trigger_systems": ["HEPA filter"],
-    "trigger_rooms": ["pharmacy"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
+    "trigger_systems": [
+      "HEPA filter"
+    ],
+    "trigger_rooms": [
+      "pharmacy"
+    ],
     "trigger_seismic_zones": [],
     "violation_template": "Pharmacy compounding areas in {occupancy} require ISO Class 7 cleanroom environment with HEPA-filtered supply air, positive pressure, and 30 ACH minimum per USP <797> and ASHRAE 170.",
     "fix_template": "1. Provide ISO Class 7 cleanroom specifications for pharmacy compounding room.\n2. Show HEPA filters (99.97% efficiency) in supply air system.\n3. Confirm positive pressure relative to adjacent areas.\n4. Note 30 ACH minimum in mechanical schedule.\n5. Reference USP <797> and <800> compliance on drawings.",
@@ -241,9 +350,22 @@
     "id": "RULE-015",
     "discipline": "Electrical",
     "description": "Patient care areas require redundant branch circuits with isolated ground receptacles and GFCI protection per NFPA 99.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Clinic"],
-    "trigger_systems": ["electrical", "panelboard"],
-    "trigger_rooms": ["patient room", "ICU", "operating room", "NICU", "PACU"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Clinic"
+    ],
+    "trigger_systems": [
+      "electrical",
+      "panelboard"
+    ],
+    "trigger_rooms": [
+      "patient room",
+      "ICU",
+      "operating room",
+      "NICU",
+      "PACU"
+    ],
     "trigger_seismic_zones": [],
     "violation_template": "Patient care areas in {occupancy} require a minimum of two individual circuits from separate branch panels per NFPA 99. Isolated ground receptacles (orange face) are required in wet locations (ORs, procedure rooms).",
     "fix_template": "1. Show minimum two branch circuits from separate panels at each patient bed.\n2. Specify isolated ground receptacles (IG) in OR and procedure rooms.\n3. Label receptacle types and circuit sources on electrical plans.\n4. Coordinate with EES branch requirements per NFPA 99 Chapter 6.",
@@ -258,11 +380,21 @@
     "id": "RULE-016",
     "discipline": "Structural / Seismic",
     "description": "Type V (wood-frame) and Type III construction is prohibited for OSHPD-1 acute care occupancies above one story per California Building Code.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "trigger_construction_types": ["Type III", "Type V", "III-A", "III-B", "V-A", "V-B"],
+    "trigger_construction_types": [
+      "Type III",
+      "Type V",
+      "III-A",
+      "III-B",
+      "V-A",
+      "V-B"
+    ],
     "min_licensed_beds": null,
     "violation_template": "{construction_type} construction is not permitted for {occupancy} facilities subject to OSHPD-1 review. California Health and Safety Code Section 1250 requires non-combustible (Type I or Type II) construction for licensed general acute care hospitals.",
     "fix_template": "1. Revise construction type to Type I-A, I-B, II-A, or II-B on the cover sheet and applicable code analysis sheets.\n2. Provide a structural system narrative demonstrating non-combustible framing throughout.\n3. Re-submit code analysis table showing compliance with CBC Section 504 height and area limits for the revised construction type.",
@@ -278,14 +410,17 @@
     "id": "RULE-017",
     "discipline": "Structural / Seismic",
     "description": "Hospitals with 100 or more licensed beds must meet IBC Risk Category IV seismic performance requirements with enhanced inspections and special inspections program.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
     "trigger_construction_types": [],
     "min_licensed_beds": 100,
     "violation_template": "This {licensed_beds}-bed {occupancy} facility exceeds the 100-bed threshold requiring IBC Risk Category IV structural performance. Verify that the structural design criteria, drift limits, and redundancy factors satisfy Risk Category IV per ASCE 7-22.",
-    "fix_template": "1. Update structural calculations cover sheet to declare IBC Risk Category IV.\n2. Revise seismic drift limits to h/100 (ASCE 7-22 Table 12.12-1, Risk Category IV).\n3. Prepare Special Inspections Program per CBC Chapter 17 covering moment frames, shear walls, anchor bolts, and welding.\n4. Confirm redundancy factor ρ = 1.3 is applied unless qualifying exception is documented.",
+    "fix_template": "1. Update structural calculations cover sheet to declare IBC Risk Category IV.\n2. Revise seismic drift limits to h/100 (ASCE 7-22 Table 12.12-1, Risk Category IV).\n3. Prepare Special Inspections Program per CBC Chapter 17 covering moment frames, shear walls, anchor bolts, and welding.\n4. Confirm redundancy factor \u03c1 = 1.3 is applied unless qualifying exception is documented.",
     "code_references": [
       "ASCE 7-22 Table 1.5-1 Risk Category IV",
       "CBC 2022 Section 1616.3",
@@ -302,7 +437,12 @@
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "trigger_construction_types": ["Type I-A", "Type I-B", "I-A", "I-B"],
+    "trigger_construction_types": [
+      "Type I-A",
+      "Type I-B",
+      "I-A",
+      "I-B"
+    ],
     "min_licensed_beds": null,
     "violation_template": "{construction_type} construction requires all primary structural members (columns, beams, bearing walls) and exterior walls to carry a minimum 2-hour fire-resistance rating per CBC Table 601. Verify fire-resistance assemblies are listed in the UL Directory or equivalent.",
     "fix_template": "1. Provide a fire-resistance assembly schedule on architectural drawings referencing UL listing numbers or CBC Table 720.\n2. Ensure floor-ceiling assemblies match the 2-hour rating; address any through-penetrations with listed firestop systems.\n3. Show no combustible concealed spaces; where unavoidable, provide automatic sprinkler protection per NFPA 13 and note on drawings.",
@@ -318,15 +458,20 @@
     "id": "RULE-019",
     "discipline": "Fire and Life Safety",
     "description": "Non-sprinklered healthcare occupancies must comply with CBC Table 1004.5 reduced occupant load factors and more restrictive travel distance and egress width requirements.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Clinic", "Skilled Nursing Facility"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Clinic",
+      "Skilled Nursing Facility"
+    ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
     "trigger_construction_types": [],
     "trigger_sprinklered": false,
     "min_licensed_beds": null,
-    "violation_template": "{occupancy} is indicated as non-sprinklered. Verify that egress travel distances comply with the more restrictive non-sprinklered limits per CBC Table 1017.2 (exit access travel distance ≤150 ft for Group I-2) and that egress widths and occupant loads reflect the non-sprinklered factors in CBC Table 1004.5.",
-    "fix_template": "1. Confirm facility is non-sprinklered on the code summary sheet; if sprinklers are present update sprinkler status.\n2. Verify exit access travel distance ≤150 ft (non-sprinklered limit for I-2) on all floor plans.\n3. Recalculate occupant load using non-sprinklered factors from CBC Table 1004.5.\n4. Show egress width calculations (0.3 in/occupant for corridors, 0.2 in/occupant for doors) per CBC Section 1005.",
+    "violation_template": "{occupancy} is indicated as non-sprinklered. Verify that egress travel distances comply with the more restrictive non-sprinklered limits per CBC Table 1017.2 (exit access travel distance \u2264150 ft for Group I-2) and that egress widths and occupant loads reflect the non-sprinklered factors in CBC Table 1004.5.",
+    "fix_template": "1. Confirm facility is non-sprinklered on the code summary sheet; if sprinklers are present update sprinkler status.\n2. Verify exit access travel distance \u2264150 ft (non-sprinklered limit for I-2) on all floor plans.\n3. Recalculate occupant load using non-sprinklered factors from CBC Table 1004.5.\n4. Show egress width calculations (0.3 in/occupant for corridors, 0.2 in/occupant for doors) per CBC Section 1005.",
     "code_references": [
       "CBC 2022 Table 1017.2",
       "CBC 2022 Table 1004.5",
@@ -339,7 +484,13 @@
     "id": "RULE-020",
     "discipline": "Fire and Life Safety",
     "description": "Sprinklered healthcare facilities must provide a complete NFPA 13 sprinkler system schedule and hydraulic calculations stamped by a licensed fire protection engineer.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Clinic", "Skilled Nursing Facility", "Ambulatory Surgery Center"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Clinic",
+      "Skilled Nursing Facility",
+      "Ambulatory Surgery Center"
+    ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
@@ -360,7 +511,11 @@
     "id": "RULE-021",
     "discipline": "Fire and Life Safety",
     "description": "Buildings exceeding 55 ft in height (OSHPD high-rise threshold) must comply with CBC Section 403 high-rise provisions including a fire command center, voice/alarm communication system, and fire service access elevator.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Skilled Nursing Facility"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Skilled Nursing Facility"
+    ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
@@ -386,7 +541,11 @@
     "id": "RULE-022",
     "discipline": "Fire and Life Safety",
     "description": "Buildings of four or more stories above grade with healthcare occupancies require a stairway pressurization system (smoke-proof enclosures) per CBC Section 909.20.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Skilled Nursing Facility"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Skilled Nursing Facility"
+    ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
@@ -398,7 +557,7 @@
     "trigger_counties": [],
     "trigger_cities": [],
     "violation_template": "This {stories}-story {occupancy} requires stair enclosures to be designed as smoke-proof enclosures per CBC Section 909.20. Natural ventilation, mechanical pressurization, or vestibule approach must be shown on mechanical and architectural drawings.",
-    "fix_template": "1. Select a smoke-proof enclosure approach (natural ventilation, mechanical pressurization at ≥0.05 in. w.g., or vestibule) per CBC Section 909.20.\n2. Show stair vestibule dimensions and door hardware (self-closing, positive-latch) on architectural plans.\n3. If mechanical pressurization: provide fan schedule, ductwork layout, and controls sequence on mechanical drawings.\n4. Coordinate smoke-proof enclosure design with the overall smoke control/management plan per CBC Section 909.",
+    "fix_template": "1. Select a smoke-proof enclosure approach (natural ventilation, mechanical pressurization at \u22650.05 in. w.g., or vestibule) per CBC Section 909.20.\n2. Show stair vestibule dimensions and door hardware (self-closing, positive-latch) on architectural plans.\n3. If mechanical pressurization: provide fan schedule, ductwork layout, and controls sequence on mechanical drawings.\n4. Coordinate smoke-proof enclosure design with the overall smoke control/management plan per CBC Section 909.",
     "code_references": [
       "CBC 2022 Section 909.20",
       "CBC 2022 Section 1023.11",
@@ -411,7 +570,10 @@
     "id": "RULE-023",
     "discipline": "Structural / Seismic",
     "description": "Los Angeles County local amendment requires peer review of seismic design for OSHPD-1 hospitals by a county-approved structural engineer in addition to HCAI review.",
-    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
@@ -420,7 +582,9 @@
     "min_building_height_ft": null,
     "min_stories": null,
     "min_licensed_beds": null,
-    "trigger_counties": ["Los Angeles"],
+    "trigger_counties": [
+      "Los Angeles"
+    ],
     "trigger_cities": [],
     "violation_template": "Project is located in {county} County. LA County Building and Safety requires an independent peer review of the lateral force-resisting system by an LA County pre-qualified structural engineer, in addition to standard HCAI review. Confirm peer review engagement and include peer reviewer's acceptance letter with the permit application.",
     "fix_template": "1. Retain an LA County pre-qualified structural engineer for peer review per LA County Code Section 110.3.3.\n2. Provide the peer reviewer with the full structural package (calculations, drawings, geotechnical report).\n3. Incorporate all peer review comments before HCAI final submittal.\n4. Include the peer reviewer's acceptance letter and comment/response log in the permit application.",
@@ -429,6 +593,32 @@
       "CBC 2022 Chapter 16A",
       "HCAI PIN 19-02",
       "Title 24 Part 2 Section 1613A"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "RULE-024",
+    "discipline": "Medical Gas",
+    "description": "Medical gas zone valve boxes (ZVBs) must have minimum 36-inch clear working space on all accessible sides and be located within 50 feet of the area served, per NFPA 99-2021 Section 5.1.14.2.1. Drawings must confirm clearance and service-area proximity.",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Surgical Center",
+      "Ambulatory Surgery Center",
+      "Skilled Nursing Facility"
+    ],
+    "trigger_systems": [
+      "zone valve",
+      "valve box"
+    ],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "{occupancy} drawings show medical gas zone valve boxes (ZVBs) but do not confirm minimum 36-inch clear working space on all accessible sides, nor verify that each ZVB is located within 50 ft of the area it serves, as required by NFPA 99-2021 Section 5.1.14.2.1.",
+    "fix_template": "1. Dimension 36-inch minimum clear working space around each ZVB on floor plans.\n2. Annotate ZVB locations with a note confirming each box is within 50 ft of the area served, measured along the path of travel.\n3. Confirm ZVBs are accessible at all times and not located behind locked enclosures that require tools \u2014 per NFPA 99-2021 Section 5.1.14.2.1.\n4. Resubmit updated medical gas riser diagram and floor plans for HCAI review.",
+    "code_references": [
+      "NFPA 99-2021 Section 5.1.14.2.1",
+      "Title 24 Part 2 Section 1226.6",
+      "HCAI CAN 2-2024"
     ],
     "severity_override": "High"
   }

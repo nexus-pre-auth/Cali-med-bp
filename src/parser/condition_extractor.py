@@ -122,7 +122,8 @@ ELECTRICAL_KEYWORDS = [
 
 MEDICAL_GAS_KEYWORDS = [
     "oxygen manifold", "liquid oxygen", "LOX", "medical air compressor",
-    "WAGD system", "vacuum pump", "gas outlet", "zone valve",
+    "WAGD system", "vacuum pump", "gas outlet", "zone valve", "valve box",
+    "zone valve box", "ZVB",
 ]
 
 ROOM_TYPES = [
