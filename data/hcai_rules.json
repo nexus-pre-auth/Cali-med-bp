@@ -621,5 +621,81 @@
       "HCAI CAN 2-2024"
     ],
     "severity_override": "High"
+  },
+  {
+    "id": "RULE-025",
+    "discipline": "Telehealth / IT Infrastructure",
+    "description": "HCAI PIN 26-01 (effective April 1, 2026) requires that telehealth and telemedicine rooms in licensed healthcare facilities include: a dedicated 20-ampere circuit, minimum STC-45 sound isolation from adjacent spaces, minimum 50 footcandles at patient face level for video quality, and patient privacy provisions compliant with HIPAA and CBC.",
+    "effective_date": "2026-04-01",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Clinic",
+      "Outpatient Facility",
+      "Ambulatory Surgery Center",
+      "Rehabilitation Facility"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [
+      "telehealth room",
+      "telemedicine room",
+      "telehealth"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "{occupancy} includes telehealth / telemedicine rooms that must comply with HCAI PIN 26-01 (effective April 1, 2026). Drawings do not confirm: (1) dedicated 20A circuit per room, (2) STC-45 minimum sound isolation, (3) 50 fc minimum lighting at patient face, and (4) patient privacy provisions.",
+    "fix_template": "1. Provide dedicated 20A, 120V circuit for each telehealth room on electrical plans (circuit breaker labeled \"Telehealth A/V\").\n2. Specify STC-45 minimum wall/ceiling assemblies at all telehealth room boundaries. Show rated assemblies on room finish schedule.\n3. Add lighting note confirming 50 fc minimum at 48 inches AFF at patient-facing position \u2014 show fixture layout and photometric calculation.\n4. Detail patient privacy provisions: vision panels with opaque blinds or solid door, HIPAA-compliant audio separation.\n5. Resubmit architectural, electrical, and specifications sections for HCAI review prior to April 1, 2026 effective date.",
+    "code_references": [
+      "HCAI PIN 26-01",
+      "Title 24 Part 3 Article 517.18",
+      "CBC 2025 Section 1226.15",
+      "HIPAA 45 CFR Part 164"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "RULE-026",
+    "discipline": "Medical Gas",
+    "description": "NFPA 99-2024 Section 5.1.14.2.3 (effective January 1, 2026) requires that zone valve boxes (ZVBs) in new and substantially renovated healthcare facilities interface with the building automation system (BAS) for continuous pipeline pressure monitoring. The BAS must generate an alarm at the nursing station and facility engineering when pressure drops below or exceeds defined thresholds, providing real-time IoT monitoring.",
+    "effective_date": "2026-01-01",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Surgical Center",
+      "Ambulatory Surgery Center"
+    ],
+    "trigger_systems": [
+      "zone valve",
+      "valve box"
+    ],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "{occupancy} drawings show zone valve boxes (ZVBs) but do not confirm BAS integration for continuous medical gas pressure monitoring per NFPA 99-2024 \u00a75.1.14.2.3 (effective January 1, 2026). Real-time IoT pressure alarms at nursing station and engineering are required.",
+    "fix_template": "1. Show BAS point schedule including medical gas pipeline pressure sensors at each ZVB.\n2. Specify alarm setpoints (high and low pressure thresholds) for each gas type (O2, medical air, vacuum, WAGD, N2O) on the medical gas drawings.\n3. Confirm alarm annunciation at nursing station AND facility engineering per NFPA 99-2024 \u00a75.1.14.2.3.\n4. Provide sequence of operations for BAS medical gas monitoring in the mechanical or controls specification.\n5. Coordinate with BAS contractor and medical gas installer \u2014 show interface points on controls drawings.",
+    "code_references": [
+      "NFPA 99-2024 \u00a75.1.14.2.3",
+      "Title 24 Part 2 \u00a71226.6",
+      "HCAI CAN 2-2024"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "RULE-027",
+    "discipline": "Wildfire Resilience",
+    "description": "CBC 2025 Chapter 7A (effective January 1, 2026) imposes mandatory wildfire-resistive construction for healthcare facilities located in Wildland-Urban Interface (WUI) zones, State Responsibility Areas, or Very High Fire Hazard Severity Zones (VHFHSZ). Requirements include Class A roofing, ember-resistant vents, one-hour exterior wall assemblies, and 100-foot defensible space. HCAI also requires a facility emergency operations plan (EOP) addressing wildfire evacuation.",
+    "effective_date": "2026-01-01",
+    "trigger_occupancies": [],
+    "trigger_wui": true,
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "Project is located in a Wildland-Urban Interface (WUI) zone or Fire Hazard Severity Zone. Drawings must demonstrate full CBC 2025 Chapter 7A compliance: Class A roofing assembly, ember-resistant exterior vents, one-hour exterior wall construction, and non-combustible eave/soffit construction. Defensible space and facility wildfire EOP are also required.",
+    "fix_template": "1. Specify Class A fire-rated roofing assembly per CBC 2025 Section 707A \u2014 provide ICC-ES listing number on roof plan and specifications.\n2. Specify ember-resistant vents (ICC 327 compliant) at all eave, soffit, and foundation vent locations. Show on exterior elevations.\n3. Confirm exterior wall assemblies provide minimum 1-hour fire resistance. Specify noncombustible cladding within 5 feet of grade per CBC 2025 \u00a7707A.3.\n4. Show 100-foot defensible space on site plan with vegetation management zones (Zone 1: 0\u201330 ft, Zone 2: 30\u2013100 ft) per Title 19 CCR \u00a71299.03.\n5. Submit facility Wildfire Emergency Operations Plan (EOP) per HCAI guidelines \u2014 address patient evacuation sequencing and shelter-in-place provisions.",
+    "code_references": [
+      "CBC 2025 Chapter 7A",
+      "Title 19 CCR \u00a71299.03",
+      "CALFire FHSZ Regulation",
+      "HCAI Emergency Operations Plan Guidelines"
+    ],
+    "severity_override": "Critical"
   }
 ]

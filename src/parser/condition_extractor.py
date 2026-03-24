@@ -63,6 +63,9 @@ class ProjectConditions:
     city: Optional[str] = None
     state: str = "California"
 
+    # Wildfire / WUI zone flag
+    wui_zone: Optional[bool] = None   # True = project is in a Wildland-Urban Interface zone
+
     # Raw extraction confidence
     raw_snippets: dict[str, list[str]] = field(default_factory=dict)
 
@@ -118,6 +121,7 @@ ELECTRICAL_KEYWORDS = [
     "generator", "essential electrical system", "EES", "critical branch",
     "life safety branch", "equipment branch", "UPS", "transfer switch",
     "ATS", "panelboard", "emergency power", "NFPA 99",
+    "telehealth circuit", "dedicated circuit", "audio/video",
 ]
 
 MEDICAL_GAS_KEYWORDS = [
@@ -136,7 +140,20 @@ ROOM_TYPES = [
     "recovery room", "waiting room", "toilet room", "shower room",
     "janitor closet", "electrical room", "mechanical room",
     "loading dock", "kitchen", "dietary", "laundry",
+    "telehealth room", "telemedicine room", "telehealth",
 ]
+
+WUI_PATTERN = re.compile(
+    r"(wildland[\s-]urban\s+interface|"
+    r"\bWUI\b|"
+    r"fire\s+hazard\s+severity\s+zone|"
+    r"\bFHSZ\b|"
+    r"very\s+high\s+fire\s+hazard|"
+    r"high\s+fire\s+(?:hazard|risk)\s+(?:area|zone)|"
+    r"state\s+responsibility\s+area|"
+    r"defensible\s+space)",
+    re.I,
+)
 
 COUNTY_PATTERN = re.compile(
     r"(?:county\s+of\s+|)([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+county", re.I
@@ -161,6 +178,7 @@ class ConditionExtractor:
         self._extract_systems(text, conditions)
         self._extract_rooms(text, conditions)
         self._extract_location(text, conditions)
+        self._extract_wui(text, conditions)
 
         return conditions
 
@@ -232,3 +250,7 @@ class ConditionExtractor:
         m = CITY_PATTERN.search(text)
         if m:
             c.city = m.group(1).strip()
+
+    def _extract_wui(self, text: str, c: ProjectConditions) -> None:
+        if WUI_PATTERN.search(text):
+            c.wui_zone = True

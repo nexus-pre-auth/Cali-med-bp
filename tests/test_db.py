@@ -55,7 +55,7 @@ class TestMigrations:
         run_migrations(conn)
         run_migrations(conn)  # second run should not fail
         versions = conn.execute("SELECT COUNT(*) FROM schema_version").fetchone()[0]
-        assert versions == 6   # 1 (rules) + 2 (jobs) + 3 (construction types) + 4 (sprinklered) + 5 (height) + 6 (county/city)
+        assert versions == 7   # 1–6 original + 7 (trigger_wui)
         conn.close()
 
 

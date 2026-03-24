@@ -187,6 +187,11 @@ class RuleMatcher:
             if not c.city or not any(cf.lower() == c.city.lower() for cf in city_filter):
                 return False
 
+        # WUI / Wildfire zone filter — only fires when wui_zone is explicitly True
+        if rule.get("trigger_wui"):
+            if not c.wui_zone:
+                return False
+
         return True
 
     def _render(self, template: str, c: ProjectConditions) -> str:

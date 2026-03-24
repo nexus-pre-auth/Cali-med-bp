@@ -195,6 +195,21 @@ def _m6(conn: sqlite3.Connection) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Migration 7 — WUI / wildfire zone trigger
+# ---------------------------------------------------------------------------
+
+@migration(7, "Add trigger_wui column to rules for wildfire zone filtering")
+def _m7(conn: sqlite3.Connection) -> None:
+    """
+    NULL  = rule applies regardless of WUI zone status (default)
+    1     = rule applies ONLY when project is in a WUI / FHSZ zone
+    """
+    conn.executescript("""
+        ALTER TABLE rules ADD COLUMN trigger_wui INTEGER DEFAULT NULL;
+    """)
+
+
+# ---------------------------------------------------------------------------
 # Migration runner
 # ---------------------------------------------------------------------------
 

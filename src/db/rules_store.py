@@ -171,9 +171,9 @@ class RulesStore:
                 INSERT INTO rules
                     (id, discipline, description, violation_template, fix_template,
                      severity_override, min_licensed_beds, trigger_sprinklered,
-                     min_building_height_ft, min_stories,
+                     min_building_height_ft, min_stories, trigger_wui,
                      is_active, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))
                 ON CONFLICT(id) DO UPDATE SET
                     discipline             = excluded.discipline,
                     description            = excluded.description,
@@ -184,6 +184,7 @@ class RulesStore:
                     trigger_sprinklered    = excluded.trigger_sprinklered,
                     min_building_height_ft = excluded.min_building_height_ft,
                     min_stories            = excluded.min_stories,
+                    trigger_wui            = excluded.trigger_wui,
                     is_active              = 1,
                     updated_at             = datetime('now')
             """, (
@@ -197,6 +198,7 @@ class RulesStore:
                 _bool_to_int(rule.get("trigger_sprinklered")),
                 rule.get("min_building_height_ft"),
                 rule.get("min_stories"),
+                _bool_to_int(rule.get("trigger_wui")),
             ))
             self._insert_children(conn, rule)
             conn.commit()
@@ -220,8 +222,8 @@ class RulesStore:
             INSERT OR IGNORE INTO rules
                 (id, discipline, description, violation_template, fix_template,
                  severity_override, min_licensed_beds, trigger_sprinklered,
-                 min_building_height_ft, min_stories)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 min_building_height_ft, min_stories, trigger_wui)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             rule["id"],
             rule.get("discipline", "General"),
@@ -233,6 +235,7 @@ class RulesStore:
             _bool_to_int(rule.get("trigger_sprinklered")),
             rule.get("min_building_height_ft"),
             rule.get("min_stories"),
+            _bool_to_int(rule.get("trigger_wui")),
         ))
         self._insert_children(conn, rule)
 
@@ -266,6 +269,7 @@ class RulesStore:
             ).fetchall()]
 
         raw_sprinkled = row["trigger_sprinklered"] if "trigger_sprinklered" in keys else None
+        raw_wui       = row["trigger_wui"]       if "trigger_wui"       in keys else None
         return {
             "id":                         row["id"],
             "discipline":                 row["discipline"],
@@ -276,7 +280,8 @@ class RulesStore:
             "min_licensed_beds":          row["min_licensed_beds"],
             "trigger_sprinklered":        None if raw_sprinkled is None else bool(raw_sprinkled),
             "min_building_height_ft":     row["min_building_height_ft"] if "min_building_height_ft" in keys else None,
-            "min_stories":                row["min_stories"] if "min_stories" in keys else None,
+            "min_stories":                row["min_stories"]            if "min_stories"            in keys else None,
+            "trigger_wui":                None if raw_wui is None else bool(raw_wui),
             "is_active":                  bool(row["is_active"]),
             "trigger_occupancies":        _fetch("rule_occupancies", "occupancy"),
             "trigger_systems":            _fetch("rule_systems", "system"),
