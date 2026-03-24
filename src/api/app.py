@@ -18,6 +18,7 @@ import mimetypes
 import os
 import time
 from collections import defaultdict
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 from uuid import UUID
@@ -49,6 +50,68 @@ from src.monitoring.audit import log_review_submitted, read_audit_log
 from src.monitoring.logger import get_logger
 
 log = get_logger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Application lifespan — startup / shutdown
+# ---------------------------------------------------------------------------
+
+async def _on_startup() -> None:
+    """Run once when the server starts: migrate DB, warm KB, init Postgres."""
+
+    # 1. SQLite migrations + rule seeding (idempotent, ~100 ms)
+    try:
+        from src.db.rules_store import get_rules_store
+        store = get_rules_store()
+        log.info("Rules store ready: %d active rules.", store.count())
+    except Exception as exc:
+        log.warning("Rules store init failed: %s", exc)
+
+    # 2. ChromaDB: rebuild if empty (cold start on a fresh volume)
+    #    On normal deploys the KB is baked into the image (index-kb at build time)
+    #    and this block is a fast no-op (count > 0).
+    try:
+        from src.rag.knowledge_base import HCAIKnowledgeBase
+        kb = HCAIKnowledgeBase()
+        n = kb.count()
+        if n == 0:
+            log.info("ChromaDB empty — indexing knowledge base (first run)…")
+            kb.index_all_documents()
+            log.info("Knowledge base ready: %d documents.", kb.count())
+        else:
+            log.info("Knowledge base ready: %d documents.", n)
+    except Exception as exc:
+        log.warning("Knowledge base init failed: %s", exc)
+
+    # 3. PostgreSQL: create tables when DATABASE_URL / DB_HOST is configured
+    try:
+        from src.database.connection import is_postgres_configured, create_tables
+        if is_postgres_configured():
+            await create_tables()
+            log.info("PostgreSQL tables created / verified.")
+    except Exception as exc:
+        log.warning("PostgreSQL init failed: %s", exc)
+
+    # 4. Runtime directories (ephemeral on Railway — recreated each start)
+    config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+
+async def _on_shutdown() -> None:
+    """Clean up on shutdown."""
+    try:
+        from src.database.connection import is_postgres_configured, dispose
+        if is_postgres_configured():
+            await dispose()
+    except Exception:
+        pass
+
+
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    await _on_startup()
+    yield
+    await _on_shutdown()
+
 
 # ---------------------------------------------------------------------------
 # Per-IP rate-limit middleware
@@ -114,9 +177,9 @@ class _RateLimitMiddleware(BaseHTTPMiddleware):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="HCAI Compliance Engine API",
+        title="BlueprintIQ — HCAI Compliance Engine",
         description=(
-            "Autonomous California healthcare construction plan review system. "
+            "California healthcare construction plan review, automated. "
             "Submit project drawings or specifications and receive HCAI-style "
             "compliance violations with Title 24 / PIN / CAN citations and "
             "step-by-step remediation guidance."
@@ -124,6 +187,7 @@ def create_app() -> FastAPI:
         version="1.0.0",
         docs_url="/docs",
         redoc_url="/redoc",
+        lifespan=_lifespan,
     )
 
     # Rate limiting — applied before auth so abusive clients are dropped early

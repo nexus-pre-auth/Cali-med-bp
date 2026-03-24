@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Tests & CI
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docs
+*.md
+docs/
+
+# Local dev artifacts
+output/
+logs/
+*.log
+*.jsonl
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keep: chroma_db/ is baked in by the Dockerfile RUN index-kb step
+# Keep: data/hcai.db is baked in by the Dockerfile RUN migrate-db step
+# Keep: data/*.json (rules, references, PINs)
+# Keep: static/ (SPA frontend)

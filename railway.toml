@@ -1,0 +1,14 @@
+# Railway deployment configuration
+# Docs: https://docs.railway.app/reference/config-as-code
+
+[build]
+builder = "dockerfile"        # Use the repo Dockerfile (not Nixpacks)
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# serve.py reads $PORT automatically — Railway injects it as an env var
+startCommand = "python serve.py --host 0.0.0.0"
+healthcheckPath = "/health"
+healthcheckTimeout = 120      # seconds; allow time for warm start
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
