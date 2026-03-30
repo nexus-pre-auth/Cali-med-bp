@@ -126,5 +126,29 @@
     "type": "mandatory",
     "discipline": "Medical Gas",
     "text": "Zone valve boxes used in new construction or substantial renovation shall be equipped with continuous pressure-monitoring capability interfaced with the facility building automation system (BAS). The BAS shall annunciate an alarm at a continuously monitored location \u2014 including the nursing station and facility engineering office \u2014 when pipeline pressure deviates from established high or low setpoints for any medical gas type. Alarm setpoints shall be documented in the facility\u2019s medical gas operations manual."
+  },
+  {
+    "id": "CBC-2025-406.9",
+    "source": "CBC 2025",
+    "section": "\u00a7406.9",
+    "type": "mandatory",
+    "discipline": "Electrical",
+    "text": "Section 406.9 Electric Vehicle (EV) Charging. Open parking garages and enclosed parking garages equipped with EV charging equipment shall comply with the requirements of this section. Section 406.9.4: EV charging areas shall be separated from occupied portions of the building by construction having a minimum 2-hour fire-resistance rating. Automatic fire suppression shall be provided in accordance with NFPA 13 at all EV charging stall locations. Mechanical ventilation sufficient to dilute hydrogen and combustion byproducts shall be provided in enclosed or semi-enclosed EV charging areas at a minimum rate of 1.5 CFM per square foot of charging area floor space."
+  },
+  {
+    "id": "CALGREEN-2025-A5.410.4",
+    "source": "CALGreen 2025",
+    "section": "\u00a7A5.410.4",
+    "type": "voluntary_tier1",
+    "discipline": "Sustainability",
+    "text": "Section A5.410.4 Whole Building Life Cycle Assessment. For new buildings exceeding 10,000 square feet of conditioned space, a whole-building life cycle assessment (LCA) shall be performed in accordance with ISO 14044 and EN 15978. The LCA shall quantify the global warming potential (GWP) in kilograms of CO\u2082 equivalent for structural and building envelope assemblies including: concrete foundations and slabs, structural framing, exterior wall assemblies, roof assemblies, and glazing systems. The LCA report shall identify a minimum of three low-embodied-carbon material substitutions with quantified GWP reductions and shall be submitted with the construction documents."
+  },
+  {
+    "id": "CBC-2025-1226.14",
+    "source": "CBC 2025",
+    "section": "\u00a71226.14",
+    "type": "mandatory",
+    "discipline": "Behavioral Health",
+    "text": "Section 1226.14 Behavioral Health Patient Rooms and Units. Section 1226.14.1 General: Licensed healthcare facilities providing inpatient or outpatient behavioral health services shall comply with the requirements of this section in all patient rooms, corridors, and ancillary spaces within the behavioral health unit. Section 1226.14.3 Patient Room Size: Single-patient behavioral health rooms shall have a minimum clear floor area of 120 square feet, exclusive of toilet rooms, closets, and vestibules. Section 1226.14.5 Ligature Resistance: All plumbing fixtures, door hardware, grab bars, towel bars, and other anchorage points within patient reach shall be ligature-resistant as defined in HCAI CAN 3-2024. Section 1226.14.7 Anti-Elopement: All perimeter doors of behavioral health units shall be equipped with delayed-egress hardware or access-controlled hardware complying with CBC Section 1010.1.9."
   }
 ]

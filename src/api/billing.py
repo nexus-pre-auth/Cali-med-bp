@@ -27,12 +27,10 @@ creates the job immediately, and returns { checkout_url: null, job_id }.
 from __future__ import annotations
 
 import os
-import threading
-from dataclasses import dataclass, field
-from pathlib import Path
+from dataclasses import dataclass
 from typing import Optional
-from uuid import UUID
 
+from src.db.order_store import get_order_store
 from src.monitoring.logger import get_logger
 
 log = get_logger(__name__)
@@ -57,7 +55,7 @@ except ImportError:
 
 
 # ---------------------------------------------------------------------------
-# In-memory order tracking  (survives for the life of the process)
+# Order data structure
 # ---------------------------------------------------------------------------
 
 @dataclass
@@ -69,29 +67,9 @@ class PendingOrder:
     pasted_text: Optional[str]
     session_id: str
 
-_pending: dict[str, PendingOrder] = {}     # session_id → PendingOrder
-_completed: dict[str, str] = {}            # session_id → job_id
-_lock = threading.Lock()
-
-
-def _store_pending(order: PendingOrder) -> None:
-    with _lock:
-        _pending[order.session_id] = order
-
-
-def _pop_pending(session_id: str) -> Optional[PendingOrder]:
-    with _lock:
-        return _pending.pop(session_id, None)
-
-
-def _mark_completed(session_id: str, job_id: str) -> None:
-    with _lock:
-        _completed[session_id] = job_id
-
 
 def lookup_job_for_session(session_id: str) -> Optional[str]:
-    with _lock:
-        return _completed.get(session_id)
+    return get_order_store().get_job_for_session(session_id)
 
 
 # ---------------------------------------------------------------------------
@@ -143,15 +121,14 @@ def create_checkout_session(
         metadata={"job_id": job_id, "project_name": project_name},
     )
 
-    order = PendingOrder(
+    get_order_store().save_pending(
+        session_id=session.id,
         job_id=job_id,
         project_name=project_name,
         customer_email=customer_email,
         temp_file_path=temp_file_path,
         pasted_text=pasted_text,
-        session_id=session.id,
     )
-    _store_pending(order)
 
     log.info("Stripe Checkout session %s created for job %s", session.id, job_id)
     return session.url
@@ -187,11 +164,20 @@ def handle_webhook(payload: bytes, sig_header: str) -> Optional[PendingOrder]:
         return None
 
     session_id = event["data"]["object"]["id"]
-    order = _pop_pending(session_id)
-    if not order:
+    store = get_order_store()
+    row = store.pop_pending(session_id)
+    if not row:
         log.warning("Webhook for unknown session %s — may have already been processed.", session_id)
         return None
 
-    _mark_completed(session_id, order.job_id)
+    order = PendingOrder(
+        job_id=row["job_id"],
+        project_name=row["project_name"],
+        customer_email=row["customer_email"],
+        temp_file_path=row["temp_file_path"],
+        pasted_text=row["pasted_text"],
+        session_id=session_id,
+    )
+    store.mark_completed(session_id, order.job_id)
     log.info("Payment confirmed for job %s (session %s)", order.job_id, session_id)
     return order

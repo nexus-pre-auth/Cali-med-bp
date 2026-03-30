@@ -20,8 +20,6 @@ except ImportError:
     HAS_PDFPLUMBER = False
 
 # PDFCleaner for pre-processing image-based pages.
-# Requires Pillow (installed). Full OCR support requires Ghostscript +
-# pdfplumber[image]: pip install 'pdfplumber[image]' ghostscript
 try:
     from src.preprocessing.pdf_cleaner import PDFCleaner as _PDFCleaner
     _cleaner = _PDFCleaner(enhance_contrast=True, deskew=True)
@@ -30,8 +28,43 @@ except Exception:
     _cleaner = None  # type: ignore[assignment]
     HAS_CLEANER = False
 
+# OCR fallback — activated when pdf2image + pytesseract are installed.
+# Handles scanned drawings that pdfplumber cannot read.
+# Dockerfile includes: tesseract-ocr, tesseract-ocr-eng
+# requirements.txt includes: pdf2image, pytesseract
+try:
+    import pytesseract as _pytesseract
+    from pdf2image import convert_from_bytes as _convert_from_bytes
+    HAS_OCR = True
+    log.debug("OCR support available (pytesseract + pdf2image).")
+except ImportError:
+    HAS_OCR = False
+
 # Pages with fewer characters per 100pt² of area are considered image-based
 _MIN_CHARS_PER_AREA = 0.001
+
+
+def _ocr_pdf_pages(pdf_bytes: bytes, page_numbers: list[int]) -> dict[int, str]:
+    """
+    Run Tesseract OCR on specific pages of a PDF (1-indexed).
+    Returns {page_number: ocr_text}.
+    Silently returns empty strings on any failure.
+    """
+    if not HAS_OCR or not page_numbers:
+        return {}
+
+    results: dict[int, str] = {}
+    try:
+        images = _convert_from_bytes(pdf_bytes, dpi=200)
+        for page_no in page_numbers:
+            idx = page_no - 1
+            if 0 <= idx < len(images):
+                results[page_no] = _pytesseract.image_to_string(
+                    images[idx], config="--psm 6"
+                )
+    except Exception as exc:
+        log.warning("OCR failed: %s", exc)
+    return results
 
 
 @dataclass
@@ -77,11 +110,22 @@ class PDFParser:
         if not HAS_PDFPLUMBER:
             raise ImportError("pdfplumber is required: pip install pdfplumber")
 
-        doc = ParsedDocument(file_path=str(path), total_pages=0)
+        pdf_bytes = path.read_bytes()
+        return self._parse_bytes_internal(pdf_bytes, source_name=str(path))
 
-        scanned_pages: list[int] = []
+    def parse_bytes(self, pdf_bytes: bytes, source_name: str = "upload.pdf") -> ParsedDocument:
+        """Parse a PDF from raw bytes (e.g. uploaded file)."""
+        if not HAS_PDFPLUMBER:
+            raise ImportError("pdfplumber is required: pip install pdfplumber")
+        return self._parse_bytes_internal(pdf_bytes, source_name=source_name)
 
-        with pdfplumber.open(path) as pdf:
+    def _parse_bytes_internal(self, pdf_bytes: bytes, source_name: str) -> ParsedDocument:
+        import io
+        doc = ParsedDocument(file_path=source_name, total_pages=0)
+        scanned_page_numbers: list[int] = []
+        page_contents: list[PageContent] = []
+
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
             doc.total_pages = len(pdf.pages)
             doc.metadata = pdf.metadata or {}
 
@@ -89,42 +133,43 @@ class PDFParser:
                 text = page.extract_text() or ""
                 tables = page.extract_tables() or []
 
-                # Detect image-based (scanned) pages that pdfplumber cannot read.
-                # Density heuristic: chars per unit area normalised to page size.
                 area = (page.width or 1) * (page.height or 1)
                 text_density = len(text) / area
                 is_image_page = (not text.strip()) and area > 10_000
 
                 if is_image_page:
-                    scanned_pages.append(i + 1)
-                    # Attempt orientation correction via PDF /Rotate metadata
-                    rotation = getattr(page, "rotation", 0) or 0
-                    if rotation and HAS_CLEANER:
-                        log.info(
-                            "Page %d: PDF metadata reports %d° rotation — "
-                            "pdfplumber auto-corrects; no text available (image page).",
-                            i + 1, rotation,
-                        )
+                    scanned_page_numbers.append(i + 1)
 
-                page_content = PageContent(
+                page_contents.append(PageContent(
                     page_number=i + 1,
                     text=text,
                     tables=tables,
                     metadata={"text_density": round(text_density, 6), "is_image_page": is_image_page},
+                ))
+
+        # OCR pass — batch-process all scanned pages in one pdf2image call
+        if scanned_page_numbers:
+            if HAS_OCR:
+                log.info(
+                    "'%s': %d scanned page(s) detected — running OCR (pages: %s).",
+                    source_name, len(scanned_page_numbers),
+                    ", ".join(str(p) for p in scanned_page_numbers[:10]),
                 )
-                doc.pages.append(page_content)
+                ocr_results = _ocr_pdf_pages(pdf_bytes, scanned_page_numbers)
+                for page_no, ocr_text in ocr_results.items():
+                    if ocr_text.strip():
+                        pc = page_contents[page_no - 1]
+                        pc.text = ocr_text
+                        pc.metadata["ocr"] = True
+            else:
+                log.warning(
+                    "'%s': %d scanned page(s) with no extractable text. "
+                    "Install pytesseract + pdf2image for OCR support.",
+                    source_name, len(scanned_page_numbers),
+                )
+            doc.metadata["scanned_pages"] = scanned_page_numbers
 
-        if scanned_pages:
-            log.warning(
-                "Document '%s' has %d image-based page(s) with no extractable text "
-                "(pages: %s). For full compliance review of scanned drawings, "
-                "provide a text-searchable PDF. OCR support: pip install pytesseract ghostscript",
-                path.name,
-                len(scanned_pages),
-                ", ".join(str(p) for p in scanned_pages[:10]),
-            )
-            doc.metadata["scanned_pages"] = scanned_pages
-
+        doc.pages = page_contents
         doc.full_text = "\n".join(p.text for p in doc.pages)
         return doc
 

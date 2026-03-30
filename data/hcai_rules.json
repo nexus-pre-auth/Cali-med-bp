@@ -697,5 +697,81 @@
       "HCAI Emergency Operations Plan Guidelines"
     ],
     "severity_override": "Critical"
+  },
+  {
+    "id": "RULE-028",
+    "discipline": "Electrical",
+    "description": "CBC 2025 Section 406.9 and NFPA 88A require fire separation, suppression, and electrical safety provisions for EV charging installations within or adjacent to healthcare facility parking structures. Battery storage from EVs poses thermal-runaway fire risk; parking structures with EV charging require enhanced ventilation, fire detection, and structural fire-resistance per CBC 2025.",
+    "effective_date": "2026-01-01",
+    "trigger_occupancies": [],
+    "trigger_systems": [
+      "EV charging",
+      "electric vehicle charging",
+      "EVSE"
+    ],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "Project includes EV charging infrastructure in or adjacent to the healthcare facility. CBC 2025 \u00a7406.9 and NFPA 88A require: fire-rated separation from occupied spaces, dedicated fire suppression at charging areas, mechanical ventilation for hydrogen/off-gas control, and arc-fault/ground-fault protection on all EVSE circuits. Drawings do not confirm compliance.",
+    "fix_template": "1. Provide 2-hour fire-rated construction separating EV charging area from occupied building spaces per CBC 2025 \u00a7406.9.4.\n2. Show dedicated wet-pipe sprinkler coverage at EV charging stalls per NFPA 88A \u00a77.4 \u2014 minimum 0.20 gpm/ft\u00b2 design density.\n3. Provide mechanical ventilation (minimum 1.5 CFM/ft\u00b2) at enclosed or semi-enclosed charging areas for hydrogen/off-gas dilution.\n4. Confirm EVSE circuits protected by GFCI and AFCI breakers on electrical plans.\n5. Coordinate with HCAI \u2014 EV infrastructure in hospital parking structures requires HCAI plan review for fire-life-safety compliance.",
+    "code_references": [
+      "CBC 2025 \u00a7406.9",
+      "NFPA 88A-2021 \u00a77.4",
+      "CEC 2025 Article 625",
+      "NFPA 13-2022 \u00a720.17"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "RULE-029",
+    "discipline": "Sustainability",
+    "description": "CALGreen 2025 Section A5.410.4 (Tier 1 Voluntary Measures, adopted as mandatory by many California jurisdictions for healthcare projects) requires a whole-building Life Cycle Assessment (LCA) for new construction exceeding 10,000 square feet. The LCA must document embodied carbon (global warming potential) for structural and envelope assemblies and identify low-carbon material substitutions. HCAI increasingly requests LCA documentation at plan review for large hospital projects.",
+    "effective_date": "2026-01-01",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Ambulatory Surgery Center"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "min_licensed_beds": 30,
+    "violation_template": "{occupancy} new construction project does not include a whole-building Life Cycle Assessment (LCA) for embodied carbon documentation as required by CALGreen 2025 Section A5.410.4. For healthcare projects of this scale, LCA reporting is required to document global warming potential (GWP) for structural and envelope assemblies.",
+    "fix_template": "1. Perform a whole-building LCA using an accepted tool (e.g. One Click LCA, Tally, EC3) complying with ISO 14044 and EN 15978.\n2. Document embodied carbon (kgCO\u2082e) for: concrete, steel, masonry, insulation, glazing, and cladding at minimum.\n3. Identify low-embodied-carbon substitutions (e.g. supplementary cementitious materials, recycled-content steel) and quantify carbon savings.\n4. Submit LCA summary report with construction documents \u2014 include bill of materials and GWP results table.\n5. Coordinate with structural and envelope engineers to ensure LCA reflects final design specifications.",
+    "code_references": [
+      "CALGreen 2025 \u00a7A5.410.4",
+      "ISO 14044",
+      "EN 15978",
+      "HCAI Sustainability Guidelines 2026"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "RULE-030",
+    "discipline": "Behavioral Health",
+    "description": "CBC 2025 Section 1226.14 and HCAI CAN 3-2024 establish specific design requirements for behavioral health patient rooms and units in licensed healthcare facilities. Requirements address ligature-resistant fixtures, anti-elopement doors, minimum room dimensions, and seclusion room provisions. HCAI plan review staff apply heightened scrutiny to behavioral health unit layouts.",
+    "effective_date": "2026-01-01",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Psychiatric Facility",
+      "Rehabilitation Facility"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [
+      "behavioral health",
+      "psychiatric",
+      "mental health",
+      "seclusion room"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "{occupancy} includes behavioral health or psychiatric patient areas. CBC 2025 \u00a71226.14 and HCAI CAN 3-2024 require: ligature-resistant plumbing fixtures and hardware, anti-elopement door hardware, minimum 120 SF single-patient rooms, and seclusion rooms (where provided) with observation windows and dedicated HVAC. Drawings do not confirm compliance with all behavioral health design standards.",
+    "fix_template": "1. Specify ligature-resistant plumbing fixtures (toilets, sinks, shower heads), door hardware, and grab bars in all behavioral health patient rooms \u2014 reference a listed product meeting HCAI CAN 3-2024 requirements.\n2. Confirm minimum 120 SF clear floor area in each single-patient behavioral health room, with no obstructions in the measurement zone per CBC \u00a71226.14.3.\n3. Provide anti-elopement door hardware (delayed-egress or access-controlled) at all behavioral health unit perimeter doors \u2014 show hardware schedule.\n4. If seclusion rooms are included: provide 1/4-inch wired-glass or polycarbonate observation window, dedicated HVAC zone (separate from general unit), and tamper-resistant ligature-resistant hardware throughout.\n5. Resubmit floor plans with room data sheets confirming all CBC \u00a71226.14 dimensions and HCAI CAN 3-2024 fixture specifications.",
+    "code_references": [
+      "CBC 2025 \u00a71226.14",
+      "HCAI CAN 3-2024",
+      "Title 22 CCR \u00a770749",
+      "FGI Guidelines 2018 \u00a72.2-2.6"
+    ],
+    "severity_override": "High"
   }
 ]

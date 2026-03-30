@@ -210,6 +210,36 @@ def _m7(conn: sqlite3.Connection) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Migration 8 — Stripe order persistence
+# ---------------------------------------------------------------------------
+
+@migration(8, "Create stripe_orders table for persistent Stripe session tracking")
+def _m8(conn: sqlite3.Connection) -> None:
+    """
+    Persists Stripe Checkout session → order mappings to survive dyno restarts.
+    Previously stored in in-memory dicts (_pending, _completed) in billing.py.
+    """
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS stripe_orders (
+            session_id      TEXT    PRIMARY KEY,
+            job_id          TEXT    NOT NULL,
+            project_name    TEXT    NOT NULL,
+            customer_email  TEXT    NOT NULL,
+            temp_file_path  TEXT,
+            pasted_text     TEXT,
+            status          TEXT    NOT NULL DEFAULT 'pending',
+            created_at      TEXT    NOT NULL DEFAULT (datetime('now')),
+            completed_at    TEXT
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_stripe_orders_status
+            ON stripe_orders(status);
+        CREATE INDEX IF NOT EXISTS idx_stripe_orders_job_id
+            ON stripe_orders(job_id);
+    """)
+
+
+# ---------------------------------------------------------------------------
 # Migration runner
 # ---------------------------------------------------------------------------
 

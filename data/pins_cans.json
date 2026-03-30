@@ -110,5 +110,13 @@
     "type": "policy",
     "discipline": "Wildfire Resilience",
     "text": "Title 19 CCR Section 1299.03: Defensible Space Requirements. Owners of structures located within a State Responsibility Area or a Very High Fire Hazard Severity Zone shall maintain a defensible space of 100 feet from each side and from the front and rear of the structure. Zone 1 (0-30 feet from the structure) shall be maintained as a lean, clean, and green zone with no dead or dry plant material. Zone 2 (30-100 feet) shall reduce fuel volume and continuity to slow the spread of wildfire. For HCAI-licensed healthcare facilities, the Facility Emergency Operations Plan (EOP) must address wildfire-specific hazards including patient evacuation sequencing, shelter-in-place criteria, and coordination with local fire authority."
+  },
+  {
+    "id": "HCAI-CAN-3-2024",
+    "source": "HCAI Construction Advisory Notice",
+    "section": "CAN 3-2024",
+    "type": "policy",
+    "discipline": "Behavioral Health",
+    "text": "HCAI Construction Advisory Notice 3-2024: Ligature-Resistant Requirements for Behavioral Health Facilities. This CAN provides guidance on ligature-resistant design in licensed healthcare facilities providing behavioral health services. Products and assemblies shall meet the performance criteria of ASTM F3030 (Standard Guide for Ligature Resistance). Acceptable plumbing fixture products must be listed by the manufacturer as ligature-resistant and carry a third-party test report. Door hardware in patient rooms shall be lever-type with no projections greater than 1/2 inch beyond the face of the door. Grab bars, towel bars, and toilet paper holders shall be ligature-resistant and anchored to structural backing. HCAI reviewers will verify compliance on submitted floor plans, door/hardware schedules, and plumbing fixture schedules."
   }
 ]

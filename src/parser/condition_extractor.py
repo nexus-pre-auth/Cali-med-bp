@@ -122,6 +122,7 @@ ELECTRICAL_KEYWORDS = [
     "life safety branch", "equipment branch", "UPS", "transfer switch",
     "ATS", "panelboard", "emergency power", "NFPA 99",
     "telehealth circuit", "dedicated circuit", "audio/video",
+    "EV charging", "EVSE", "electric vehicle charging", "electric vehicle",
 ]
 
 MEDICAL_GAS_KEYWORDS = [
@@ -141,6 +142,8 @@ ROOM_TYPES = [
     "janitor closet", "electrical room", "mechanical room",
     "loading dock", "kitchen", "dietary", "laundry",
     "telehealth room", "telemedicine room", "telehealth",
+    "behavioral health", "psychiatric", "mental health", "seclusion room",
+    "parking garage", "parking structure",
 ]
 
 WUI_PATTERN = re.compile(
