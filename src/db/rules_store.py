@@ -20,7 +20,6 @@ import sqlite3
 import threading
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional
 
 import config
 from src.db.migrations import run_migrations
@@ -32,7 +31,7 @@ _DB_PATH = config.BASE_DIR / "hcai_rules.db"
 _lock = threading.Lock()
 
 
-def _bool_to_int(value) -> Optional[int]:
+def _bool_to_int(value) -> int | None:
     """Convert Python bool/None to SQLite INTEGER (1/0/NULL)."""
     if value is None:
         return None
@@ -126,7 +125,7 @@ class RulesStore:
             rows = conn.execute("SELECT * FROM rules ORDER BY id").fetchall()
             return [self._hydrate(conn, row) for row in rows]
 
-    def get_by_id(self, rule_id: str) -> Optional[dict]:
+    def get_by_id(self, rule_id: str) -> dict | None:
         with _get_conn(self._db_path) as conn:
             row = conn.execute(
                 "SELECT * FROM rules WHERE id = ?", (rule_id,)
@@ -298,7 +297,7 @@ class RulesStore:
 # Module-level singleton
 # ---------------------------------------------------------------------------
 
-_store: Optional[RulesStore] = None
+_store: RulesStore | None = None
 
 
 def get_rules_store() -> RulesStore:

@@ -6,13 +6,14 @@ Tests for Q2 2026 rules:
   RULE-030 — Behavioral Health Patient Environment (CBC 2025 §1226.14, CAN 3-2024)
 """
 
-import pytest
 from pathlib import Path
-from src.parser.condition_extractor import ConditionExtractor, ProjectConditions, SeismicData
-from src.parser.pdf_parser import PDFParser
+
+import pytest
+
 from src.engine.rule_matcher import RuleMatcher
 from src.engine.severity_scorer import Severity
-
+from src.parser.condition_extractor import ConditionExtractor, ProjectConditions, SeismicData
+from src.parser.pdf_parser import PDFParser
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 RULES_FILE = DATA_DIR / "hcai_rules.json"

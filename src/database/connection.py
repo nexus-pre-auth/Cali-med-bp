@@ -17,8 +17,8 @@ Usage
 from __future__ import annotations
 
 import os
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Optional
 
 from src.monitoring.logger import get_logger
 
@@ -28,7 +28,7 @@ log = get_logger(__name__)
 # Config — resolved once at import time
 # ---------------------------------------------------------------------------
 
-def _build_url() -> Optional[str]:
+def _build_url() -> str | None:
     explicit = os.getenv("DATABASE_URL", "")
     if explicit:
         # Normalize postgres:// → postgresql+asyncpg://
@@ -45,7 +45,7 @@ def _build_url() -> Optional[str]:
     return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}"
 
 
-_DATABASE_URL: Optional[str] = _build_url()
+_DATABASE_URL: str | None = _build_url()
 
 # Lazy-initialised — only created when Postgres is actually configured
 _engine       = None
@@ -69,7 +69,7 @@ def _get_engine():
         )
 
     try:
-        from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+        from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
         _engine = create_async_engine(
             _DATABASE_URL,
@@ -101,7 +101,6 @@ async def get_db() -> AsyncGenerator:
         result = await session.execute(...)
     """
     _get_engine()   # ensure engine initialised
-    from sqlalchemy.ext.asyncio import AsyncSession
 
     async with _SessionLocal() as session:
         try:

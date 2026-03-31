@@ -5,32 +5,30 @@ Pydantic models for API request/response contracts.
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
-from typing import Optional
+from enum import StrEnum
 from uuid import UUID
 
 from pydantic import BaseModel, Field
-
 
 # ---------------------------------------------------------------------------
 # Shared enums
 # ---------------------------------------------------------------------------
 
-class SeverityEnum(str, Enum):
+class SeverityEnum(StrEnum):
     critical = "Critical"
     high     = "High"
     medium   = "Medium"
     low      = "Low"
 
 
-class JobStatus(str, Enum):
+class JobStatus(StrEnum):
     pending    = "pending"
     processing = "processing"
     complete   = "complete"
     failed     = "failed"
 
 
-class OutputFormat(str, Enum):
+class OutputFormat(StrEnum):
     text = "text"
     json = "json"
     html = "html"
@@ -44,26 +42,26 @@ class OutputFormat(str, Enum):
 
 class ReviewRequest(BaseModel):
     project_name: str = Field(default="Healthcare Project", description="Human-readable project name")
-    text: Optional[str] = Field(default=None, description="Inline project description text")
+    text: str | None = Field(default=None, description="Inline project description text")
     format: OutputFormat = Field(default=OutputFormat.all, description="Report output format")
     no_rag: bool = Field(default=False, description="Skip RAG enrichment for faster (template-based) results")
 
 
 class SeismicInfo(BaseModel):
-    seismic_zone: Optional[str] = None
-    sds: Optional[float] = None
-    sd1: Optional[float] = None
-    importance_factor: Optional[float] = None
-    site_class: Optional[str] = None
+    seismic_zone: str | None = None
+    sds: float | None = None
+    sd1: float | None = None
+    importance_factor: float | None = None
+    site_class: str | None = None
 
 
 class ExtractedConditions(BaseModel):
-    occupancy_type: Optional[str]
-    construction_type: Optional[str]
-    sprinklered: Optional[bool]
-    licensed_beds: Optional[int]
-    county: Optional[str]
-    city: Optional[str]
+    occupancy_type: str | None
+    construction_type: str | None
+    sprinklered: bool | None
+    licensed_beds: int | None
+    county: str | None
+    city: str | None
     seismic: SeismicInfo
     hvac_systems: list[str]
     electrical_systems: list[str]
@@ -81,7 +79,7 @@ class ViolationResponse(BaseModel):
     ahj_comment: str
     fix_instructions: str
     citations: list[str]
-    confidence: Optional[float] = None
+    confidence: float | None = None
 
 
 class SeveritySummary(BaseModel):
@@ -101,13 +99,13 @@ class ReviewResponse(BaseModel):
     project_name: str
     status: JobStatus
     created_at: datetime
-    completed_at: Optional[datetime] = None
-    conditions: Optional[ExtractedConditions] = None
-    summary: Optional[ReviewSummary] = None
+    completed_at: datetime | None = None
+    conditions: ExtractedConditions | None = None
+    summary: ReviewSummary | None = None
     violations: list[ViolationResponse] = []
     report_urls: dict[str, str] = {}
-    metrics: Optional[dict] = None
-    error: Optional[str] = None
+    metrics: dict | None = None
+    error: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -118,8 +116,8 @@ class JobStatusResponse(BaseModel):
     job_id: UUID
     status: JobStatus
     created_at: datetime
-    completed_at: Optional[datetime] = None
-    error: Optional[str] = None
+    completed_at: datetime | None = None
+    error: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -144,17 +142,17 @@ class RuleResponse(BaseModel):
     description: str
     violation_template: str = ""
     fix_template: str = ""
-    severity_override: Optional[str] = None
-    min_licensed_beds: Optional[int] = None
-    min_building_height_ft: Optional[float] = None
-    min_stories: Optional[int] = None
+    severity_override: str | None = None
+    min_licensed_beds: int | None = None
+    min_building_height_ft: float | None = None
+    min_stories: int | None = None
     is_active: bool = True
     trigger_occupancies: list[str] = []
     trigger_systems: list[str] = []
     trigger_rooms: list[str] = []
     trigger_seismic_zones: list[str] = []
     trigger_construction_types: list[str] = []
-    trigger_sprinklered: Optional[bool] = None
+    trigger_sprinklered: bool | None = None
     trigger_counties: list[str] = []
     trigger_cities: list[str] = []
     code_references: list[str] = []
@@ -167,16 +165,16 @@ class RuleCreateRequest(BaseModel):
     description: str = Field(..., description="Human-readable rule description")
     violation_template: str = Field(default="", description="Template text for the violation message")
     fix_template: str = Field(default="", description="Template text for remediation guidance")
-    severity_override: Optional[SeverityEnum] = Field(default=None, description="Force severity level (null = auto-scored)")
-    min_licensed_beds: Optional[int] = Field(default=None, ge=1, description="Minimum licensed beds for rule to apply")
-    min_building_height_ft: Optional[float] = Field(default=None, gt=0, description="Minimum building height (ft) for rule to apply")
-    min_stories: Optional[int] = Field(default=None, ge=1, description="Minimum stories above grade for rule to apply")
+    severity_override: SeverityEnum | None = Field(default=None, description="Force severity level (null = auto-scored)")
+    min_licensed_beds: int | None = Field(default=None, ge=1, description="Minimum licensed beds for rule to apply")
+    min_building_height_ft: float | None = Field(default=None, gt=0, description="Minimum building height (ft) for rule to apply")
+    min_stories: int | None = Field(default=None, ge=1, description="Minimum stories above grade for rule to apply")
     trigger_occupancies: list[str] = Field(default_factory=list)
     trigger_systems: list[str] = Field(default_factory=list)
     trigger_rooms: list[str] = Field(default_factory=list)
     trigger_seismic_zones: list[str] = Field(default_factory=list)
     trigger_construction_types: list[str] = Field(default_factory=list)
-    trigger_sprinklered: Optional[bool] = Field(default=None, description="True=sprinklered only, False=non-sprinklered only, null=either")
+    trigger_sprinklered: bool | None = Field(default=None, description="True=sprinklered only, False=non-sprinklered only, null=either")
     trigger_counties: list[str] = Field(default_factory=list, description="County names for local amendment scoping")
     trigger_cities: list[str] = Field(default_factory=list, description="City names for local amendment scoping")
     code_references: list[str] = Field(default_factory=list)
@@ -188,7 +186,7 @@ class RuleCreateRequest(BaseModel):
 
 class ValidationRequest(BaseModel):
     text: str
-    ground_truth: Optional[list[dict]] = None
+    ground_truth: list[dict] | None = None
 
 
 class ChecklistItemResponse(BaseModel):

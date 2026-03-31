@@ -13,12 +13,11 @@ GET /review/{job_id} for results.
 from __future__ import annotations
 
 import threading
-from datetime import datetime, timezone
-from typing import Optional, Union
+from datetime import UTC, datetime
+from typing import Union
 from uuid import UUID, uuid4
 
 from src.api.models import JobStatus, ReviewResponse
-
 
 # ---------------------------------------------------------------------------
 # In-memory fallback (also used by tests directly)
@@ -36,13 +35,13 @@ class JobStore:
             job_id=uuid4(),
             project_name=project_name,
             status=JobStatus.pending,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         with self._lock:
             self._jobs[job.job_id] = job
         return job
 
-    def get(self, job_id: UUID) -> Optional[ReviewResponse]:
+    def get(self, job_id: UUID) -> ReviewResponse | None:
         with self._lock:
             return self._jobs.get(job_id)
 
@@ -63,11 +62,11 @@ class JobStore:
 # Module-level singleton — SQLite-backed by default, in-memory as fallback
 # ---------------------------------------------------------------------------
 
-_store: Optional[Union[JobStore, "SQLiteJobStore"]] = None  # noqa: F821
+_store: Union[JobStore, SQLiteJobStore] | None = None  # noqa: F821
 _store_lock = threading.Lock()
 
 
-def get_job_store() -> Union[JobStore, "SQLiteJobStore"]:  # noqa: F821
+def get_job_store() -> Union[JobStore, SQLiteJobStore]:  # noqa: F821
     global _store
     if _store is None:
         with _store_lock:

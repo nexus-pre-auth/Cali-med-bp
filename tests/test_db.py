@@ -2,16 +2,12 @@
 
 from __future__ import annotations
 
-import json
-import tempfile
-from pathlib import Path
+import sqlite3
 
 import pytest
 
-from src.db.rules_store import RulesStore
 from src.db.migrations import run_migrations
-import sqlite3
-
+from src.db.rules_store import RulesStore
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -166,9 +162,8 @@ class TestRulesStoreWrites:
 class TestRuleMatcherUsesStore:
     def test_matcher_loads_from_db(self, seeded_store, tmp_path):
         """RuleMatcher should load rules from SQLite (via get_rules_store)."""
-        from src.engine.rule_matcher import RuleMatcher
-        from src.parser.condition_extractor import ProjectConditions, SeismicData
         import config
+        from src.engine.rule_matcher import RuleMatcher
 
         matcher = RuleMatcher(config.HCAI_RULES_FILE)
         assert len(matcher._rules) > 0

@@ -11,10 +11,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.parser.condition_extractor import ProjectConditions
-from src.engine.rule_matcher import RuleMatcher, MatchedViolation
-from src.engine.severity_scorer import Severity
 import config
+from src.engine.rule_matcher import MatchedViolation, RuleMatcher
+from src.engine.severity_scorer import Severity
+from src.parser.condition_extractor import ProjectConditions
 
 
 class DecisionEngine:

@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Guard against test-inserted rules leaking into other tests.
 # Any rule whose ID starts with "TEST-" is deactivated before the session

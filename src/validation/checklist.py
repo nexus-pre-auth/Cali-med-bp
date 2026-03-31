@@ -10,10 +10,9 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
-from src.rag.generator import EnrichedViolation
 from src.engine.severity_scorer import Severity
+from src.rag.generator import EnrichedViolation
 
 
 @dataclass
@@ -76,7 +75,7 @@ class ComplianceChecklist:
         ]
     """
 
-    def __init__(self, ground_truth_file: Optional[str | Path] = None) -> None:
+    def __init__(self, ground_truth_file: str | Path | None = None) -> None:
         self._ground_truth: list[dict] = []
         if ground_truth_file:
             p = Path(ground_truth_file)

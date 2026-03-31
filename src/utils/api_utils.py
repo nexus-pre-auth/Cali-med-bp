@@ -5,13 +5,10 @@ API utilities — retry logic, rate limiting, and response caching for Claude AP
 from __future__ import annotations
 
 import hashlib
-import json
-import time
 import threading
-from functools import lru_cache
-from typing import Any, Callable, Optional
-
-import config
+import time
+from collections.abc import Callable
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Token-bucket rate limiter
@@ -100,7 +97,7 @@ class RegulationCache:
         self._order: list[str] = []
         self._lock = threading.Lock()
 
-    def get(self, query: str, top_k: int) -> Optional[list[dict]]:
+    def get(self, query: str, top_k: int) -> list[dict] | None:
         key = _make_cache_key(query, top_k)
         with self._lock:
             return self._cache.get(key)

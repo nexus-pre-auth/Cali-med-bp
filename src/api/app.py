@@ -14,16 +14,24 @@ GET    /health                 Liveness + engine status check
 
 from __future__ import annotations
 
-import mimetypes
 import os
 import time
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Optional
 from uuid import UUID
 
-from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException, Request, UploadFile, status
+from fastapi import (
+    BackgroundTasks,
+    Depends,
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    Request,
+    UploadFile,
+    status,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -31,19 +39,19 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 import config
 from src.api.auth import require_api_key
-from src.api.jobs import get_job_store, JobStore
+from src.api.jobs import JobStore, get_job_store
 from src.api.models import (
+    ChecklistItemResponse,
     HealthResponse,
     JobStatus,
     JobStatusResponse,
     OutputFormat,
     ReviewRequest,
     ReviewResponse,
-    RuleResponse,
     RuleCreateRequest,
+    RuleResponse,
     ValidationRequest,
     ValidationResponse,
-    ChecklistItemResponse,
 )
 from src.api.runner import run_review
 from src.monitoring.audit import log_review_submitted, read_audit_log
@@ -85,7 +93,7 @@ async def _on_startup() -> None:
 
     # 3. PostgreSQL: create tables when DATABASE_URL / DB_HOST is configured
     try:
-        from src.database.connection import is_postgres_configured, create_tables
+        from src.database.connection import create_tables, is_postgres_configured
         if is_postgres_configured():
             await create_tables()
             log.info("PostgreSQL tables created / verified.")
@@ -99,7 +107,7 @@ async def _on_startup() -> None:
 async def _on_shutdown() -> None:
     """Clean up on shutdown."""
     try:
-        from src.database.connection import is_postgres_configured, dispose
+        from src.database.connection import dispose, is_postgres_configured
         if is_postgres_configured():
             await dispose()
     except Exception:
@@ -238,6 +246,7 @@ def _send_completion_email_when_ready(
     """Poll until the job completes, then send the PDF report email."""
     import time
     from uuid import UUID
+
     from src.api.email_delivery import send_report_email
 
     uid = UUID(job_id)
@@ -464,9 +473,6 @@ def _register_routes(app: FastAPI) -> None:
                 detail=f"Job is not complete yet (status: {job.status}).",
             )
 
-        ext_map = {"txt": "text", "json": "json", "html": "html", "pdf": "pdf"}
-        fmt_key = ext_map.get(fmt, fmt)
-
         report_path = config.OUTPUT_DIR / str(job_id) / f"report.{fmt}"
         if not report_path.exists():
             raise HTTPException(
@@ -527,11 +533,13 @@ def _register_routes(app: FastAPI) -> None:
         Optionally provide a `ground_truth` list of known violations
         to benchmark engine accuracy.
         """
-        import tempfile, json as _json, os
+        import json as _json
+        import os
+        import tempfile
 
-        from src.parser.pdf_parser import PDFParser
-        from src.parser.condition_extractor import ConditionExtractor
         from src.engine.decision_engine import DecisionEngine
+        from src.parser.condition_extractor import ConditionExtractor
+        from src.parser.pdf_parser import PDFParser
         from src.rag.generator import AHJCommentGenerator
         from src.validation.checklist import ComplianceChecklist
 
@@ -595,7 +603,7 @@ def _register_routes(app: FastAPI) -> None:
         tags=["Rules"],
     )
     async def list_rules(
-        discipline: Optional[str] = None,
+        discipline: str | None = None,
         active_only: bool = True,
         _api_key: str = Depends(require_api_key),
     ) -> list[dict]:
@@ -708,8 +716,8 @@ def _register_routes(app: FastAPI) -> None:
         store: JobStore = Depends(get_job_store),
         project_name: str = Form(...),
         email: str = Form(...),
-        file: Optional[UploadFile] = File(default=None),
-        text: Optional[str] = Form(default=None),
+        file: UploadFile | None = File(default=None),
+        text: str | None = Form(default=None),
     ) -> dict:
         """
         Create a Stripe Checkout session and (in dev mode) start a review job.
@@ -717,8 +725,9 @@ def _register_routes(app: FastAPI) -> None:
         Returns { checkout_url, job_id }. If Stripe is not configured,
         checkout_url is null and the job starts immediately.
         """
-        from src.api.billing import create_checkout_session
         import uuid
+
+        from src.api.billing import create_checkout_session
 
         if not file and not (text and text.strip()):
             raise HTTPException(status_code=400, detail="Provide a file or text.")
@@ -726,11 +735,11 @@ def _register_routes(app: FastAPI) -> None:
         job_id = str(uuid.uuid4())
 
         # Save uploaded file to temp location
-        temp_file_path: Optional[str] = None
-        pasted_text: Optional[str] = None
+        temp_file_path: str | None = None
+        pasted_text: str | None = None
 
         if file and file.filename:
-            import tempfile, os as _os
+            import tempfile
             suffix = Path(file.filename).suffix or ".pdf"
             with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
                 tmp.write(await file.read())
@@ -754,12 +763,11 @@ def _register_routes(app: FastAPI) -> None:
         # Dev mode — no Stripe configured, start job immediately
         job = store.create(project_name)
         # Override the auto-generated UUID so job_id matches what we advertised
-        import config
         from uuid import UUID
         job.job_id = UUID(job_id)
         store.update(job)
 
-        pdf_bytes: Optional[bytes] = None
+        pdf_bytes: bytes | None = None
         if temp_file_path:
             with open(temp_file_path, "rb") as f:
                 pdf_bytes = f.read()
@@ -789,8 +797,9 @@ def _register_routes(app: FastAPI) -> None:
         store: JobStore = Depends(get_job_store),
     ) -> dict:
         """Stripe webhook — fires after successful payment, starts the review job."""
-        from src.api.billing import handle_webhook
         from uuid import UUID
+
+        from src.api.billing import handle_webhook
 
         payload    = await request.body()
         sig_header = request.headers.get("stripe-signature", "")
@@ -807,7 +816,7 @@ def _register_routes(app: FastAPI) -> None:
             job.job_id = UUID(order.job_id)
             store.update(job)
 
-        pdf_bytes: Optional[bytes] = None
+        pdf_bytes: bytes | None = None
         if order.temp_file_path:
             import os as _os3
             try:
@@ -855,8 +864,8 @@ def _register_routes(app: FastAPI) -> None:
         response_model=list[dict],
     )
     async def get_audit_log(
-        event: Optional[str] = None,
-        job_id: Optional[str] = None,
+        event: str | None = None,
+        job_id: str | None = None,
         limit: int = 100,
         _api_key: str = Depends(require_api_key),
     ) -> list[dict]:

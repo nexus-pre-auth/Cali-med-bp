@@ -25,10 +25,9 @@ import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
-from src.parser.condition_extractor import ProjectConditions
 from src.engine.severity_scorer import Severity, score_violation
+from src.parser.condition_extractor import ProjectConditions
 
 
 @dataclass
@@ -42,7 +41,7 @@ class MatchedViolation:
     fix_text: str
     code_references: list[str] = field(default_factory=list)
     # Populated later by RAG layer
-    ahj_comment: Optional[str] = None
+    ahj_comment: str | None = None
     rag_citations: list[str] = field(default_factory=list)
 
 
@@ -151,48 +150,38 @@ class RuleMatcher:
 
         # Licensed beds threshold
         min_beds = rule.get("min_licensed_beds")
-        if min_beds is not None:
-            if c.licensed_beds is None or c.licensed_beds < min_beds:
-                return False
+        if min_beds is not None and (c.licensed_beds is None or c.licensed_beds < min_beds):
+            return False
 
         # Sprinkler status filter (None = applies regardless)
         req_sprinkled = rule.get("trigger_sprinklered")
-        if req_sprinkled is not None and c.sprinklered is not None:
-            if bool(req_sprinkled) != c.sprinklered:
-                return False
+        if req_sprinkled is not None and c.sprinklered is not None and bool(req_sprinkled) != c.sprinklered:
+            return False
 
         # Building height threshold
         min_height = rule.get("min_building_height_ft")
-        if min_height is not None:
-            if c.building_height_ft is None or c.building_height_ft < min_height:
-                return False
+        if min_height is not None and (c.building_height_ft is None or c.building_height_ft < min_height):
+            return False
 
         # Stories above grade threshold
         min_stories = rule.get("min_stories")
-        if min_stories is not None:
-            if c.stories_above_grade is None or c.stories_above_grade < min_stories:
-                return False
+        if min_stories is not None and (c.stories_above_grade is None or c.stories_above_grade < min_stories):
+            return False
 
         # County filter (any match = include; empty = all counties)
         # When county filter is set, unknown county does NOT satisfy the rule.
         county_filter = rule.get("trigger_counties", [])
-        if county_filter:
-            if not c.county or not any(cf.lower() == c.county.lower() for cf in county_filter):
-                return False
+        if county_filter and (not c.county or not any(cf.lower() == c.county.lower() for cf in county_filter)):
+            return False
 
         # City filter (any match = include; empty = all cities)
         # When city filter is set, unknown city does NOT satisfy the rule.
         city_filter = rule.get("trigger_cities", [])
-        if city_filter:
-            if not c.city or not any(cf.lower() == c.city.lower() for cf in city_filter):
-                return False
+        if city_filter and (not c.city or not any(cf.lower() == c.city.lower() for cf in city_filter)):
+            return False
 
         # WUI / Wildfire zone filter — only fires when wui_zone is explicitly True
-        if rule.get("trigger_wui"):
-            if not c.wui_zone:
-                return False
-
-        return True
+        return not (rule.get("trigger_wui") and not c.wui_zone)
 
     def _render(self, template: str, c: ProjectConditions) -> str:
         """Simple template substitution for rule text."""

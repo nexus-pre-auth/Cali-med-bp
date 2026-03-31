@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import time
-from pathlib import Path
+from datetime import UTC
 from uuid import uuid4
 
 import pytest
 
-from src.api.models import JobStatus, ReviewResponse
+from src.api.models import JobStatus
 from src.db.job_store import SQLiteJobStore
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -55,10 +53,10 @@ class TestSQLiteJobStore:
         assert fetched.status == JobStatus.processing
 
     def test_update_complete_with_violations(self, store):
-        from datetime import datetime, timezone
+        from datetime import datetime
         job = store.create("Sunrise Hospital")
         job.status = JobStatus.complete
-        job.completed_at = datetime.now(timezone.utc)
+        job.completed_at = datetime.now(UTC)
         store.update(job)
 
         fetched = store.get(job.job_id)
@@ -77,7 +75,7 @@ class TestSQLiteJobStore:
 
     def test_list_recent_returns_newest_first(self, store):
         j1 = store.create("Alpha")
-        j2 = store.create("Beta")
+        store.create("Beta")
         j3 = store.create("Gamma")
 
         jobs = store.list_recent(limit=10)
@@ -151,6 +149,7 @@ class TestRateLimitMiddleware:
 
         # Re-import to pick up new env vars
         import importlib
+
         import src.api.app as app_module
         importlib.reload(app_module)
         app = app_module.create_app()

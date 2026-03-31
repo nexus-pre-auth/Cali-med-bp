@@ -25,11 +25,9 @@ RULE_LOADED         — rules dataset loaded at startup
 from __future__ import annotations
 
 import json
-import os
 import threading
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Optional
+from datetime import UTC, datetime
+from typing import Any
 from uuid import UUID
 
 import config
@@ -45,16 +43,15 @@ _lock = threading.Lock()
 def _write(event: str, payload: dict[str, Any]) -> None:
     """Append a single audit record (thread-safe)."""
     record = {
-        "ts":    datetime.now(timezone.utc).isoformat(),
+        "ts":    datetime.now(UTC).isoformat(),
         "event": event,
         **payload,
     }
     line = json.dumps(record, default=str) + "\n"
 
     _AUDIT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with _lock:
-        with open(_AUDIT_PATH, "a", encoding="utf-8") as f:
-            f.write(line)
+    with _lock, open(_AUDIT_PATH, "a", encoding="utf-8") as f:
+        f.write(line)
 
 
 # ---------------------------------------------------------------------------
@@ -65,8 +62,8 @@ def log_review_submitted(
     job_id: str | UUID,
     project_name: str,
     source: str,            # "api_text" | "api_pdf" | "cli"
-    api_key_hint: Optional[str] = None,  # first 8 chars only — never full key
-    filename: Optional[str] = None,
+    api_key_hint: str | None = None,  # first 8 chars only — never full key
+    filename: str | None = None,
 ) -> None:
     _write("REVIEW_SUBMITTED", {
         "job_id":       str(job_id),
@@ -80,7 +77,7 @@ def log_review_submitted(
 def log_review_complete(
     job_id: str | UUID,
     project_name: str,
-    occupancy_type: Optional[str],
+    occupancy_type: str | None,
     total_violations: int,
     by_severity: dict[str, int],
     elapsed_ms: float,
@@ -168,8 +165,8 @@ def log_rule_loaded(
 # ---------------------------------------------------------------------------
 
 def read_audit_log(
-    event_filter: Optional[str] = None,
-    job_id_filter: Optional[str] = None,
+    event_filter: str | None = None,
+    job_id_filter: str | None = None,
     limit: int = 1000,
 ) -> list[dict]:
     """
@@ -222,7 +219,7 @@ def trim_audit_log(keep_days: int = 90) -> int:
     if not _AUDIT_PATH.exists():
         return 0
 
-    cutoff = datetime.now(timezone.utc).timestamp() - keep_days * 86_400
+    cutoff = datetime.now(UTC).timestamp() - keep_days * 86_400
     kept: list[str] = []
     removed = 0
 
@@ -243,8 +240,7 @@ def trim_audit_log(keep_days: int = 90) -> int:
             kept.append(line if line.endswith("\n") else line + "\n")
 
     if removed:
-        with _lock:
-            with open(_AUDIT_PATH, "w", encoding="utf-8") as f:
-                f.writelines(kept)
+        with _lock, open(_AUDIT_PATH, "w", encoding="utf-8") as f:
+            f.writelines(kept)
 
     return removed

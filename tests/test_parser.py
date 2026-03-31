@@ -1,13 +1,11 @@
 """Tests for the PDF parser and condition extractor."""
 
-import io
-import textwrap
 from unittest.mock import MagicMock, patch
 
 import pytest
-from src.parser.pdf_parser import PDFParser, _ocr_pdf_pages
-from src.parser.condition_extractor import ConditionExtractor
 
+from src.parser.condition_extractor import ConditionExtractor
+from src.parser.pdf_parser import PDFParser, _ocr_pdf_pages
 
 SAMPLE_TEXT = """
 PROJECT: Valley General Hospital — New Patient Tower
@@ -104,8 +102,9 @@ class TestOCRFallback:
         an empty page (simulating a scanned page with no extractable text).
         """
         try:
-            import reportlab.pdfgen.canvas as rlcanvas
             import io as _io
+
+            import reportlab.pdfgen.canvas as rlcanvas
             buf = _io.BytesIO()
             c = rlcanvas.Canvas(buf, pagesize=(612, 792))
             c.save()
@@ -168,7 +167,7 @@ class TestOCRFallback:
         Patches pdfplumber.open at the module level so the test runs even
         when pdfplumber is not installed in the test environment.
         """
-        pdfplumber = pytest.importorskip("pdfplumber", reason="pdfplumber not installed")
+        pytest.importorskip("pdfplumber", reason="pdfplumber not installed")
 
         import src.parser.pdf_parser as mod
         original_has_ocr = mod.HAS_OCR

@@ -6,8 +6,8 @@ by using a fresh OrderStore instance pointed at the same DB file.
 """
 
 import sqlite3
+
 import pytest
-from pathlib import Path
 
 from src.db.migrations import run_migrations
 from src.db.order_store import OrderStore

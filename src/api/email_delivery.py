@@ -24,7 +24,6 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
-from typing import Optional
 
 from src.monitoring.logger import get_logger
 
@@ -51,7 +50,7 @@ def send_report_email(
     to_email: str,
     project_name: str,
     job_id: str,
-    pdf_path: Optional[Path],
+    pdf_path: Path | None,
     total_violations: int,
     critical_count: int,
     high_count: int,

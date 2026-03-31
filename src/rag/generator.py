@@ -9,8 +9,8 @@ Uses Claude API + retrieved regulatory passages to generate:
 
 from __future__ import annotations
 
+import contextlib
 from dataclasses import dataclass
-from typing import Optional
 
 import config
 from src.engine.rule_matcher import MatchedViolation
@@ -96,8 +96,8 @@ class AHJCommentGenerator:
 
     def __init__(
         self,
-        knowledge_base: Optional[HCAIKnowledgeBase] = None,
-        api_key: Optional[str] = None,
+        knowledge_base: HCAIKnowledgeBase | None = None,
+        api_key: str | None = None,
     ) -> None:
         self._kb = knowledge_base
         api_key = api_key or config.ANTHROPIC_API_KEY
@@ -119,10 +119,8 @@ class AHJCommentGenerator:
         query = f"{violation.discipline} {violation.description} {' '.join(violation.code_references)}"
         rag_passages: list[dict] = []
         if self._kb:
-            try:
+            with contextlib.suppress(Exception):
                 rag_passages = self._kb.query(query, top_k=config.RAG_TOP_K)
-            except Exception:
-                pass
 
         rag_texts = [p["text"] for p in rag_passages]
 
@@ -169,7 +167,7 @@ class AHJCommentGenerator:
         self,
         violation: MatchedViolation,
         rag_texts: list[str],
-        error: Optional[str] = None,
+        error: str | None = None,
     ) -> EnrichedViolation:
         """Template-based fallback when Claude API is unavailable."""
         refs = ", ".join(violation.code_references) if violation.code_references else "applicable code"

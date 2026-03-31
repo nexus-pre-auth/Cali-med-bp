@@ -14,7 +14,6 @@ import sqlite3
 import threading
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional
 
 import config
 from src.monitoring.logger import get_logger
@@ -48,8 +47,8 @@ class OrderStore:
         job_id: str,
         project_name: str,
         customer_email: str,
-        temp_file_path: Optional[str],
-        pasted_text: Optional[str],
+        temp_file_path: str | None,
+        pasted_text: str | None,
     ) -> None:
         """Persist a pending Stripe order. Idempotent on session_id."""
         with _lock, _conn(self._db_path) as conn:
@@ -65,7 +64,7 @@ class OrderStore:
             )
             conn.commit()
 
-    def pop_pending(self, session_id: str) -> Optional[dict]:
+    def pop_pending(self, session_id: str) -> dict | None:
         """
         Retrieve and remove a pending order by Stripe session ID.
         Returns None if not found or already completed.
@@ -97,7 +96,7 @@ class OrderStore:
             )
             conn.commit()
 
-    def get_job_for_session(self, session_id: str) -> Optional[str]:
+    def get_job_for_session(self, session_id: str) -> str | None:
         """Return the job_id for a completed Stripe session, or None."""
         with _conn(self._db_path) as conn:
             row = conn.execute(
@@ -111,7 +110,7 @@ class OrderStore:
 # Module singleton
 # ---------------------------------------------------------------------------
 
-_store: Optional[OrderStore] = None
+_store: OrderStore | None = None
 
 
 def get_order_store() -> OrderStore:

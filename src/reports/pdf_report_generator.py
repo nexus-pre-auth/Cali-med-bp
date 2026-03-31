@@ -8,12 +8,11 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 import config
-from src.rag.generator import EnrichedViolation
 from src.engine.severity_scorer import Severity
 from src.parser.condition_extractor import ProjectConditions
+from src.rag.generator import EnrichedViolation
 
 try:
     from reportlab.lib import colors
@@ -24,7 +23,6 @@ try:
     from reportlab.platypus import (
         HRFlowable,
         KeepTogether,
-        PageBreak,
         Paragraph,
         SimpleDocTemplate,
         Spacer,
@@ -154,7 +152,7 @@ def render_pdf_report(
     enriched: list[EnrichedViolation],
     conditions: ProjectConditions,
     project_name: str = "Healthcare Project",
-    output_path: Optional[str | Path] = None,
+    output_path: str | Path | None = None,
 ) -> Path:
     """
     Build an HCAI-style official PDF report.
@@ -189,7 +187,7 @@ def render_pdf_report(
     # Cover header block (navy background table)
     # ------------------------------------------------------------------
     header_data = [[
-        Paragraph(f"HCAI Plan Review — Compliance Report", st["Title"]),
+        Paragraph("HCAI Plan Review — Compliance Report", st["Title"]),
     ]]
     header_tbl = Table(header_data, colWidths=[doc.width])
     header_tbl.setStyle(TableStyle([

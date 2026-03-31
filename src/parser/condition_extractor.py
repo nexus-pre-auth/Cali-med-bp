@@ -14,10 +14,8 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Optional
 
 from src.parser.pdf_parser import ParsedDocument
-
 
 # ---------------------------------------------------------------------------
 # Data models
@@ -25,26 +23,26 @@ from src.parser.pdf_parser import ParsedDocument
 
 @dataclass
 class SeismicData:
-    seismic_zone: Optional[str] = None      # e.g. "D", "E"
-    sds: Optional[float] = None             # Design spectral response Ss
-    sd1: Optional[float] = None             # Design spectral response S1
-    importance_factor: Optional[float] = None  # Ip
-    site_class: Optional[str] = None        # A–F
+    seismic_zone: str | None = None      # e.g. "D", "E"
+    sds: float | None = None             # Design spectral response Ss
+    sd1: float | None = None             # Design spectral response S1
+    importance_factor: float | None = None  # Ip
+    site_class: str | None = None        # A–F
 
 
 @dataclass
 class ProjectConditions:
     """Structured conditions extracted from project documents."""
     # Occupancy
-    occupancy_type: Optional[str] = None        # e.g. "Occupied Hospital"
-    facility_type: Optional[str] = None         # e.g. "Acute Care", "Clinic"
-    licensed_beds: Optional[int] = None
+    occupancy_type: str | None = None        # e.g. "Occupied Hospital"
+    facility_type: str | None = None         # e.g. "Acute Care", "Clinic"
+    licensed_beds: int | None = None
 
     # Construction
-    construction_type: Optional[str] = None     # e.g. "Type I-A"
-    sprinklered: Optional[bool] = None
-    building_height_ft: Optional[float] = None
-    stories_above_grade: Optional[int] = None
+    construction_type: str | None = None     # e.g. "Type I-A"
+    sprinklered: bool | None = None
+    building_height_ft: float | None = None
+    stories_above_grade: int | None = None
 
     # Systems identified
     hvac_systems: list[str] = field(default_factory=list)
@@ -59,12 +57,12 @@ class ProjectConditions:
     seismic: SeismicData = field(default_factory=SeismicData)
 
     # Location
-    county: Optional[str] = None
-    city: Optional[str] = None
+    county: str | None = None
+    city: str | None = None
     state: str = "California"
 
     # Wildfire / WUI zone flag
-    wui_zone: Optional[bool] = None   # True = project is in a Wildland-Urban Interface zone
+    wui_zone: bool | None = None   # True = project is in a Wildland-Urban Interface zone
 
     # Raw extraction confidence
     raw_snippets: dict[str, list[str]] = field(default_factory=dict)

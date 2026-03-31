@@ -17,16 +17,17 @@ Usage in FastAPI
 
 from __future__ import annotations
 
-import json
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import select, update, func
+from sqlalchemy import func, select
 
-from src.api.models import JobStatus, ReviewResponse, ReviewSummary, SeveritySummary, ViolationResponse
+from src.api.models import (
+    JobStatus,
+    ReviewResponse,
+)
 from src.database.connection import get_db
-from src.database.models import Job, Violation, ExtractedCondition
+from src.database.models import ExtractedCondition, Job, Violation
 from src.monitoring.logger import get_logger
 
 log = get_logger(__name__)
@@ -35,9 +36,9 @@ log = get_logger(__name__)
 class PgJobStore:
     """Async, PostgreSQL-backed implementation of the JobStore interface."""
 
-    async def create(self, project_name: str, customer_email: Optional[str] = None) -> ReviewResponse:
+    async def create(self, project_name: str, customer_email: str | None = None) -> ReviewResponse:
         job_id = uuid4()
-        now    = datetime.now(timezone.utc)
+        now    = datetime.now(UTC)
         async with get_db() as db:
             db_job = Job(
                 id=job_id,
@@ -55,7 +56,7 @@ class PgJobStore:
             created_at=now,
         )
 
-    async def get(self, job_id: UUID) -> Optional[ReviewResponse]:
+    async def get(self, job_id: UUID) -> ReviewResponse | None:
         async with get_db() as db:
             row = await db.get(Job, job_id)
             if row is None:

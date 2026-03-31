@@ -7,9 +7,8 @@ Called from FastAPI's BackgroundTasks so it runs off the request thread.
 from __future__ import annotations
 
 import traceback
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 from uuid import UUID
 
 import config
@@ -17,13 +16,12 @@ from src.api.jobs import JobStore
 from src.api.models import (
     ExtractedConditions,
     JobStatus,
-    ReviewResponse,
+    OutputFormat,
     ReviewSummary,
     SeismicInfo,
+    SeverityEnum,
     SeveritySummary,
     ViolationResponse,
-    SeverityEnum,
-    OutputFormat,
 )
 from src.engine.confidence_scorer import ConfidenceScorer
 from src.engine.decision_engine import DecisionEngine
@@ -53,7 +51,7 @@ def _build_report_urls(paths: dict, job_id: UUID, base_url: str) -> dict[str, st
         "pdf":  "pdf",
     }
     urls = {}
-    for fmt, path in paths.items():
+    for fmt, _path in paths.items():
         ext = fmt_map.get(fmt, fmt)
         urls[fmt] = f"{base_url}/review/{job_id}/report/{ext}"
     return urls
@@ -63,9 +61,9 @@ def run_review(
     job_id: UUID,
     store: JobStore,
     project_name: str,
-    text: Optional[str],
-    pdf_bytes: Optional[bytes],
-    pdf_filename: Optional[str],
+    text: str | None,
+    pdf_bytes: bytes | None,
+    pdf_filename: str | None,
     no_rag: bool,
     fmt: OutputFormat,
     base_url: str,
@@ -92,7 +90,8 @@ def run_review(
 
         with metrics.timer("pdf_parse"):
             if pdf_bytes:
-                import tempfile, os
+                import os
+                import tempfile
                 with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
                     tmp.write(pdf_bytes)
                     tmp_path = tmp.name
@@ -158,7 +157,7 @@ def run_review(
 
         # --- Build response ---
         sev_counts = SeveritySummary(
-            **{k: v for k, v in metrics.violations_by_severity.items()}
+            **dict(metrics.violations_by_severity)
         )
 
         violation_responses = [
@@ -201,7 +200,7 @@ def run_review(
         job.report_urls = _build_report_urls(paths, job_id, base_url)
         job.metrics     = metrics.summary()
         job.status      = JobStatus.complete
-        job.completed_at = datetime.now(timezone.utc)
+        job.completed_at = datetime.now(UTC)
 
         # Audit — per-violation records
         for ev in enriched:
@@ -244,6 +243,6 @@ def run_review(
         log_review_failed(job_id=job_id, project_name=project_name, error=str(exc))
         job.status    = JobStatus.failed
         job.error     = str(exc)
-        job.completed_at = datetime.now(timezone.utc)
+        job.completed_at = datetime.now(UTC)
 
     store.update(job)

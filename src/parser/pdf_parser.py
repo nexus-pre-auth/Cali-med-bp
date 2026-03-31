@@ -4,10 +4,8 @@ PDF Parser — extracts raw text and structured data from project drawings and s
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 from src.monitoring.logger import get_logger
 

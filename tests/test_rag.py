@@ -1,10 +1,11 @@
 """Tests for the RAG generator (fallback mode — no Claude API required)."""
 
 import pytest
-from src.parser.condition_extractor import ProjectConditions, SeismicData
+
 from src.engine.decision_engine import DecisionEngine
-from src.rag.generator import AHJCommentGenerator, EnrichedViolation
 from src.engine.severity_scorer import Severity
+from src.parser.condition_extractor import ProjectConditions, SeismicData
+from src.rag.generator import AHJCommentGenerator
 
 
 @pytest.fixture

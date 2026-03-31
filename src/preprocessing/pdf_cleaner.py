@@ -12,10 +12,7 @@ optional dependencies (Pillow) are unavailable.
 
 from __future__ import annotations
 
-import io
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Optional
 
 from src.monitoring.logger import get_logger
 
@@ -26,12 +23,6 @@ try:
     HAS_PILLOW = True
 except ImportError:
     HAS_PILLOW = False
-
-try:
-    import pdfplumber
-    HAS_PDFPLUMBER = True
-except ImportError:
-    HAS_PDFPLUMBER = False
 
 
 @dataclass
@@ -70,13 +61,12 @@ class PDFCleaner:
     # Public interface
     # ------------------------------------------------------------------
 
-    def clean_image(self, image: "Image.Image") -> tuple["Image.Image", CleanResult]:
+    def clean_image(self, image: Image.Image) -> tuple[Image.Image, CleanResult]:
         """
         Apply preprocessing steps to a PIL Image (single PDF page).
         Returns (processed_image, CleanResult).
         """
         if not HAS_PILLOW:
-            from PIL import Image as _Image  # type: ignore[import]
             return image, CleanResult(0, 0, False, False, "Pillow unavailable")
 
         result = CleanResult(
@@ -105,7 +95,7 @@ class PDFCleaner:
 
         return img, result
 
-    def detect_orientation(self, image: "Image.Image") -> int:
+    def detect_orientation(self, image: Image.Image) -> int:
         """
         Estimate page rotation in degrees (0, 90, 180, 270).
         Uses a simple heuristic based on image aspect ratio and edge density.
@@ -120,13 +110,13 @@ class PDFCleaner:
             return 90
         return 0
 
-    def enhance_contrast(self, image: "Image.Image") -> "Image.Image":
+    def enhance_contrast(self, image: Image.Image) -> Image.Image:
         """Increase contrast of a PIL Image. Returns unchanged if Pillow unavailable."""
         if not HAS_PILLOW:
             return image
         return self._apply_contrast(image)
 
-    def deskew(self, image: "Image.Image") -> "Image.Image":
+    def deskew(self, image: Image.Image) -> Image.Image:
         """Apply deskew correction to a PIL Image."""
         if not HAS_PILLOW:
             return image
@@ -137,7 +127,7 @@ class PDFCleaner:
     # Internal
     # ------------------------------------------------------------------
 
-    def _apply_contrast(self, image: "Image.Image") -> "Image.Image":
+    def _apply_contrast(self, image: Image.Image) -> Image.Image:
         try:
             enhancer = ImageEnhance.Contrast(image)
             return enhancer.enhance(self._contrast_factor)
@@ -145,17 +135,16 @@ class PDFCleaner:
             log.debug("Contrast enhancement failed: %s", e)
             return image
 
-    def _apply_deskew(self, image: "Image.Image") -> tuple["Image.Image", bool]:
+    def _apply_deskew(self, image: Image.Image) -> tuple[Image.Image, bool]:
         """
         Minimal deskew: detect dominant text angle via edge analysis
         and rotate to correct. Falls back gracefully.
         """
         try:
-            import math
 
             gray = image.convert("L")
             # Sobel-like edge detection using Pillow filters
-            edges = gray.filter(ImageFilter.FIND_EDGES)
+            gray.filter(ImageFilter.FIND_EDGES)
 
             # Compute a simple skew angle heuristic via projection
             # (full Hough transform is beyond scope here)

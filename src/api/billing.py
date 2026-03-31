@@ -28,7 +28,6 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Optional
 
 from src.db.order_store import get_order_store
 from src.monitoring.logger import get_logger
@@ -63,12 +62,12 @@ class PendingOrder:
     job_id: str
     project_name: str
     customer_email: str
-    temp_file_path: Optional[str]
-    pasted_text: Optional[str]
+    temp_file_path: str | None
+    pasted_text: str | None
     session_id: str
 
 
-def lookup_job_for_session(session_id: str) -> Optional[str]:
+def lookup_job_for_session(session_id: str) -> str | None:
     return get_order_store().get_job_for_session(session_id)
 
 
@@ -80,9 +79,9 @@ def create_checkout_session(
     job_id: str,
     project_name: str,
     customer_email: str,
-    temp_file_path: Optional[str],
-    pasted_text: Optional[str],
-) -> Optional[str]:
+    temp_file_path: str | None,
+    pasted_text: str | None,
+) -> str | None:
     """
     Create a Stripe Checkout session for one $49 report.
 
@@ -138,7 +137,7 @@ def create_checkout_session(
 # Webhook handler
 # ---------------------------------------------------------------------------
 
-def handle_webhook(payload: bytes, sig_header: str) -> Optional[PendingOrder]:
+def handle_webhook(payload: bytes, sig_header: str) -> PendingOrder | None:
     """
     Validate and process a Stripe webhook event.
 

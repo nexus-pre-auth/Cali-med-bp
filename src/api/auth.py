@@ -13,7 +13,6 @@ A warning is logged on startup.
 from __future__ import annotations
 
 import os
-from typing import Optional
 
 from fastapi import HTTPException, Security, status
 from fastapi.security import APIKeyHeader
@@ -41,7 +40,7 @@ if not _VALID_KEYS:
     )
 
 
-async def require_api_key(api_key: Optional[str] = Security(_API_KEY_HEADER)) -> str:
+async def require_api_key(api_key: str | None = Security(_API_KEY_HEADER)) -> str:
     """
     FastAPI dependency. Validates X-API-Key header.
     Pass-through when no keys are configured (dev mode).

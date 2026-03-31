@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 import json
-import tempfile
-from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
@@ -73,7 +70,7 @@ class TestAuditWriter:
     def test_multiple_entries_appended(self, tmp_audit):
         for i in range(3):
             audit_module.log_review_submitted(f"job-{i}", f"Project {i}", "cli")
-        lines = [l for l in tmp_audit.read_text().strip().split("\n") if l]
+        lines = [line for line in tmp_audit.read_text().strip().split("\n") if line]
         assert len(lines) == 3
 
     def test_all_entries_valid_json(self, tmp_audit):

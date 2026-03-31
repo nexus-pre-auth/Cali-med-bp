@@ -18,6 +18,7 @@ Usage:
 from __future__ import annotations
 
 import sys
+from datetime import UTC
 from pathlib import Path
 
 import click
@@ -25,8 +26,6 @@ import click
 try:
     from rich.console import Console
     from rich.table import Table
-    from rich.panel import Panel
-    from rich import print as rprint
     HAS_RICH = True
 except ImportError:
     HAS_RICH = False
@@ -93,18 +92,18 @@ def review(
     _banner()
 
     import config
-    from src.parser.pdf_parser import PDFParser
-    from src.parser.condition_extractor import ConditionExtractor
-    from src.engine.decision_engine import DecisionEngine
     from src.engine.confidence_scorer import ConfidenceScorer
-    from src.rag.generator import AHJCommentGenerator
-    from src.reports.report_generator import ReportWriter
-    from src.reports.pdf_report_generator import render_pdf_report
+    from src.engine.decision_engine import DecisionEngine
+    from src.monitoring.logger import get_logger
     from src.monitoring.metrics import SessionMetrics
     from src.notifications.webhook import WebhookNotifier
-    from src.monitoring.logger import get_logger
+    from src.parser.condition_extractor import ConditionExtractor
+    from src.parser.pdf_parser import PDFParser
+    from src.rag.generator import AHJCommentGenerator
+    from src.reports.pdf_report_generator import render_pdf_report
+    from src.reports.report_generator import ReportWriter
 
-    log = get_logger("main")
+    get_logger("main")
     metrics = SessionMetrics()
     scorer = ConfidenceScorer()
 
@@ -254,11 +253,10 @@ def validate(input_path: str | None, raw_text: str | None, ground_truth: str | N
     """Run validation checklist to measure engine accuracy."""
     _banner()
 
-    from src.parser.pdf_parser import PDFParser
-    from src.parser.condition_extractor import ConditionExtractor
     from src.engine.decision_engine import DecisionEngine
+    from src.parser.condition_extractor import ConditionExtractor
+    from src.parser.pdf_parser import PDFParser
     from src.rag.generator import AHJCommentGenerator
-    from src.validation.checklist import ComplianceChecklist
 
     parser = PDFParser()
     extractor = ConditionExtractor()
@@ -323,8 +321,8 @@ def cleanup(jobs_days: int, audit_days: int, dry_run: bool) -> None:
         from src.db.job_store import get_sqlite_job_store
         store = get_sqlite_job_store()
         if dry_run:
-            from datetime import timedelta, datetime, timezone
-            cutoff = (datetime.now(timezone.utc) - timedelta(days=jobs_days)).isoformat()
+            from datetime import datetime, timedelta
+            cutoff = (datetime.now(UTC) - timedelta(days=jobs_days)).isoformat()
             import sqlite3
             conn = sqlite3.connect(str(store._db_path))
             count = conn.execute(
@@ -340,13 +338,13 @@ def cleanup(jobs_days: int, audit_days: int, dry_run: bool) -> None:
         _print(f"Job cleanup skipped (in-memory store or error): {e}")
 
     # Audit log trim
-    from src.monitoring.audit import trim_audit_log, _AUDIT_PATH
+    from src.monitoring.audit import _AUDIT_PATH, trim_audit_log
     if not _AUDIT_PATH.exists():
         _print("Audit log does not exist — nothing to trim.")
     elif dry_run:
-        from datetime import timedelta, datetime, timezone
         import json as _json
-        cutoff_ts = (datetime.now(timezone.utc)).timestamp() - audit_days * 86_400
+        from datetime import datetime, timedelta
+        cutoff_ts = (datetime.now(UTC)).timestamp() - audit_days * 86_400
         old_count = 0
         with open(_AUDIT_PATH, encoding="utf-8") as f:
             for line in f:
@@ -364,6 +362,7 @@ def cleanup(jobs_days: int, audit_days: int, dry_run: bool) -> None:
 
     # Output directory cleanup — remove report folders for deleted jobs
     import shutil
+
     import config as _config
     output_dir = _config.OUTPUT_DIR
     if output_dir.exists():

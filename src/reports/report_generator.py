@@ -10,18 +10,16 @@ Outputs:
 from __future__ import annotations
 
 import json
-from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 import config
-from src.rag.generator import EnrichedViolation
 from src.engine.severity_scorer import Severity
 from src.parser.condition_extractor import ProjectConditions
+from src.rag.generator import EnrichedViolation
 
 try:
-    from jinja2 import Environment, FileSystemLoader, select_autoescape
+    import jinja2 as _jinja2  # noqa: F401
     HAS_JINJA = True
 except ImportError:
     HAS_JINJA = False

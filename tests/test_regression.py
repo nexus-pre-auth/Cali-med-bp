@@ -11,12 +11,12 @@ Covers:
 """
 
 import pytest
-from src.parser.pdf_parser import PDFParser
-from src.parser.condition_extractor import ConditionExtractor, ProjectConditions, SeismicData
+
 from src.engine.decision_engine import DecisionEngine
 from src.engine.severity_scorer import Severity
+from src.parser.condition_extractor import ConditionExtractor
+from src.parser.pdf_parser import PDFParser
 from src.rag.generator import AHJCommentGenerator
-
 
 parser = PDFParser()
 extractor = ConditionExtractor()

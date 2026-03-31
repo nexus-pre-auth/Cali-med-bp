@@ -1,10 +1,11 @@
 """Tests for confidence scorer."""
 
 import pytest
-from src.parser.condition_extractor import ProjectConditions, SeismicData
+
+from src.engine.confidence_scorer import ConfidenceReport, ConfidenceScorer
 from src.engine.decision_engine import DecisionEngine
-from src.engine.confidence_scorer import ConfidenceScorer, ConfidenceReport
 from src.engine.severity_scorer import Severity
+from src.parser.condition_extractor import ProjectConditions, SeismicData
 
 
 @pytest.fixture

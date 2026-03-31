@@ -8,10 +8,9 @@ Tests for:
 
 from __future__ import annotations
 
-import json
 import os
 import shutil
-from pathlib import Path
+from datetime import UTC
 from uuid import uuid4
 
 import pytest
@@ -20,46 +19,45 @@ from fastapi.testclient import TestClient
 from src.engine.rule_matcher import RuleMatcher
 from src.parser.condition_extractor import ProjectConditions, SeismicData
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
 def _conditions(**kwargs) -> ProjectConditions:
-    defaults = dict(
-        occupancy_type="Occupied Hospital",
-        construction_type=None,
-        sprinklered=None,
-        licensed_beds=None,
-        hvac_systems=[],
-        plumbing_systems=[],
-        electrical_systems=[],
-        medical_gas_systems=[],
-        room_types=[],
-        seismic=SeismicData(),
-    )
+    defaults = {
+        "occupancy_type": "Occupied Hospital",
+        "construction_type": None,
+        "sprinklered": None,
+        "licensed_beds": None,
+        "hvac_systems": [],
+        "plumbing_systems": [],
+        "electrical_systems": [],
+        "medical_gas_systems": [],
+        "room_types": [],
+        "seismic": SeismicData(),
+    }
     defaults.update(kwargs)
     return ProjectConditions(**defaults)
 
 
 def _rule(**kwargs) -> dict:
-    defaults = dict(
-        id="TEST-RULE",
-        discipline="General",
-        description="Test rule",
-        violation_template="Violation",
-        fix_template="Fix it",
-        code_references=[],
-        severity_override="High",
-        trigger_occupancies=[],
-        trigger_systems=[],
-        trigger_rooms=[],
-        trigger_seismic_zones=[],
-        trigger_construction_types=[],
-        trigger_sprinklered=None,
-        min_licensed_beds=None,
-        is_active=True,
-    )
+    defaults = {
+        "id": "TEST-RULE",
+        "discipline": "General",
+        "description": "Test rule",
+        "violation_template": "Violation",
+        "fix_template": "Fix it",
+        "code_references": [],
+        "severity_override": "High",
+        "trigger_occupancies": [],
+        "trigger_systems": [],
+        "trigger_rooms": [],
+        "trigger_seismic_zones": [],
+        "trigger_construction_types": [],
+        "trigger_sprinklered": None,
+        "min_licensed_beds": None,
+        "is_active": True,
+    }
     defaults.update(kwargs)
     return defaults
 
@@ -246,8 +244,8 @@ class TestSprinkleredFilter:
         assert len(_matcher([rule]).match(_conditions(sprinklered=None))) == 1
 
     def test_rule019_fires_for_non_sprinklered(self, tmp_path):
-        from src.db.rules_store import RulesStore
         import config
+        from src.db.rules_store import RulesStore
         store = RulesStore(db_path=tmp_path / "m.db")
         store.seed_from_json(config.HCAI_RULES_FILE)
         m = RuleMatcher.__new__(RuleMatcher)
@@ -260,8 +258,8 @@ class TestSprinkleredFilter:
         assert "RULE-019" in ids
 
     def test_rule019_silent_for_sprinklered(self, tmp_path):
-        from src.db.rules_store import RulesStore
         import config
+        from src.db.rules_store import RulesStore
         store = RulesStore(db_path=tmp_path / "m.db")
         store.seed_from_json(config.HCAI_RULES_FILE)
         m = RuleMatcher.__new__(RuleMatcher)
@@ -274,8 +272,8 @@ class TestSprinkleredFilter:
         assert "RULE-019" not in ids
 
     def test_rule020_fires_for_sprinklered(self, tmp_path):
-        from src.db.rules_store import RulesStore
         import config
+        from src.db.rules_store import RulesStore
         store = RulesStore(db_path=tmp_path / "m.db")
         store.seed_from_json(config.HCAI_RULES_FILE)
         m = RuleMatcher.__new__(RuleMatcher)
@@ -288,8 +286,8 @@ class TestSprinkleredFilter:
         assert "RULE-020" in ids
 
     def test_rule020_silent_for_non_sprinklered(self, tmp_path):
-        from src.db.rules_store import RulesStore
         import config
+        from src.db.rules_store import RulesStore
         store = RulesStore(db_path=tmp_path / "m.db")
         store.seed_from_json(config.HCAI_RULES_FILE)
         m = RuleMatcher.__new__(RuleMatcher)
@@ -303,6 +301,7 @@ class TestSprinkleredFilter:
 
     def test_migration4_column_exists(self, tmp_path):
         import sqlite3
+
         from src.db.rules_store import RulesStore
         RulesStore(db_path=tmp_path / "m4.db")
         with sqlite3.connect(str(tmp_path / "m4.db")) as conn:
@@ -344,13 +343,14 @@ class TestOutputDirectoryCleanup:
         (output_dir / orphan_id / "report.html").write_text("<html/>")
 
         # Patch job store to only know about alive_id
+        from datetime import datetime
+
         from src.api.models import JobStatus, ReviewResponse
-        from datetime import datetime, timezone
         alive_job = ReviewResponse(
             job_id=alive_id,
             project_name="Alive",
             status=JobStatus.complete,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
 
         class FakeStore:

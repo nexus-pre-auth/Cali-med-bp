@@ -8,16 +8,13 @@ Tests for:
 from __future__ import annotations
 
 import json
-import tempfile
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from uuid import uuid4
 
 import pytest
 
 from src.engine.rule_matcher import RuleMatcher
 from src.parser.condition_extractor import ProjectConditions, SeismicData
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -25,39 +22,39 @@ from src.parser.condition_extractor import ProjectConditions, SeismicData
 
 def _conditions(**kwargs) -> ProjectConditions:
     """Build minimal ProjectConditions with sensible defaults."""
-    defaults = dict(
-        occupancy_type="Occupied Hospital",
-        construction_type=None,
-        licensed_beds=None,
-        hvac_systems=[],
-        plumbing_systems=[],
-        electrical_systems=[],
-        medical_gas_systems=[],
-        room_types=[],
-        seismic=SeismicData(),
-    )
+    defaults = {
+        "occupancy_type": "Occupied Hospital",
+        "construction_type": None,
+        "licensed_beds": None,
+        "hvac_systems": [],
+        "plumbing_systems": [],
+        "electrical_systems": [],
+        "medical_gas_systems": [],
+        "room_types": [],
+        "seismic": SeismicData(),
+    }
     defaults.update(kwargs)
     return ProjectConditions(**defaults)
 
 
 def _rule(**kwargs) -> dict:
     """Build a minimal rule dict."""
-    defaults = dict(
-        id="TEST-RULE",
-        discipline="General",
-        description="Test rule",
-        violation_template="Violation for {construction_type} in {occupancy}",
-        fix_template="Fix it",
-        code_references=["CBC 2022"],
-        severity_override="High",
-        trigger_occupancies=[],
-        trigger_systems=[],
-        trigger_rooms=[],
-        trigger_seismic_zones=[],
-        trigger_construction_types=[],
-        min_licensed_beds=None,
-        is_active=True,
-    )
+    defaults = {
+        "id": "TEST-RULE",
+        "discipline": "General",
+        "description": "Test rule",
+        "violation_template": "Violation for {construction_type} in {occupancy}",
+        "fix_template": "Fix it",
+        "code_references": ["CBC 2022"],
+        "severity_override": "High",
+        "trigger_occupancies": [],
+        "trigger_systems": [],
+        "trigger_rooms": [],
+        "trigger_seismic_zones": [],
+        "trigger_construction_types": [],
+        "min_licensed_beds": None,
+        "is_active": True,
+    }
     defaults.update(kwargs)
     return defaults
 
@@ -75,7 +72,7 @@ def _make_rules_json(tmp_path: Path, rules: list[dict]) -> Path:
 class TestConstructionTypeFilter:
 
     def _matcher_with(self, tmp_path, rules):
-        rules_file = _make_rules_json(tmp_path, rules)
+        _make_rules_json(tmp_path, rules)
         # Patch RuleMatcher to use JSON (bypass SQLite) by pointing at rules_file
         m = RuleMatcher.__new__(RuleMatcher)
         m._rules = rules
@@ -205,8 +202,9 @@ class TestMigration3:
 
     def test_rule_construction_types_table_exists(self, tmp_path):
         import sqlite3
+
         from src.db.rules_store import RulesStore
-        store = RulesStore(db_path=tmp_path / "test.db")
+        RulesStore(db_path=tmp_path / "test.db")
         with sqlite3.connect(str(tmp_path / "test.db")) as conn:
             tables = [r[0] for r in conn.execute(
                 "SELECT name FROM sqlite_master WHERE type='table'"
@@ -215,8 +213,9 @@ class TestMigration3:
 
     def test_min_licensed_beds_column_exists(self, tmp_path):
         import sqlite3
+
         from src.db.rules_store import RulesStore
-        store = RulesStore(db_path=tmp_path / "test.db")
+        RulesStore(db_path=tmp_path / "test.db")
         with sqlite3.connect(str(tmp_path / "test.db")) as conn:
             cols = [r[1] for r in conn.execute("PRAGMA table_info(rules)").fetchall()]
         assert "min_licensed_beds" in cols
@@ -237,8 +236,8 @@ class TestMigration3:
 
     def test_seed_preserves_new_rules(self, tmp_path):
         """Seeding from hcai_rules.json should load RULE-016/017/018."""
-        from src.db.rules_store import RulesStore
         import config
+        from src.db.rules_store import RulesStore
         store = RulesStore(db_path=tmp_path / "seed_test.db")
         store.seed_from_json(config.HCAI_RULES_FILE)
         rule16 = store.get_by_id("RULE-016")
@@ -260,8 +259,8 @@ class TestNewRulesIntegration:
 
     @pytest.fixture
     def matcher(self, tmp_path):
-        from src.db.rules_store import RulesStore
         import config
+        from src.db.rules_store import RulesStore
         store = RulesStore(db_path=tmp_path / "m.db")
         store.seed_from_json(config.HCAI_RULES_FILE)
         m = RuleMatcher.__new__(RuleMatcher)
@@ -338,8 +337,8 @@ class TestPDFParserScannedDetection:
 class TestJobCleanup:
 
     def test_cleanup_removes_old_completed_jobs(self, tmp_path):
-        from src.db.job_store import SQLiteJobStore
         from src.api.models import JobStatus
+        from src.db.job_store import SQLiteJobStore
         store = SQLiteJobStore(db_path=tmp_path / "cleanup.db")
 
         # Create a job and mark it complete
@@ -361,8 +360,8 @@ class TestJobCleanup:
         assert store.get(job.job_id) is None
 
     def test_cleanup_preserves_recent_jobs(self, tmp_path):
-        from src.db.job_store import SQLiteJobStore
         from src.api.models import JobStatus
+        from src.db.job_store import SQLiteJobStore
         store = SQLiteJobStore(db_path=tmp_path / "recent.db")
 
         job = store.create("Recent Project")
@@ -374,8 +373,9 @@ class TestJobCleanup:
         assert store.get(job.job_id) is not None
 
     def test_cleanup_never_deletes_pending_jobs(self, tmp_path):
-        from src.db.job_store import SQLiteJobStore
         import sqlite3
+
+        from src.db.job_store import SQLiteJobStore
         store = SQLiteJobStore(db_path=tmp_path / "pending.db")
 
         job = store.create("Pending Project")
@@ -409,7 +409,7 @@ class TestAuditLogTrim:
         log_path = tmp_path / "logs" / "audit.jsonl"
         monkeypatch.setattr(audit_mod, "_AUDIT_PATH", log_path)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old_ts = (now - timedelta(days=120)).isoformat()
         new_ts = now.isoformat()
         self._write_entries(log_path, [
@@ -420,7 +420,7 @@ class TestAuditLogTrim:
         removed = audit_mod.trim_audit_log(keep_days=90)
         assert removed == 1
 
-        remaining = [json.loads(l) for l in log_path.read_text().splitlines() if l.strip()]
+        remaining = [json.loads(line) for line in log_path.read_text().splitlines() if line.strip()]
         assert len(remaining) == 1
         assert remaining[0]["job_id"] == "b"
 
@@ -429,7 +429,7 @@ class TestAuditLogTrim:
         log_path = tmp_path / "logs" / "audit.jsonl"
         monkeypatch.setattr(audit_mod, "_AUDIT_PATH", log_path)
 
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         self._write_entries(log_path, [
             {"ts": now, "event": "REVIEW_COMPLETE", "job_id": "x"},
         ])
@@ -449,7 +449,7 @@ class TestAuditLogTrim:
 
         self._write_entries(log_path, [
             {"ts": "not-a-date", "event": "MYSTERY"},
-            {"ts": datetime.now(timezone.utc).isoformat(), "event": "RECENT"},
+            {"ts": datetime.now(UTC).isoformat(), "event": "RECENT"},
         ])
 
         removed = audit_mod.trim_audit_log(keep_days=90)

@@ -1,7 +1,7 @@
 """Tests for session metrics and API cost tracking."""
 
 import time
-import pytest
+
 from src.monitoring.metrics import SessionMetrics
 
 
@@ -30,8 +30,8 @@ class TestSessionMetrics:
             assert key in s
 
     def test_record_violations(self):
-        from src.parser.condition_extractor import ProjectConditions, SeismicData
         from src.engine.decision_engine import DecisionEngine
+        from src.parser.condition_extractor import ProjectConditions, SeismicData
         from src.rag.generator import AHJCommentGenerator
 
         c = ProjectConditions()

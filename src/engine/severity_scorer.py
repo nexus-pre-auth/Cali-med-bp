@@ -11,11 +11,10 @@ Scoring is based on:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 
-class Severity(str, Enum):
+class Severity(StrEnum):
     CRITICAL = "Critical"
     HIGH     = "High"
     MEDIUM   = "Medium"
@@ -25,7 +24,7 @@ class Severity(str, Enum):
     def order(self) -> int:
         return {"Critical": 0, "High": 1, "Medium": 2, "Low": 3}[self.value]
 
-    def __lt__(self, other: "Severity") -> bool:
+    def __lt__(self, other: Severity) -> bool:
         return self.order < other.order
 
 

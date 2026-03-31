@@ -12,10 +12,9 @@ Scores are in the range [0.0, 1.0].
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
 
-from src.parser.condition_extractor import ProjectConditions
 from src.engine.rule_matcher import MatchedViolation
+from src.parser.condition_extractor import ProjectConditions
 
 
 @dataclass
@@ -135,7 +134,7 @@ class ConfidenceScorer:
         self,
         violations: list[MatchedViolation],
         full_text: str,
-        conditions: Optional[ProjectConditions] = None,
+        conditions: ProjectConditions | None = None,
     ) -> list[tuple[MatchedViolation, ConfidenceReport]]:
         """
         Return each violation paired with its ConfidenceReport.

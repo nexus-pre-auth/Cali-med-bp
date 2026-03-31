@@ -21,15 +21,22 @@ Run once on the database before first use:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import (
-    BigInteger, Boolean, Column, DateTime, Float,
-    ForeignKey, Index, Integer, String, Text,
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
 )
 from sqlalchemy.dialects.postgresql import INET, JSONB, UUID
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy.sql import func
 
 Base = declarative_base()
 
@@ -42,7 +49,7 @@ except ImportError:
 
 
 def _utcnow():
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 # ---------------------------------------------------------------------------

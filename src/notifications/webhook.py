@@ -17,14 +17,13 @@ from __future__ import annotations
 
 import json
 import os
-import urllib.request
 import urllib.error
+import urllib.request
 from datetime import datetime
-from typing import Optional
 
 from src.engine.severity_scorer import Severity
-from src.rag.generator import EnrichedViolation
 from src.monitoring.logger import get_logger
+from src.rag.generator import EnrichedViolation
 from src.utils.api_utils import with_retry
 
 log = get_logger(__name__)
@@ -67,8 +66,8 @@ class WebhookNotifier:
 
     def __init__(
         self,
-        webhook_url: Optional[str] = None,
-        slack_webhook_url: Optional[str] = None,
+        webhook_url: str | None = None,
+        slack_webhook_url: str | None = None,
         min_severity: Severity = Severity.CRITICAL,
     ) -> None:
         self._webhook_url       = webhook_url       or os.getenv("WEBHOOK_URL")
@@ -87,7 +86,7 @@ class WebhookNotifier:
         self,
         enriched: list[EnrichedViolation],
         project_name: str,
-        report_paths: Optional[dict] = None,
+        report_paths: dict | None = None,
     ) -> None:
         """
         Send an immediate alert if violations at or above min_severity were found.
@@ -105,7 +104,7 @@ class WebhookNotifier:
     def send_daily_summary(
         self,
         sessions: list[dict],
-        date: Optional[str] = None,
+        date: str | None = None,
     ) -> None:
         """
         Send a daily digest summarising all completed reviews.
@@ -137,7 +136,7 @@ class WebhookNotifier:
         self,
         evs: list[EnrichedViolation],
         project_name: str,
-        report_paths: Optional[dict],
+        report_paths: dict | None,
     ) -> dict:
         return {
             "event":        "compliance_alert",

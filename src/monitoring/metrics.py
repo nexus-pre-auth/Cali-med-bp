@@ -16,7 +16,6 @@ import time
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
 
 from src.monitoring.logger import get_logger
 

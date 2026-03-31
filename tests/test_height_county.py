@@ -15,54 +15,53 @@ from fastapi.testclient import TestClient
 from src.engine.rule_matcher import RuleMatcher
 from src.parser.condition_extractor import ProjectConditions, SeismicData
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
 def _conditions(**kwargs) -> ProjectConditions:
-    defaults = dict(
-        occupancy_type="Occupied Hospital",
-        construction_type=None,
-        sprinklered=None,
-        licensed_beds=None,
-        building_height_ft=None,
-        stories_above_grade=None,
-        county=None,
-        city=None,
-        hvac_systems=[],
-        plumbing_systems=[],
-        electrical_systems=[],
-        medical_gas_systems=[],
-        room_types=[],
-        seismic=SeismicData(),
-    )
+    defaults = {
+        "occupancy_type": "Occupied Hospital",
+        "construction_type": None,
+        "sprinklered": None,
+        "licensed_beds": None,
+        "building_height_ft": None,
+        "stories_above_grade": None,
+        "county": None,
+        "city": None,
+        "hvac_systems": [],
+        "plumbing_systems": [],
+        "electrical_systems": [],
+        "medical_gas_systems": [],
+        "room_types": [],
+        "seismic": SeismicData(),
+    }
     defaults.update(kwargs)
     return ProjectConditions(**defaults)
 
 
 def _rule(**kwargs) -> dict:
-    defaults = dict(
-        id="TEST-RULE",
-        discipline="General",
-        description="Test",
-        violation_template="V: height={height_ft} stories={stories}",
-        fix_template="Fix",
-        code_references=["CBC 2022"],
-        severity_override="High",
-        trigger_occupancies=[],
-        trigger_systems=[],
-        trigger_rooms=[],
-        trigger_seismic_zones=[],
-        trigger_construction_types=[],
-        trigger_sprinklered=None,
-        min_licensed_beds=None,
-        min_building_height_ft=None,
-        min_stories=None,
-        trigger_counties=[],
-        trigger_cities=[],
-        is_active=True,
-    )
+    defaults = {
+        "id": "TEST-RULE",
+        "discipline": "General",
+        "description": "Test",
+        "violation_template": "V: height={height_ft} stories={stories}",
+        "fix_template": "Fix",
+        "code_references": ["CBC 2022"],
+        "severity_override": "High",
+        "trigger_occupancies": [],
+        "trigger_systems": [],
+        "trigger_rooms": [],
+        "trigger_seismic_zones": [],
+        "trigger_construction_types": [],
+        "trigger_sprinklered": None,
+        "min_licensed_beds": None,
+        "min_building_height_ft": None,
+        "min_stories": None,
+        "trigger_counties": [],
+        "trigger_cities": [],
+        "is_active": True,
+    }
     defaults.update(kwargs)
     return defaults
 
@@ -215,6 +214,7 @@ class TestMigrations5And6:
 
     def test_min_building_height_ft_column_exists(self, tmp_path):
         import sqlite3
+
         from src.db.rules_store import RulesStore
         RulesStore(db_path=tmp_path / "m.db")
         with sqlite3.connect(str(tmp_path / "m.db")) as conn:
@@ -224,6 +224,7 @@ class TestMigrations5And6:
 
     def test_rule_counties_table_exists(self, tmp_path):
         import sqlite3
+
         from src.db.rules_store import RulesStore
         RulesStore(db_path=tmp_path / "m.db")
         with sqlite3.connect(str(tmp_path / "m.db")) as conn:
@@ -259,8 +260,8 @@ class TestNewRulesIntegration:
 
     @pytest.fixture
     def matcher(self, tmp_path):
-        from src.db.rules_store import RulesStore
         import config
+        from src.db.rules_store import RulesStore
         store = RulesStore(db_path=tmp_path / "m.db")
         store.seed_from_json(config.HCAI_RULES_FILE)
         m = RuleMatcher.__new__(RuleMatcher)

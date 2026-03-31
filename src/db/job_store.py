@@ -7,18 +7,16 @@ Interface is a drop-in replacement for src/api/jobs.py's JobStore.
 
 from __future__ import annotations
 
-import json
 import sqlite3
 import threading
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 from uuid import UUID, uuid4
 
 import config
-from src.db.migrations import run_migrations
 from src.api.models import JobStatus, ReviewResponse
+from src.db.migrations import run_migrations
 from src.monitoring.logger import get_logger
 
 log = get_logger(__name__)
@@ -56,7 +54,7 @@ class SQLiteJobStore:
     # ------------------------------------------------------------------
 
     def create(self, project_name: str) -> ReviewResponse:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         job = ReviewResponse(
             job_id=uuid4(),
             project_name=project_name,
@@ -78,7 +76,7 @@ class SQLiteJobStore:
         return job
 
     def update(self, job: ReviewResponse) -> None:
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         completed_at = job.completed_at.isoformat() if job.completed_at else None
         # Serialise the full response minus heavy fields that are not needed
         # for polling — store everything so GET /review/{id} can reconstruct.
@@ -102,7 +100,7 @@ class SQLiteJobStore:
     # Read helpers
     # ------------------------------------------------------------------
 
-    def get(self, job_id: UUID) -> Optional[ReviewResponse]:
+    def get(self, job_id: UUID) -> ReviewResponse | None:
         with self._connect() as conn:
             row = conn.execute(
                 "SELECT * FROM jobs WHERE job_id=?", (str(job_id),)
@@ -129,7 +127,7 @@ class SQLiteJobStore:
         Returns the number of rows removed.
         """
         from datetime import timedelta
-        cutoff = (datetime.now(timezone.utc) - timedelta(days=keep_days)).isoformat()
+        cutoff = (datetime.now(UTC) - timedelta(days=keep_days)).isoformat()
         with self._lock, self._connect() as conn:
             cur = conn.execute(
                 """DELETE FROM jobs
@@ -170,7 +168,7 @@ class SQLiteJobStore:
 # Module-level singleton
 # ---------------------------------------------------------------------------
 
-_store: Optional[SQLiteJobStore] = None
+_store: SQLiteJobStore | None = None
 _store_lock = threading.Lock()
 
 
