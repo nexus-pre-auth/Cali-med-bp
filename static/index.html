@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlueprintIQ — California Healthcare Construction Compliance Reports</title>
+  <meta name="description" content="Upload your California healthcare construction documents and get instant HCAI-style plan review comments with Title 24 citations. Results in minutes." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .gradient-hero { background: linear-gradient(135deg, #1A365D 0%, #2A4A7F 50%, #1E3A5F 100%); }
+    .severity-critical { background: #FFF5F5; border-left: 4px solid #E53E3E; }
+    .severity-high     { background: #FFFAF0; border-left: 4px solid #DD6B20; }
+    .severity-medium   { background: #FFFFF0; border-left: 4px solid #D69E2E; }
+    .severity-low      { background: #F0FFF4; border-left: 4px solid #38A169; }
+    .badge-critical { background:#FED7D7; color:#C53030; }
+    .badge-high     { background:#FEEBC8; color:#C05621; }
+    .badge-medium   { background:#FEFCBF; color:#B7791F; }
+    .badge-low      { background:#C6F6D5; color:#276749; }
+    .drop-zone.dragging { border-color: #3B82F6; background: #EFF6FF; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { animation: spin 1s linear infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .pulse { animation: pulse 2s infinite; }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans" x-data="hcaiApp()" x-init="init()">
+
+  <!-- ───────────────────── NAV ───────────────────── -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
+      <a href="/" class="flex items-center gap-2 font-bold text-gray-900 text-lg">
+        <svg class="w-7 h-7 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        BlueprintIQ
+      </a>
+      <div class="flex items-center gap-4">
+        <a href="#pricing" class="text-sm text-gray-600 hover:text-gray-900">Pricing</a>
+        <a href="#upload" class="bg-blue-700 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 transition">Get Report</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ───────────────────── HERO ───────────────────── -->
+  <section class="gradient-hero text-white py-20 px-4" x-show="!jobId">
+    <div class="max-w-3xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 text-blue-100 text-xs px-3 py-1 rounded-full mb-6">
+        <span class="w-2 h-2 bg-green-400 rounded-full pulse inline-block"></span>
+        California HCAI · Title 24 · PIN / CAN Compliance
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-5 leading-tight">
+        Get HCAI Plan Review<br>Comments in Minutes
+      </h1>
+      <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+        Upload your California healthcare construction documents.
+        Receive AHJ-style violation reports with Title&nbsp;24 citations
+        and step-by-step compliance fixes — before you submit to HCAI.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 mb-10 text-sm text-blue-100">
+        <span class="flex items-center gap-1.5">✓ Title 24 / FGI / ASHRAE violations</span>
+        <span class="flex items-center gap-1.5">✓ HCAI PIN &amp; CAN references</span>
+        <span class="flex items-center gap-1.5">✓ Step-by-step fix instructions</span>
+        <span class="flex items-center gap-1.5">✓ Downloadable PDF report</span>
+      </div>
+      <a href="#upload"
+         class="inline-block bg-white text-blue-800 font-semibold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-blue-50 transition">
+        Review a Project — $49 →
+      </a>
+      <p class="mt-3 text-blue-200 text-sm">Results typically in 2–4 minutes · PDF delivered by email</p>
+    </div>
+  </section>
+
+  <!-- ───────────────────── HOW IT WORKS ───────────────────── -->
+  <section class="py-16 px-4 bg-white" x-show="!jobId">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold text-gray-900 text-center mb-10">How It Works</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-blue-700 font-bold text-xl">1</span>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-2">Upload Documents</h3>
+          <p class="text-gray-500 text-sm">Upload your PDF specs, drawings, or paste project text. Supports hospital, clinic, and acute-care facility documents.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-blue-700 font-bold text-xl">2</span>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-2">AI Compliance Analysis</h3>
+          <p class="text-gray-500 text-sm">Our engine matches your project against 23+ HCAI rules across infection control, fire safety, seismic, MEP, and more.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-blue-700 font-bold text-xl">3</span>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-2">Get Your Report</h3>
+          <p class="text-gray-500 text-sm">Receive a detailed PDF with prioritized violations, code citations, and fix instructions — ready to share with your team.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────── UPLOAD FORM ───────────────────── -->
+  <section id="upload" class="py-16 px-4 bg-gray-50" x-show="!jobId">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold text-gray-900 text-center mb-2">Start Your Compliance Review</h2>
+      <p class="text-gray-500 text-center mb-8">$49 per report · Secure payment via Stripe</p>
+
+      <form @submit.prevent="submitReview" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+
+        <!-- Drop zone -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Project Documents</label>
+          <div
+            class="drop-zone border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition"
+            :class="{ 'dragging': dragging }"
+            @dragover.prevent="dragging=true"
+            @dragleave="dragging=false"
+            @drop.prevent="handleDrop($event)"
+            @click="$refs.fileInput.click()"
+          >
+            <input type="file" x-ref="fileInput" class="hidden" accept=".pdf,.txt" @change="handleFile($event)"/>
+            <template x-if="!uploadedFile">
+              <div>
+                <svg class="w-10 h-10 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <p class="text-gray-600 text-sm font-medium">Drop PDF here or <span class="text-blue-600">browse</span></p>
+                <p class="text-gray-400 text-xs mt-1">PDF up to 50MB · Specs, drawings, project narratives</p>
+              </div>
+            </template>
+            <template x-if="uploadedFile">
+              <div class="flex items-center justify-center gap-3">
+                <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
+                </svg>
+                <div class="text-left">
+                  <p class="text-sm font-medium text-gray-800" x-text="uploadedFile.name"></p>
+                  <p class="text-xs text-gray-500" x-text="formatSize(uploadedFile.size)"></p>
+                </div>
+                <button type="button" @click.stop="uploadedFile=null" class="ml-2 text-gray-400 hover:text-red-500">✕</button>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Or paste text -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Or paste project text
+            <span class="text-gray-400 font-normal">(instead of PDF)</span>
+          </label>
+          <textarea
+            x-model="pastedText"
+            rows="4"
+            placeholder="Paste project specifications, narrative description, or drawing notes here..."
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Project name -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+          <input
+            type="text"
+            x-model="projectName"
+            placeholder="e.g. St. Mary's Hospital Renovation — Phase 2"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Email Address
+            <span class="text-gray-400 font-normal">— PDF report delivered here</span>
+          </label>
+          <input
+            type="email"
+            x-model="email"
+            placeholder="you@firm.com"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <!-- Error -->
+        <p x-show="formError" x-text="formError" class="text-red-600 text-sm mb-4"></p>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          :disabled="submitting"
+          class="w-full bg-blue-700 text-white font-semibold py-3 rounded-xl hover:bg-blue-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          <template x-if="submitting">
+            <svg class="spinner w-5 h-5" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+          </template>
+          <span x-text="submitting ? 'Processing...' : 'Continue to Payment — $49'"></span>
+        </button>
+
+        <p class="text-center text-xs text-gray-400 mt-4">
+          Secure payment via Stripe · No account required · PDF emailed within minutes
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ───────────────────── PRICING ───────────────────── -->
+  <section id="pricing" class="py-16 px-4 bg-white" x-show="!jobId">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold text-gray-900 text-center mb-2">Pricing</h2>
+      <p class="text-gray-500 text-center mb-10">Simple, transparent pricing for every team size</p>
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <!-- Starter -->
+        <div class="border border-gray-200 rounded-2xl p-6">
+          <h3 class="font-bold text-gray-900 mb-1">Single Report</h3>
+          <p class="text-gray-500 text-sm mb-4">Perfect for one-off reviews</p>
+          <div class="mb-6">
+            <span class="text-4xl font-bold text-gray-900">$49</span>
+            <span class="text-gray-500 text-sm">/report</span>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-600 mb-6">
+            <li class="flex items-center gap-2">✓ Full compliance analysis</li>
+            <li class="flex items-center gap-2">✓ Downloadable PDF report</li>
+            <li class="flex items-center gap-2">✓ Title 24 / PIN / CAN citations</li>
+            <li class="flex items-center gap-2">✓ Fix instructions per violation</li>
+          </ul>
+          <a href="#upload" class="block text-center border border-blue-700 text-blue-700 font-medium py-2 rounded-lg hover:bg-blue-50 transition text-sm">Get Started</a>
+        </div>
+
+        <!-- Pro — featured -->
+        <div class="border-2 border-blue-700 rounded-2xl p-6 relative shadow-lg">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-700 text-white text-xs px-3 py-1 rounded-full font-medium">Most Popular</div>
+          <h3 class="font-bold text-gray-900 mb-1">Professional</h3>
+          <p class="text-gray-500 text-sm mb-4">For active AE firms</p>
+          <div class="mb-6">
+            <span class="text-4xl font-bold text-gray-900">$99</span>
+            <span class="text-gray-500 text-sm">/month</span>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-600 mb-6">
+            <li class="flex items-center gap-2">✓ 10 reports per month</li>
+            <li class="flex items-center gap-2">✓ Everything in Single Report</li>
+            <li class="flex items-center gap-2">✓ Priority processing</li>
+            <li class="flex items-center gap-2">✓ Email support</li>
+          </ul>
+          <a href="mailto:hello@blueprintiq.net?subject=Professional Plan" class="block text-center bg-blue-700 text-white font-medium py-2 rounded-lg hover:bg-blue-800 transition text-sm">Contact Us</a>
+        </div>
+
+        <!-- Agency -->
+        <div class="border border-gray-200 rounded-2xl p-6">
+          <h3 class="font-bold text-gray-900 mb-1">Agency</h3>
+          <p class="text-gray-500 text-sm mb-4">For permit expeditors &amp; large firms</p>
+          <div class="mb-6">
+            <span class="text-4xl font-bold text-gray-900">$299</span>
+            <span class="text-gray-500 text-sm">/month</span>
+          </div>
+          <ul class="space-y-2 text-sm text-gray-600 mb-6">
+            <li class="flex items-center gap-2">✓ Unlimited reports</li>
+            <li class="flex items-center gap-2">✓ REST API access</li>
+            <li class="flex items-center gap-2">✓ White-label PDF branding</li>
+            <li class="flex items-center gap-2">✓ Dedicated support</li>
+          </ul>
+          <a href="mailto:hello@blueprintiq.net?subject=Agency Plan" class="block text-center border border-blue-700 text-blue-700 font-medium py-2 rounded-lg hover:bg-blue-50 transition text-sm">Contact Us</a>
+        </div>
+      </div>
+
+      <p class="text-center text-sm text-gray-400 mt-8">
+        All reports include a legal disclaimer. Not a substitute for licensed engineer review.
+        <a href="mailto:hello@blueprintiq.net" class="text-blue-600 hover:underline">Questions? Contact us.</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ───────────────────── RESULTS VIEW ───────────────────── -->
+  <div x-show="jobId" x-cloak class="min-h-screen bg-gray-50">
+
+    <!-- Processing / polling -->
+    <div x-show="jobStatus !== 'complete' && jobStatus !== 'failed'" class="flex flex-col items-center justify-center py-32 px-4">
+      <svg class="spinner w-14 h-14 text-blue-600 mb-6" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+      </svg>
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">Analyzing Your Project</h2>
+      <p class="text-gray-500 text-sm text-center max-w-sm">
+        Running HCAI compliance checks, matching Title 24 rules, and generating AHJ-style comments.<br>
+        This takes 2–4 minutes.
+      </p>
+      <div class="mt-6 bg-white border border-gray-200 rounded-lg px-4 py-2 text-xs text-gray-400 font-mono">
+        Job <span x-text="jobId" class="text-gray-600"></span> · Status: <span x-text="jobStatus" class="text-blue-600"></span>
+      </div>
+    </div>
+
+    <!-- Failed -->
+    <div x-show="jobStatus === 'failed'" class="max-w-lg mx-auto py-20 px-4 text-center">
+      <div class="text-red-500 text-5xl mb-4">✗</div>
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">Analysis Failed</h2>
+      <p class="text-gray-500 text-sm mb-6" x-text="jobError || 'An unexpected error occurred.'"></p>
+      <button @click="resetApp()" class="bg-blue-700 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-800">Try Again</button>
+    </div>
+
+    <!-- Complete — results -->
+    <div x-show="jobStatus === 'complete'" class="max-w-4xl mx-auto py-10 px-4">
+
+      <!-- Header -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+        <div class="flex items-start justify-between flex-wrap gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900" x-text="result?.project_name || 'Compliance Report'"></h1>
+            <p class="text-gray-500 text-sm mt-1">
+              <span x-text="result?.conditions?.occupancy_type || ''"></span>
+              <template x-if="result?.conditions?.county">
+                <span> · <span x-text="result.conditions.county"></span> County</span>
+              </template>
+            </p>
+          </div>
+          <div class="flex gap-3 flex-wrap">
+            <template x-if="result?.report_urls?.pdf">
+              <a :href="result.report_urls.pdf" target="_blank"
+                 class="flex items-center gap-2 bg-blue-700 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Download PDF
+              </a>
+            </template>
+            <button @click="resetApp()" class="border border-gray-300 text-gray-600 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 transition">
+              New Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary pills -->
+        <div class="flex flex-wrap gap-3 mt-5">
+          <template x-if="result?.summary">
+            <template x-for="[sev, count] in Object.entries(result.summary.by_severity || {})">
+              <div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium"
+                   :class="{
+                     'bg-red-100 text-red-700': sev==='Critical',
+                     'bg-orange-100 text-orange-700': sev==='High',
+                     'bg-yellow-100 text-yellow-700': sev==='Medium',
+                     'bg-green-100 text-green-700': sev==='Low'
+                   }">
+                <span x-text="count"></span>
+                <span x-text="sev"></span>
+              </div>
+            </template>
+          </template>
+          <div class="bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-sm font-medium">
+            <span x-text="result?.summary?.total || 0"></span> Total Findings
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
+        <strong>Disclaimer:</strong> This report is generated by an automated compliance engine and is
+        intended as a preliminary screening tool only. It does not constitute a licensed engineering or
+        architectural review. Consult a California-licensed professional before submitting to HCAI.
+      </div>
+
+      <!-- Violations -->
+      <div class="space-y-4">
+        <template x-for="v in (result?.violations || [])" :key="v.rule_id">
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden"
+               :class="{
+                 'severity-critical': v.severity==='Critical',
+                 'severity-high': v.severity==='High',
+                 'severity-medium': v.severity==='Medium',
+                 'severity-low': v.severity==='Low'
+               }">
+            <div class="p-5">
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs font-mono font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded" x-text="v.rule_id"></span>
+                  <span class="text-xs font-medium px-2 py-0.5 rounded-full"
+                        :class="{
+                          'badge-critical': v.severity==='Critical',
+                          'badge-high': v.severity==='High',
+                          'badge-medium': v.severity==='Medium',
+                          'badge-low': v.severity==='Low'
+                        }"
+                        x-text="v.severity"></span>
+                  <span class="text-xs text-gray-500" x-text="v.discipline"></span>
+                </div>
+              </div>
+
+              <template x-if="v.ahj_comment">
+                <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-3">
+                  <p class="text-xs font-semibold text-blue-700 mb-1">AHJ Plan Review Comment</p>
+                  <p class="text-sm text-gray-800" x-text="v.ahj_comment"></p>
+                </div>
+              </template>
+
+              <template x-if="v.fix_instructions">
+                <div class="bg-green-50 border border-green-100 rounded-lg p-3 mb-3">
+                  <p class="text-xs font-semibold text-green-700 mb-1">Compliance Fix</p>
+                  <p class="text-sm text-gray-800 whitespace-pre-line" x-text="v.fix_instructions"></p>
+                </div>
+              </template>
+
+              <template x-if="v.citations && v.citations.length">
+                <div class="flex flex-wrap gap-2">
+                  <template x-for="c in v.citations" :key="c">
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-mono" x-text="c"></span>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+
+        <template x-if="!result?.violations?.length">
+          <div class="bg-white rounded-xl border border-gray-200 p-10 text-center">
+            <div class="text-green-500 text-4xl mb-3">✓</div>
+            <h3 class="font-semibold text-gray-800 mb-1">No violations detected</h3>
+            <p class="text-gray-500 text-sm">No HCAI rule matches found for the provided project information.</p>
+          </div>
+        </template>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ───────────────────── FOOTER ───────────────────── -->
+  <footer class="bg-gray-900 text-gray-400 text-sm py-10 px-4 mt-16" x-show="!jobId">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between gap-4">
+      <div>
+        <p class="font-semibold text-white mb-1">BlueprintIQ</p>
+        <p>California healthcare construction compliance, automated.</p>
+        <p class="mt-1 text-xs"><a href="https://blueprintiq.net" class="hover:text-white">blueprintiq.net</a></p>
+      </div>
+      <div class="text-right">
+        <p><a href="mailto:hello@blueprintiq.net" class="hover:text-white">hello@blueprintiq.net</a></p>
+        <p class="mt-1 text-xs text-gray-600">Not affiliated with HCAI or the State of California.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ───────────────────── APP LOGIC ───────────────────── -->
+  <script>
+    function hcaiApp() {
+      return {
+        // Form state
+        uploadedFile: null,
+        pastedText: '',
+        projectName: '',
+        email: '',
+        dragging: false,
+        submitting: false,
+        formError: '',
+
+        // Job tracking
+        jobId: null,
+        jobStatus: 'pending',
+        jobError: null,
+        result: null,
+        pollTimer: null,
+
+        init() {
+          // Check URL params for returning from Stripe or direct job link
+          const params = new URLSearchParams(window.location.search);
+          const jid = params.get('job_id');
+          const sid = params.get('session_id');
+
+          if (jid) {
+            this.jobId = jid;
+            this.startPolling();
+          } else if (sid) {
+            // Returning from Stripe — look up job_id for this session
+            this.resolveSession(sid);
+          }
+        },
+
+        handleFile(evt) {
+          const f = evt.target.files[0];
+          if (f) this.uploadedFile = f;
+        },
+
+        handleDrop(evt) {
+          this.dragging = false;
+          const f = evt.dataTransfer.files[0];
+          if (f && (f.type === 'application/pdf' || f.name.endsWith('.txt'))) {
+            this.uploadedFile = f;
+          }
+        },
+
+        formatSize(bytes) {
+          if (bytes < 1024) return bytes + ' B';
+          if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+          return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        },
+
+        async submitReview() {
+          if (!this.uploadedFile && !this.pastedText.trim()) {
+            this.formError = 'Please upload a file or paste project text.';
+            return;
+          }
+          if (!this.projectName.trim()) {
+            this.formError = 'Please enter a project name.';
+            return;
+          }
+          if (!this.email.trim()) {
+            this.formError = 'Please enter your email address.';
+            return;
+          }
+
+          this.formError = '';
+          this.submitting = true;
+
+          try {
+            const fd = new FormData();
+            fd.append('project_name', this.projectName.trim());
+            fd.append('email', this.email.trim());
+            if (this.uploadedFile) fd.append('file', this.uploadedFile);
+            if (this.pastedText.trim()) fd.append('text', this.pastedText.trim());
+
+            const res = await fetch('/checkout/create', { method: 'POST', body: fd });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.detail || 'Server error. Please try again.');
+            }
+
+            const data = await res.json();
+
+            if (data.checkout_url) {
+              // Redirect to Stripe Checkout
+              window.location.href = data.checkout_url;
+            } else {
+              // Dev mode — no payment required, go straight to results
+              this.jobId = data.job_id;
+              history.pushState({}, '', `/?job_id=${data.job_id}`);
+              this.startPolling();
+            }
+          } catch (e) {
+            this.formError = e.message;
+            this.submitting = false;
+          }
+        },
+
+        async resolveSession(sessionId) {
+          try {
+            const res = await fetch(`/checkout/status?session_id=${sessionId}`);
+            if (!res.ok) throw new Error('Could not verify payment.');
+            const data = await res.json();
+            if (data.job_id) {
+              this.jobId = data.job_id;
+              history.pushState({}, '', `/?job_id=${data.job_id}`);
+              this.startPolling();
+            } else {
+              this.jobId = 'unknown';
+              this.jobStatus = 'failed';
+              this.jobError = 'Payment verification pending. Please check your email for your report.';
+            }
+          } catch (e) {
+            this.jobId = 'unknown';
+            this.jobStatus = 'failed';
+            this.jobError = e.message;
+          }
+        },
+
+        startPolling() {
+          this.poll();
+          this.pollTimer = setInterval(() => this.poll(), 4000);
+        },
+
+        async poll() {
+          if (!this.jobId || this.jobId === 'unknown') return;
+          try {
+            const res = await fetch(`/review/${this.jobId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            this.jobStatus = data.status;
+            if (data.status === 'complete' || data.status === 'failed') {
+              clearInterval(this.pollTimer);
+              if (data.status === 'complete') this.result = data;
+              if (data.status === 'failed') this.jobError = data.error;
+            }
+          } catch (e) {
+            // network blip — keep polling
+          }
+        },
+
+        resetApp() {
+          clearInterval(this.pollTimer);
+          this.jobId = null;
+          this.jobStatus = 'pending';
+          this.result = null;
+          this.jobError = null;
+          this.submitting = false;
+          this.uploadedFile = null;
+          this.pastedText = '';
+          this.projectName = '';
+          this.email = '';
+          history.pushState({}, '', '/');
+        },
+      };
+    }
+  </script>
+</body>
+</html>

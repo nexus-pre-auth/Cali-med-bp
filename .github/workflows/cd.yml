@@ -1,0 +1,62 @@
+name: CD — Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main, master]
+    types: [completed]
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        # Set these secrets in your GitHub repo settings:
+        #   DEPLOY_HOST   — server IP or hostname
+        #   DEPLOY_USER   — SSH user
+        #   DEPLOY_KEY    — private SSH key (PEM format)
+        #   DEPLOY_PATH   — path to the app on the server
+        if: >
+          env.DEPLOY_HOST != '' &&
+          env.DEPLOY_USER != '' &&
+          env.DEPLOY_KEY  != ''
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_KEY:  ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/opt/hcai-engine' }}
+          IMAGE_TAG:   ghcr.io/${{ github.repository }}:latest
+        run: |
+          echo "$DEPLOY_KEY" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+          ssh -o StrictHostKeyChecking=no \
+              -i /tmp/deploy_key \
+              "$DEPLOY_USER@$DEPLOY_HOST" \
+            "cd $DEPLOY_PATH && \
+             docker compose pull hcai-api && \
+             docker compose up -d --no-build hcai-api && \
+             docker image prune -f"
+          rm -f /tmp/deploy_key
+
+      - name: Health check after deploy
+        if: env.DEPLOY_URL != ''
+        env:
+          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
+        run: |
+          for i in 1 2 3 4 5; do
+            status=$(curl -sf "$DEPLOY_URL/health" | python3 -c "import sys,json; print(json.load(sys.stdin)['status'])" 2>/dev/null || echo "error")
+            if [ "$status" = "ok" ]; then
+              echo "Health check passed."
+              exit 0
+            fi
+            echo "Attempt $i failed (status=$status). Retrying in 10s…"
+            sleep 10
+          done
+          echo "Health check failed after 5 attempts."
+          exit 1

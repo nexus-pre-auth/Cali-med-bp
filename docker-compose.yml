@@ -1,0 +1,92 @@
+services:
+
+  # ── PostgreSQL 16 + pgvector ──────────────────────────────────────────────
+  # Optional — required only when DATABASE_URL / DB_HOST is set.
+  # To enable: docker compose --profile postgres up
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: blueprintiq-postgres
+    environment:
+      POSTGRES_DB:       ${DB_NAME:-hcai_compliance}
+      POSTGRES_USER:     ${DB_USER:-hcai_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-hcai_user} -d ${DB_NAME:-hcai_compliance}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    profiles:
+      - postgres
+
+  # ── BlueprintIQ API ───────────────────────────────────────────────────────
+  hcai-api:
+    build: .
+    image: blueprintiq:latest
+    container_name: blueprintiq-api
+    ports:
+      - "${API_PORT:-8000}:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - API_KEYS=${API_KEYS:-}
+      # Stripe billing
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - STRIPE_PRICE_ID=${STRIPE_PRICE_ID:-}
+      - APP_BASE_URL=${APP_BASE_URL:-http://localhost:8000}
+      # Email delivery
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - EMAIL_FROM=${EMAIL_FROM:-}
+      # PostgreSQL (optional — omit to use SQLite)
+      - DATABASE_URL=${DATABASE_URL:-}
+      - DB_HOST=${DB_HOST:-}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-hcai_compliance}
+      - DB_USER=${DB_USER:-hcai_user}
+      - DB_PASSWORD=${DB_PASSWORD:-}
+      # Misc
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      - NOTIFY_MIN_SEVERITY=${NOTIFY_MIN_SEVERITY:-Critical}
+    volumes:
+      - chroma_data:/app/chroma_db
+      - ./output:/app/output
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false   # Postgres is optional; API starts even without it
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── One-time setup: index knowledge base ─────────────────────────────────
+  hcai-index:
+    build: .
+    image: blueprintiq:latest
+    container_name: blueprintiq-index
+    environment:
+      - LOG_LEVEL=INFO
+    volumes:
+      - chroma_data:/app/chroma_db
+    command: ["index-kb"]
+    profiles:
+      - setup
+
+volumes:
+  chroma_data:
+    driver: local
+  postgres_data:
+    driver: local

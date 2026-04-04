@@ -1,0 +1,154 @@
+[
+  {
+    "id": "T24-P2-1224.1",
+    "source": "Title 24 Part 2",
+    "section": "1224.1",
+    "type": "mandatory",
+    "discipline": "Architecture",
+    "text": "Corridors serving patient care areas in acute care hospitals shall have a minimum clear width of 8 feet (2438 mm). Corridors in other occupancy groups within healthcare facilities shall comply with CBC Section 1005.1."
+  },
+  {
+    "id": "T24-P2-1224.36",
+    "source": "Title 24 Part 2",
+    "section": "1224.36",
+    "type": "mandatory",
+    "discipline": "Fire / Life Safety",
+    "text": "Smoke compartments in Group I-2 Condition 2 occupancies (hospitals) shall not exceed 22,500 square feet. The maximum travel distance from any point to a smoke barrier door shall not exceed 200 feet. Smoke barriers shall be constructed as fire barriers with a minimum 1-hour fire-resistance rating."
+  },
+  {
+    "id": "T24-P2-1226.5",
+    "source": "Title 24 Part 2",
+    "section": "1226.5",
+    "type": "mandatory",
+    "discipline": "Ventilation / Infection Control",
+    "text": "Mechanical ventilation systems in healthcare facilities shall be designed and installed to provide positive-pressure rooms for operating suites and other areas requiring aseptic conditions, and negative-pressure rooms for airborne infection isolation. Minimum ventilation rates shall comply with ASHRAE Standard 170."
+  },
+  {
+    "id": "T24-P2-1226.6",
+    "source": "Title 24 Part 2",
+    "section": "1226.6",
+    "type": "mandatory",
+    "discipline": "Medical Gas",
+    "text": "Medical gas and vacuum systems shall be installed in accordance with NFPA 99, Health Care Facilities Code, and Title 24 Part 5 (California Plumbing Code). Zone shutoff valves shall be installed to permit isolation of medical gas to individual rooms or zones. Master alarm panels and area alarm panels are required."
+  },
+  {
+    "id": "T24-P2-1632A",
+    "source": "Title 24 Part 2",
+    "section": "1632A",
+    "type": "mandatory",
+    "discipline": "Structural / Seismic",
+    "text": "In essential facilities (Seismic Importance Factor Ip = 1.5), all nonstructural components including HVAC equipment, medical gas piping, electrical distribution systems, and suspended ceiling systems shall be seismically restrained in accordance with CBC Chapter 13. OSHPD pre-approved anchorage systems are required."
+  },
+  {
+    "id": "T24-P3-517",
+    "source": "Title 24 Part 3 (CEC)",
+    "section": "Article 517",
+    "type": "mandatory",
+    "discipline": "Electrical",
+    "text": "Health care facilities shall provide an Essential Electrical System (EES) consisting of two separate systems capable of supplying a limited amount of lighting, power, and special power needs essential for safety to patients and personnel. The EES shall consist of the Life Safety Branch, the Critical Branch, and the Equipment System."
+  },
+  {
+    "id": "T24-P4-ASHRAE170-7",
+    "source": "Title 24 Part 4 (ASHRAE 170)",
+    "section": "Table 7.1",
+    "type": "mandatory",
+    "discipline": "Mechanical / Ventilation",
+    "text": "ASHRAE Standard 170-2021 Table 7.1 (adopted by Title 24 Part 4) specifies minimum ventilation requirements for healthcare spaces. Operating Rooms: 20 ACH total (4 ACH OA), positive pressure, HEPA filtration. ICU patient rooms: 6 ACH OA minimum. Airborne infection isolation rooms: 12 ACH total (2 ACH OA), negative pressure (-0.01 in. w.g. minimum). All air from soiled utility rooms and decontamination areas shall be exhausted directly outdoors."
+  },
+  {
+    "id": "T24-P5-418A",
+    "source": "Title 24 Part 5 (CPC)",
+    "section": "418A",
+    "type": "mandatory",
+    "discipline": "Plumbing",
+    "text": "In healthcare facilities, hot water systems serving patient care areas shall maintain a minimum storage temperature of 120\u00b0F to control Legionella growth. Point-of-use thermostatic mixing valves complying with ASSE 1070 shall be provided at patient-accessible lavatories, showers, and bathing facilities, limiting delivered water temperature to a maximum of 110\u00b0F."
+  },
+  {
+    "id": "T24-P2-CBC-11B",
+    "source": "Title 24 Part 2 (CBC Chapter 11B)",
+    "section": "Chapter 11B",
+    "type": "mandatory",
+    "discipline": "Accessibility",
+    "text": "California Building Code Chapter 11B requires that all newly constructed healthcare facilities provide full accessibility compliance. Patient rooms, toilet rooms, bathing facilities, waiting areas, and public corridors shall meet CBC Chapter 11B requirements including accessible routes, turning spaces (60-inch minimum diameter), reach ranges, grab bar specifications, and accessible door hardware."
+  },
+  {
+    "id": "T24-P2-CBC-407",
+    "source": "Title 24 Part 2 (CBC Section 407)",
+    "section": "407",
+    "type": "mandatory",
+    "discipline": "Fire / Life Safety",
+    "text": "Group I-2 Condition 2 (Hospital) occupancies shall be divided into smoke compartments. Each smoke compartment shall not exceed 22,500 square feet (2090 m\u00b2). Smoke barriers shall be constructed to a minimum 1-hour fire-resistance rating. Openings through smoke barriers shall be protected by listed smoke door assemblies that are self-closing or automatic-closing."
+  },
+  {
+    "id": "T24-P2-CBC-13",
+    "source": "Title 24 Part 2 (CBC Chapter 13)",
+    "section": "Chapter 13",
+    "type": "mandatory",
+    "discipline": "Structural / Seismic",
+    "text": "Nonstructural components in essential facilities (hospitals with Ip=1.5) must be designed and anchored to resist seismic forces. This includes mechanical equipment, electrical panels, piping systems, duct systems, suspended ceiling systems, and medical equipment. Prescriptive anchorage using OSHPD pre-approved systems is an acceptable alternative to a full engineered analysis."
+  },
+  {
+    "id": "T24-P2-1114B",
+    "source": "Title 24 Part 2",
+    "section": "1114B",
+    "type": "mandatory",
+    "discipline": "Accessibility",
+    "text": "Toilet rooms and bathing rooms required to be accessible in healthcare facilities shall provide maneuvering clearance, turning space, accessible fixtures, and grab bars as specified in CBC Chapter 11B. Accessible patient toilet rooms shall provide a minimum 60-inch turning diameter or T-shaped turning space."
+  },
+  {
+    "id": "NFPA-99-5.1.14.2.1",
+    "source": "NFPA 99-2021",
+    "section": "5.1.14.2.1",
+    "type": "mandatory",
+    "discipline": "Medical Gas",
+    "text": "Zone valve boxes shall be located in the immediate vicinity of the areas they serve and within 50 ft (15 m) of those areas. The working space on the access side of a zone valve box shall have a minimum clear space of 36 in. (914 mm) in width and 36 in. (914 mm) in depth. Zone valve boxes shall be accessible at all times and shall not require the use of a tool for access."
+  },
+  {
+    "id": "T24-P3-517.18-2025",
+    "source": "Title 24 Part 3 (2025 CBC)",
+    "section": "Article 517.18",
+    "type": "mandatory",
+    "discipline": "Telehealth / IT Infrastructure",
+    "text": "Patient care areas shall be provided with receptacle outlets in sufficient quantity and located to avoid the use of extension cords. Telehealth and telemedicine rooms shall be served by at least one dedicated branch circuit supplying receptacles for audio/video and communications equipment, separate from general-use circuits."
+  },
+  {
+    "id": "CBC-2025-7A",
+    "source": "CBC 2025",
+    "section": "Chapter 7A",
+    "type": "mandatory",
+    "discipline": "Wildfire Resilience",
+    "text": "Section 701A.3 Applicability: The provisions of this chapter shall apply to buildings located in any Fire Hazard Severity Zone in State Responsibility Areas or any Wildland-Urban Interface Fire Area designated by the enforcing agency. Section 704A: Roofing shall comply with the requirements of Section 1505.1 and shall be a Class A assembly. Section 708A: Eaves, soffits, and ventilation openings shall be constructed of noncombustible materials or shall use ember-resistant vents listed and labeled in accordance with ASTM E2886. Section 707A.3: Exterior walls shall be constructed of approved noncombustible materials or fire-retardant-treated wood, or shall provide not less than one-hour fire-resistance-rated construction."
+  },
+  {
+    "id": "NFPA-99-2024-5.1.14.2.3",
+    "source": "NFPA 99-2024",
+    "section": "5.1.14.2.3",
+    "type": "mandatory",
+    "discipline": "Medical Gas",
+    "text": "Zone valve boxes used in new construction or substantial renovation shall be equipped with continuous pressure-monitoring capability interfaced with the facility building automation system (BAS). The BAS shall annunciate an alarm at a continuously monitored location \u2014 including the nursing station and facility engineering office \u2014 when pipeline pressure deviates from established high or low setpoints for any medical gas type. Alarm setpoints shall be documented in the facility\u2019s medical gas operations manual."
+  },
+  {
+    "id": "CBC-2025-406.9",
+    "source": "CBC 2025",
+    "section": "\u00a7406.9",
+    "type": "mandatory",
+    "discipline": "Electrical",
+    "text": "Section 406.9 Electric Vehicle (EV) Charging. Open parking garages and enclosed parking garages equipped with EV charging equipment shall comply with the requirements of this section. Section 406.9.4: EV charging areas shall be separated from occupied portions of the building by construction having a minimum 2-hour fire-resistance rating. Automatic fire suppression shall be provided in accordance with NFPA 13 at all EV charging stall locations. Mechanical ventilation sufficient to dilute hydrogen and combustion byproducts shall be provided in enclosed or semi-enclosed EV charging areas at a minimum rate of 1.5 CFM per square foot of charging area floor space."
+  },
+  {
+    "id": "CALGREEN-2025-A5.410.4",
+    "source": "CALGreen 2025",
+    "section": "\u00a7A5.410.4",
+    "type": "voluntary_tier1",
+    "discipline": "Sustainability",
+    "text": "Section A5.410.4 Whole Building Life Cycle Assessment. For new buildings exceeding 10,000 square feet of conditioned space, a whole-building life cycle assessment (LCA) shall be performed in accordance with ISO 14044 and EN 15978. The LCA shall quantify the global warming potential (GWP) in kilograms of CO\u2082 equivalent for structural and building envelope assemblies including: concrete foundations and slabs, structural framing, exterior wall assemblies, roof assemblies, and glazing systems. The LCA report shall identify a minimum of three low-embodied-carbon material substitutions with quantified GWP reductions and shall be submitted with the construction documents."
+  },
+  {
+    "id": "CBC-2025-1226.14",
+    "source": "CBC 2025",
+    "section": "\u00a71226.14",
+    "type": "mandatory",
+    "discipline": "Behavioral Health",
+    "text": "Section 1226.14 Behavioral Health Patient Rooms and Units. Section 1226.14.1 General: Licensed healthcare facilities providing inpatient or outpatient behavioral health services shall comply with the requirements of this section in all patient rooms, corridors, and ancillary spaces within the behavioral health unit. Section 1226.14.3 Patient Room Size: Single-patient behavioral health rooms shall have a minimum clear floor area of 120 square feet, exclusive of toilet rooms, closets, and vestibules. Section 1226.14.5 Ligature Resistance: All plumbing fixtures, door hardware, grab bars, towel bars, and other anchorage points within patient reach shall be ligature-resistant as defined in HCAI CAN 3-2024. Section 1226.14.7 Anti-Elopement: All perimeter doors of behavioral health units shall be equipped with delayed-egress hardware or access-controlled hardware complying with CBC Section 1010.1.9."
+  }
+]
