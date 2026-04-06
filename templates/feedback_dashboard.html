@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AHJ Feedback Dashboard — HCAI Compliance Engine</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+            color: #fff;
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        header h1 { font-size: 1.5rem; font-weight: 700; }
+        header p  { font-size: 0.875rem; opacity: 0.75; margin-top: 4px; }
+
+        .badge {
+            background: #48bb78;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.6; }
+        }
+
+        main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+        /* ── Metric cards ── */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 20px 24px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+        }
+
+        .metric-card h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; }
+        .metric-card .value { font-size: 2rem; font-weight: 800; margin: 8px 0 4px; }
+        .metric-card .trend { font-size: 0.8rem; opacity: 0.85; }
+        .improvement-up   { color: #9ae6b4; }
+        .improvement-down { color: #feb2b2; }
+
+        /* ── Panels ── */
+        .panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+
+        .panel h2 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: #2d3748; }
+
+        /* ── Two-column layout ── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+        /* ── Rules table ── */
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        th { text-align: left; padding: 8px 12px; background: #edf2f7; color: #4a5568; font-weight: 600; }
+        td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
+
+        .rule-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-ok       { background: #c6f6d5; color: #22543d; }
+        .badge-warning  { background: #fefcbf; color: #744210; }
+        .badge-critical { background: #fed7d7; color: #742a2a; }
+
+        /* ── AHJ leaderboard ── */
+        .ahj-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .ahj-name  { flex: 1; font-weight: 600; font-size: 0.875rem; }
+        .ahj-bar   { flex: 2; background: #e2e8f0; border-radius: 9999px; height: 8px; overflow: hidden; }
+        .ahj-fill  { height: 100%; background: #667eea; border-radius: 9999px; transition: width 0.6s ease; }
+        .ahj-score { font-size: 0.875rem; font-weight: 700; color: #4a5568; min-width: 48px; text-align: right; }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #a0aec0;
+            padding: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>AHJ Feedback Loop Dashboard</h1>
+        <p>Real-time model performance &amp; improvement tracking</p>
+    </div>
+    <span class="badge">Live</span>
+</header>
+
+<main>
+    <!-- Metric cards -->
+    <div class="metrics-grid" id="metricsGrid">
+        <div class="metric-card"><h3>Loading…</h3><div class="value">—</div></div>
+    </div>
+
+    <!-- Trend chart + AHJ leaderboard -->
+    <div class="two-col">
+        <div class="panel">
+            <h2>F1 Score Over Time</h2>
+            <canvas id="trendChart" height="200"></canvas>
+        </div>
+
+        <div class="panel">
+            <h2>Performance by AHJ Office</h2>
+            <div id="ahjList"><p style="color:#a0aec0">Loading…</p></div>
+        </div>
+    </div>
+
+    <!-- Rules needing attention -->
+    <div class="panel">
+        <h2>Rules Needing Attention (lowest accuracy)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rule ID</th>
+                    <th>Accuracy</th>
+                    <th>False Positives</th>
+                    <th>False Negatives</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="rulesBody"><tr><td colspan="5" style="color:#a0aec0">Loading…</td></tr></tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    Auto-refreshes every 30 seconds &nbsp;|&nbsp; HCAI Compliance Engine
+    &nbsp;|&nbsp; Next retraining: <span id="nextRetrain">—</span>
+</footer>
+
+<script>
+    let trendChart = null;
+
+    async function loadDashboard() {
+        let data;
+        try {
+            const res = await fetch('/feedback/dashboard');
+            if (!res.ok) throw new Error(res.statusText);
+            data = await res.json();
+        } catch (e) {
+            console.warn('Dashboard API unavailable — using placeholder data.');
+            data = placeholderData();
+        }
+
+        renderMetrics(data);
+        renderTrend(data.improvement_over_time || []);
+        renderAHJ(data.ahj_performance || []);
+        renderRules(data.rules_needing_attention || []);
+
+        const nextEl = document.getElementById('nextRetrain');
+        if (nextEl && data.next_retraining_scheduled) {
+            nextEl.textContent = new Date(data.next_retraining_scheduled).toLocaleString();
+        }
+    }
+
+    function renderMetrics(data) {
+        const vd  = data.today_metrics?.violation_detection || {};
+        const total = data.total_feedback_submitted ?? 0;
+
+        document.getElementById('metricsGrid').innerHTML = `
+            <div class="metric-card">
+                <h3>Total Feedback</h3>
+                <div class="value">${total}</div>
+                <div class="trend">All-time submissions</div>
+            </div>
+            <div class="metric-card">
+                <h3>F1 Score (today)</h3>
+                <div class="value">${pct(vd.average_f1)}</div>
+                <div class="trend improvement-up">Detection quality</div>
+            </div>
+            <div class="metric-card">
+                <h3>Precision</h3>
+                <div class="value">${pct(vd.average_precision)}</div>
+                <div class="trend">Low false positives</div>
+            </div>
+            <div class="metric-card">
+                <h3>Recall</h3>
+                <div class="value">${pct(vd.average_recall)}</div>
+                <div class="trend">Low false negatives</div>
+            </div>
+        `;
+    }
+
+    function renderTrend(timeline) {
+        const labels = timeline.map(t => t.week);
+        const values = timeline.map(t => +(t.average_f1 * 100).toFixed(1));
+
+        if (trendChart) trendChart.destroy();
+
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Avg F1 (%)',
+                    data: values,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102,126,234,0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
+                }
+            }
+        });
+    }
+
+    function renderAHJ(performance) {
+        const el = document.getElementById('ahjList');
+        if (!performance.length) { el.innerHTML = '<p style="color:#a0aec0">No data yet.</p>'; return; }
+
+        el.innerHTML = performance.map(a => `
+            <div class="ahj-row">
+                <span class="ahj-name">${esc(a.ahj_name)}</span>
+                <div class="ahj-bar"><div class="ahj-fill" style="width:${(a.average_f1_score*100).toFixed(1)}%"></div></div>
+                <span class="ahj-score">${(a.average_f1_score*100).toFixed(1)}%</span>
+            </div>
+        `).join('');
+    }
+
+    function renderRules(rules) {
+        const tbody = document.getElementById('rulesBody');
+        if (!rules.length) { tbody.innerHTML = '<tr><td colspan="5" style="color:#a0aec0">No data yet.</td></tr>'; return; }
+
+        tbody.innerHTML = rules.map(r => {
+            const acc = r.accuracy ?? 1;
+            const cls = acc >= 0.9 ? 'badge-ok' : acc >= 0.75 ? 'badge-warning' : 'badge-critical';
+            const label = acc >= 0.9 ? 'Good' : acc >= 0.75 ? 'Review' : 'Critical';
+            return `
+                <tr>
+                    <td><strong>${esc(r.rule_id)}</strong></td>
+                    <td>${(acc * 100).toFixed(1)}%</td>
+                    <td>${r.false_positives ?? 0}</td>
+                    <td>${r.false_negatives ?? 0}</td>
+                    <td><span class="rule-badge ${cls}">${label}</span></td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    /* ── Utilities ── */
+    function pct(v) { return v != null ? (v * 100).toFixed(1) + '%' : '—'; }
+    function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    function placeholderData() {
+        return {
+            total_feedback_submitted: 0,
+            today_metrics: { violation_detection: { average_f1: 0, average_precision: 0, average_recall: 0 } },
+            ahj_performance: [],
+            rules_needing_attention: [],
+            improvement_over_time: [],
+            next_retraining_scheduled: new Date(Date.now() + 3600000).toISOString(),
+        };
+    }
+
+    // Initial load + auto-refresh
+    loadDashboard();
+    setInterval(loadDashboard, 30_000);
+</script>
+</body>
+</html>

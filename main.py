@@ -354,6 +354,87 @@ def _run_validation_report(enriched, conditions, ground_truth_path: str | None) 
 
 
 # ---------------------------------------------------------------------------
+# serve command  (FastAPI + feedback loop)
+# ---------------------------------------------------------------------------
+
+@cli.command()
+@click.option("--host", default="0.0.0.0", show_default=True, help="Bind address.")
+@click.option("--port", default=8000, show_default=True, help="TCP port.")
+@click.option("--no-learning", is_flag=True, default=False,
+              help="Disable the continuous learning scheduler.")
+def serve(host: str, port: int, no_learning: bool) -> None:
+    """
+    Start the FastAPI server with the real-time AHJ feedback loop.
+
+    Exposes:
+      POST /feedback/submit        — receive AHJ plan check feedback
+      POST /feedback/batch         — bulk feedback submission
+      GET  /feedback/metrics       — aggregated accuracy metrics
+      GET  /feedback/dashboard     — real-time dashboard data (JSON)
+      POST /feedback/retrain       — manually trigger model retraining
+      GET  /feedback/model/version — active model version
+
+    Open http://<host>:<port>/feedback/dashboard in a browser after starting.
+    """
+    try:
+        import uvicorn
+        from fastapi import FastAPI
+        from fastapi.responses import HTMLResponse
+        from fastapi.staticfiles import StaticFiles
+    except ImportError:
+        _print(
+            "[red]Error: fastapi and uvicorn are required for `serve`. "
+            "Run: pip install fastapi uvicorn[standard][/red]"
+            if HAS_RICH else
+            "Error: fastapi and uvicorn are required. Run: pip install fastapi 'uvicorn[standard]'"
+        )
+        sys.exit(1)
+
+    from src.api.feedback_endpoints import feedback_router
+
+    app = FastAPI(
+        title="HCAI Compliance Engine — Feedback API",
+        description="Real-time AHJ feedback collection and continuous learning pipeline.",
+        version="2.0.0",
+    )
+    app.include_router(feedback_router)
+
+    # Serve the dashboard HTML at /feedback/dashboard/ui
+    templates_dir = Path(__file__).parent / "templates"
+
+    @app.get("/feedback/dashboard/ui", response_class=HTMLResponse, include_in_schema=False)
+    async def dashboard_ui():
+        html_path = templates_dir / "feedback_dashboard.html"
+        if not html_path.exists():
+            return HTMLResponse("<h1>Dashboard template not found</h1>", status_code=404)
+        return HTMLResponse(html_path.read_text())
+
+    # Start continuous learning scheduler
+    if not no_learning:
+        try:
+            from src.ml.continuous_learning import ContinuousLearningPipeline
+            pipeline = ContinuousLearningPipeline()
+
+            @app.on_event("startup")
+            async def start_pipeline():
+                pipeline.start()
+
+            @app.on_event("shutdown")
+            async def stop_pipeline():
+                pipeline.stop()
+
+        except ImportError:
+            _print("Warning: APScheduler not installed; continuous learning disabled.")
+
+    _print(f"\n[bold green]HCAI Feedback API[/bold green] listening on http://{host}:{port}" if HAS_RICH
+           else f"\nHCAI Feedback API listening on http://{host}:{port}")
+    _print(f"  Dashboard UI : http://{host}:{port}/feedback/dashboard/ui")
+    _print(f"  API docs     : http://{host}:{port}/docs\n")
+
+    uvicorn.run(app, host=host, port=port)
+
+
+# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     cli()
