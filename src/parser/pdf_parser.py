@@ -12,7 +12,9 @@ from typing import Optional
 try:
     import pdfplumber
     HAS_PDFPLUMBER = True
-except ImportError:
+except BaseException:
+    # Catches ImportError *and* pyo3_runtime.PanicException (Rust panic when
+    # the cryptography wheel's native extension is missing or broken in CI).
     HAS_PDFPLUMBER = False
 
 

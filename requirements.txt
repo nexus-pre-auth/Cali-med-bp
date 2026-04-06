@@ -9,6 +9,10 @@ reportlab>=4.0.0
 python-dotenv>=1.0.0
 pydantic>=2.0.0
 
+# cffi is a transitive dep of cryptography (used by pdfminer/pdfplumber).
+# Pinning it here ensures the compiled C backend is available in CI.
+cffi>=1.16.0
+
 # Feedback loop & ML pipeline
 fastapi>=0.111.0
 uvicorn[standard]>=0.29.0

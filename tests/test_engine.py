@@ -4,7 +4,6 @@ import json
 import pytest
 from pathlib import Path
 
-from src.parser.pdf_parser import PDFParser
 from src.parser.condition_extractor import ConditionExtractor, ProjectConditions, SeismicData
 from src.engine.decision_engine import DecisionEngine
 from src.engine.severity_scorer import Severity, score_violation
