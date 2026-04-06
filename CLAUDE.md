@@ -10,10 +10,13 @@
 
 ```
 /
-├── main.py                          # CLI entry point (Click commands incl. `serve`)
-├── config.py                        # Centralized configuration (paths, model, RAG settings)
+├── main.py                          # CLI entry point (review, demo, batch, serve, …)
+├── config.py                        # Centralized configuration (paths, model, RAG, alerts)
 ├── requirements.txt                 # Python dependencies
 ├── README.md                        # User-facing documentation
+├── scripts/
+│   ├── setup_monitoring.py         # Interactive wizard: webhook + email alert setup
+│   └── weekly_retrain.py           # Standalone cron script for weekly model retraining
 ├── data/                            # Regulatory knowledge datasets + runtime data
 │   ├── hcai_rules.json             # 15+ structured compliance rules
 │   ├── title24_references.json     # Title 24 regulatory passages for RAG
@@ -41,26 +44,30 @@
 │   ├── engine/
 │   │   ├── decision_engine.py      # Main orchestrator: loads rules, runs evaluation
 │   │   ├── rule_matcher.py         # Rule matching logic + MatchedViolation dataclass
-│   │   └── severity_scorer.py      # Severity enum + keyword-based scoring
+│   │   ├── severity_scorer.py      # Severity enum + keyword-based scoring
+│   │   └── batch_processor.py      # Concurrent batch PDF review (ThreadPoolExecutor)
 │   ├── rag/
 │   │   ├── knowledge_base.py       # ChromaDB vector store for regulatory docs
-│   │   └── generator.py            # Claude API + fallback template comment generation
+│   │   ├── generator.py            # Claude API + fallback template comment generation
+│   │   └── nl_query.py             # Natural-language compliance query (RAG + Claude)
 │   ├── reports/
 │   │   └── report_generator.py     # Text, JSON, and HTML report writers
 │   ├── validation/
 │   │   └── checklist.py            # Accuracy measurement vs. ground truth
-│   ├── feedback/                   # ← NEW: AHJ feedback collection
+│   ├── feedback/
 │   │   ├── __init__.py
 │   │   ├── models.py               # AHJFeedback + FeedbackBatch Pydantic models
 │   │   └── processor.py            # Storage, metric update, retraining gate
-│   ├── api/                        # ← NEW: FastAPI routers
+│   ├── api/
 │   │   ├── __init__.py
-│   │   └── feedback_endpoints.py   # /feedback/* REST endpoints
-│   └── ml/                         # ← NEW: ML training pipeline
+│   │   ├── feedback_endpoints.py   # /feedback/* REST endpoints
+│   │   └── query_endpoints.py      # /query/* natural-language REST endpoints
+│   └── ml/
 │       ├── __init__.py
 │       ├── trainer.py              # RandomForest/GBM/LogReg model training
-│       └── continuous_learning.py  # APScheduler-driven retraining jobs
-├── templates/                      # ← NEW: HTML UI components
+│       ├── continuous_learning.py  # APScheduler-driven retraining + digest jobs
+│       └── alerting.py             # Webhook (Slack/Teams) + email alert delivery
+├── templates/
 │   ├── feedback_dashboard.html     # Real-time metrics dashboard (Chart.js)
 │   └── feedback_widget.html        # Embeddable reviewer feedback widget
 └── migrations/
@@ -153,7 +160,13 @@ OUTPUT_DIR = BASE_DIR / "output"
 ```
 
 Environment variables (loaded via `.env`):
-- `ANTHROPIC_API_KEY` — Required for Claude-powered comments; omit to use template fallback mode.
+- `ANTHROPIC_API_KEY` — Required for Claude-powered comments; omit for template fallback.
+- `ALERT_WEBHOOK_URL` — Slack/Teams incoming webhook for performance alerts.
+- `ALERT_EMAIL_FROM/TO` + `ALERT_SMTP_*` — SMTP settings for daily email digest.
+- `BATCH_MAX_WORKERS` — Parallel threads for batch reviews (default: 4).
+- `BATCH_CHUNK_SIZE` — Files per async chunk (default: 10).
+
+Run `python scripts/setup_monitoring.py` to configure alert settings interactively.
 
 ---
 
@@ -163,6 +176,9 @@ Environment variables (loaded via `.env`):
 # Full compliance review from PDF or text
 python main.py review --input project.pdf --format html
 python main.py review --text "Occupied hospital, seismic zone D..." --name "Sample Project"
+
+# Batch review — all PDFs in a directory (parallel)
+python main.py batch --input-dir /drawings --output-dir /reports --workers 8
 
 # Demo run with synthetic hospital data (no input needed)
 python main.py demo
@@ -176,6 +192,13 @@ python main.py validate --input project.pdf
 # Start FastAPI server with real-time feedback loop
 python main.py serve
 python main.py serve --host 127.0.0.1 --port 9000 --no-learning
+
+# Configure monitoring alerts (interactive wizard)
+python scripts/setup_monitoring.py
+python scripts/setup_monitoring.py --check   # test existing config
+
+# Standalone weekly retrain (for cron use)
+python scripts/weekly_retrain.py
 ```
 
 **`serve` endpoints:**
@@ -189,6 +212,9 @@ python main.py serve --host 127.0.0.1 --port 9000 --no-learning
 | GET | `/feedback/dashboard/ui` | Browser dashboard (HTML) |
 | POST | `/feedback/retrain` | Manually trigger retraining |
 | GET | `/feedback/model/version` | Active model version |
+| POST | `/query/ask` | Natural-language compliance question |
+| POST | `/query/checklist` | Generate back-check prevention checklist |
+| POST | `/query/violations/summarise` | Filter/summarise violation list |
 | GET | `/docs` | Swagger UI |
 
 ---

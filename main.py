@@ -354,6 +354,53 @@ def _run_validation_report(enriched, conditions, ground_truth_path: str | None) 
 
 
 # ---------------------------------------------------------------------------
+# batch command
+# ---------------------------------------------------------------------------
+
+@cli.command()
+@click.option("--input-dir", "-d", required=True, help="Directory containing PDF files to review.")
+@click.option("--output-dir", "-o", default=None, help="Root directory for per-file report output.")
+@click.option("--format", "-f", "fmt", type=click.Choice(["text", "json", "html", "all"]), default="all")
+@click.option("--workers", "-w", default=4, show_default=True, help="Parallel worker threads.")
+@click.option("--no-rag", is_flag=True, default=False, help="Skip RAG/Claude enrichment.")
+def batch(input_dir: str, output_dir: str | None, fmt: str, workers: int, no_rag: bool) -> None:
+    """
+    Run compliance reviews on every PDF in a directory concurrently.
+
+    Reports are written to --output-dir/<filename>/ for each input file.
+    A batch_summary.json is written to --output-dir/ when complete.
+    """
+    import asyncio
+    import json as _json
+    _banner()
+
+    from src.engine.batch_processor import BatchProcessor
+
+    in_path  = Path(input_dir)
+    out_path = Path(output_dir) if output_dir else in_path / "hcai_output"
+    out_path.mkdir(parents=True, exist_ok=True)
+
+    if not in_path.exists():
+        _print(f"[red]Error: Directory not found: {input_dir}[/red]" if HAS_RICH
+               else f"Error: Directory not found: {input_dir}")
+        sys.exit(1)
+
+    processor = BatchProcessor(max_workers=workers)
+
+    async def _run():
+        return await processor.run(in_path, fmt=fmt, output_dir=out_path, use_rag=not no_rag)
+
+    summary = asyncio.run(_run())
+    summary.print_summary()
+
+    # Write aggregate summary JSON
+    summary_path = out_path / "batch_summary.json"
+    with open(summary_path, "w") as f:
+        _json.dump(summary.to_dict(), f, indent=2)
+    _print(f"Batch summary written to {summary_path}")
+
+
+# ---------------------------------------------------------------------------
 # serve command  (FastAPI + feedback loop)
 # ---------------------------------------------------------------------------
 
@@ -391,13 +438,15 @@ def serve(host: str, port: int, no_learning: bool) -> None:
         sys.exit(1)
 
     from src.api.feedback_endpoints import feedback_router
+    from src.api.query_endpoints    import query_router
 
     app = FastAPI(
-        title="HCAI Compliance Engine — Feedback API",
-        description="Real-time AHJ feedback collection and continuous learning pipeline.",
+        title="HCAI Compliance Engine",
+        description="Real-time AHJ feedback collection, continuous learning, and NL query.",
         version="2.0.0",
     )
     app.include_router(feedback_router)
+    app.include_router(query_router)
 
     # Serve the dashboard HTML at /feedback/dashboard/ui
     templates_dir = Path(__file__).parent / "templates"

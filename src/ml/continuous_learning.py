@@ -8,6 +8,7 @@ ContinuousLearningPipeline: APScheduler-based automation that:
 
 from __future__ import annotations
 
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -18,6 +19,7 @@ except ImportError:
     HAS_SCHEDULER = False
 
 from src.feedback.processor import FeedbackProcessor
+from src.ml.alerting import AlertManager
 from src.ml.trainer import ModelTrainer
 
 
@@ -30,6 +32,15 @@ class ContinuousLearningPipeline:
     def __init__(self) -> None:
         self.feedback_processor = FeedbackProcessor()
         self.model_trainer      = ModelTrainer()
+        self.alert_manager      = AlertManager(
+            webhook_url = os.getenv("ALERT_WEBHOOK_URL", ""),
+            email_from  = os.getenv("ALERT_EMAIL_FROM", ""),
+            email_to    = os.getenv("ALERT_EMAIL_TO", ""),
+            smtp_host   = os.getenv("ALERT_SMTP_HOST", "smtp.gmail.com"),
+            smtp_port   = int(os.getenv("ALERT_SMTP_PORT", "587")),
+            smtp_user   = os.getenv("ALERT_SMTP_USER", ""),
+            smtp_pass   = os.getenv("ALERT_SMTP_PASS", ""),
+        )
 
         if HAS_SCHEDULER:
             self.scheduler = AsyncIOScheduler()
@@ -67,6 +78,13 @@ class ContinuousLearningPipeline:
             hours=1,
             id="metrics_aggregation",
         )
+        self.scheduler.add_job(
+            self.send_daily_digest,
+            "cron",
+            hour=7,
+            minute=0,
+            id="daily_email_digest",
+        )
 
         self.scheduler.start()
         print("[ContinuousLearning] Pipeline started.")
@@ -92,6 +110,10 @@ class ContinuousLearningPipeline:
                 f"[ContinuousLearning] Skipping daily retrain: "
                 f"{new_count}/{self.DAILY_FEEDBACK_THRESHOLD} required."
             )
+            if new_count < self.DAILY_FEEDBACK_THRESHOLD // 2:
+                await self.alert_manager.alert_low_feedback_volume(
+                    new_count, self.DAILY_FEEDBACK_THRESHOLD
+                )
 
     async def weekly_deep_retraining(self) -> None:
         """Full retrain over all available data every Sunday."""
@@ -106,9 +128,15 @@ class ContinuousLearningPipeline:
 
         if avg_f1 < self.F1_ALERT_THRESHOLD and avg_f1 > 0:
             print(f"[ContinuousLearning] ALERT — avg F1 {avg_f1:.3f} below threshold.")
+            await self.alert_manager.alert_performance_degradation(avg_f1, self.F1_ALERT_THRESHOLD)
             await self._trigger_emergency_retraining()
 
         await self._save_to_monitoring(metrics)
+
+    async def send_daily_digest(self) -> None:
+        """Send the daily email performance digest (called by scheduler)."""
+        metrics = await self.feedback_processor.get_metrics(days=1)
+        await self.alert_manager.send_daily_digest(metrics)
 
     # ------------------------------------------------------------------
     # Helpers
