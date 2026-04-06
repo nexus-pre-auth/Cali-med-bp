@@ -39,6 +39,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 import config
 from src.api.auth import require_api_key
+from src.api.auth_routes import optional_user, require_user
+from src.api.auth_routes import router as auth_router
 from src.api.jobs import JobStore, get_job_store
 from src.api.models import (
     ChecklistItemResponse,
@@ -216,6 +218,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    app.include_router(auth_router)
     _register_routes(app)
 
     # Serve the SPA frontend from static/ — must come AFTER API routes
@@ -324,6 +327,7 @@ def _register_routes(app: FastAPI) -> None:
         background_tasks: BackgroundTasks,
         store: JobStore = Depends(get_job_store),
         _api_key: str = Depends(require_api_key),
+        current_user: dict | None = Depends(optional_user),
     ) -> ReviewResponse:
         """
         Submit a project description text for async compliance review.
@@ -336,7 +340,23 @@ def _register_routes(app: FastAPI) -> None:
                 detail="Field 'text' is required for this endpoint. Use /review/upload for PDF files.",
             )
 
+        # Credit check for authenticated users on the free tier
+        if current_user:
+            from src.db.user_store import get_user_store
+            if not get_user_store().decrement_credit(current_user["id"]):
+                raise HTTPException(
+                    status_code=402,
+                    detail={
+                        "error": "no_credits",
+                        "message": "You have used your free review. Upgrade to Pro for unlimited reviews.",
+                        "upgrade_url": "/auth/upgrade",
+                    },
+                )
+
         job = store.create(request_body.project_name)
+        # Tag job with user_id so the dashboard can filter by owner
+        if current_user:
+            store.set_user_id(job.job_id, current_user["id"])
         base_url = str(request.base_url).rstrip("/")
 
         background_tasks.add_task(
@@ -377,6 +397,7 @@ def _register_routes(app: FastAPI) -> None:
         fmt: OutputFormat = Form(default=OutputFormat.all),
         store: JobStore = Depends(get_job_store),
         _api_key: str = Depends(require_api_key),
+        current_user: dict | None = Depends(optional_user),
     ) -> ReviewResponse:
         """
         Submit a PDF project file for async compliance review.
@@ -396,7 +417,22 @@ def _register_routes(app: FastAPI) -> None:
                 detail="PDF file exceeds 50 MB limit.",
             )
 
+        # Credit check for authenticated users on the free tier
+        if current_user:
+            from src.db.user_store import get_user_store
+            if not get_user_store().decrement_credit(current_user["id"]):
+                raise HTTPException(
+                    status_code=402,
+                    detail={
+                        "error": "no_credits",
+                        "message": "You have used your free review. Upgrade to Pro for unlimited reviews.",
+                        "upgrade_url": "/auth/upgrade",
+                    },
+                )
+
         job = store.create(project_name)
+        if current_user:
+            store.set_user_id(job.job_id, current_user["id"])
         base_url = str(request.base_url).rstrip("/")
 
         background_tasks.add_task(
@@ -506,6 +542,30 @@ def _register_routes(app: FastAPI) -> None:
     ) -> list[JobStatusResponse]:
         """List recent compliance review jobs (newest first)."""
         jobs = store.list_recent(limit=min(limit, 100))
+        return [
+            JobStatusResponse(
+                job_id=j.job_id,
+                status=j.status,
+                created_at=j.created_at,
+                completed_at=j.completed_at,
+                error=j.error,
+            )
+            for j in jobs
+        ]
+
+    # ----------------------------------------------- GET /reviews/mine
+    @app.get(
+        "/reviews/mine",
+        response_model=list[JobStatusResponse],
+        tags=["Review"],
+    )
+    async def list_my_reviews(
+        limit: int = 20,
+        store: JobStore = Depends(get_job_store),
+        current_user: dict = Depends(require_user),
+    ) -> list[JobStatusResponse]:
+        """List reviews submitted by the authenticated user (newest first)."""
+        jobs = store.list_by_user(current_user["id"], limit=min(limit, 100))
         return [
             JobStatusResponse(
                 job_id=j.job_id,

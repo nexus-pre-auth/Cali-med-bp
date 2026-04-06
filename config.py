@@ -47,3 +47,16 @@ RAG_COLLECTION_NAME = "hcai_compliance_kb"
 # Parser settings
 SUPPORTED_EXTENSIONS = [".pdf", ".dwg", ".dxf"]
 MAX_PDF_PAGES = 500
+
+# Database
+DB_PATH = BASE_DIR / "hcai_rules.db"
+
+# JWT auth
+JWT_SECRET    = os.getenv("JWT_SECRET", "change-me-in-production-use-a-long-random-string")
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRE_DAYS = int(os.getenv("JWT_EXPIRE_DAYS", "30"))
+
+# Stripe pricing (set in Railway env vars)
+STRIPE_PRO_PRICE_ID    = os.getenv("STRIPE_PRO_PRICE_ID", "")
+STRIPE_AGENCY_PRICE_ID = os.getenv("STRIPE_AGENCY_PRICE_ID", "")
+STRIPE_SINGLE_PRICE_ID = os.getenv("STRIPE_PRICE_ID", "")  # pay-per-review

@@ -9,7 +9,8 @@
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
     [x-cloak] { display: none !important; }
-    .gradient-hero { background: linear-gradient(135deg, #1A365D 0%, #2A4A7F 50%, #1E3A5F 100%); }
+    .gradient-hero  { background: linear-gradient(135deg, #1A365D 0%, #2A4A7F 50%, #1E3A5F 100%); }
+    .modal-backdrop { background: rgba(0,0,0,0.5); }
     .severity-critical { background: #FFF5F5; border-left: 4px solid #E53E3E; }
     .severity-high     { background: #FFFAF0; border-left: 4px solid #DD6B20; }
     .severity-medium   { background: #FFFFF0; border-left: 4px solid #D69E2E; }
@@ -39,13 +40,31 @@
       </a>
       <div class="flex items-center gap-4">
         <a href="#pricing" class="text-sm text-gray-600 hover:text-gray-900">Pricing</a>
-        <a href="#upload" class="bg-blue-700 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 transition">Get Report</a>
+        <!-- Logged-out state -->
+        <template x-if="!user">
+          <div class="flex items-center gap-2">
+            <button @click="openAuth('login')" class="text-sm text-gray-700 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">Sign in</button>
+            <button @click="openAuth('register')" class="bg-blue-700 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 transition">Get Started Free</button>
+          </div>
+        </template>
+        <!-- Logged-in state -->
+        <template x-if="user">
+          <div class="flex items-center gap-3">
+            <button @click="showDashboard()" class="text-sm text-gray-700 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">Dashboard</button>
+            <div class="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1.5">
+              <div class="w-6 h-6 bg-blue-700 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                   x-text="(user.full_name || user.email).charAt(0).toUpperCase()"></div>
+              <span class="text-sm text-gray-700 max-w-[120px] truncate" x-text="user.full_name || user.email"></span>
+            </div>
+            <button @click="logout()" class="text-sm text-gray-500 hover:text-red-600 transition">Sign out</button>
+          </div>
+        </template>
       </div>
     </div>
   </nav>
 
   <!-- ───────────────────── HERO ───────────────────── -->
-  <section class="gradient-hero text-white py-20 px-4" x-show="!jobId">
+  <section class="gradient-hero text-white py-20 px-4" x-show="!jobId && view !== 'dashboard'">
     <div class="max-w-3xl mx-auto text-center">
       <div class="inline-flex items-center gap-2 bg-white/10 text-blue-100 text-xs px-3 py-1 rounded-full mb-6">
         <span class="w-2 h-2 bg-green-400 rounded-full pulse inline-block"></span>
@@ -65,16 +84,29 @@
         <span class="flex items-center gap-1.5">✓ Step-by-step fix instructions</span>
         <span class="flex items-center gap-1.5">✓ Downloadable PDF report</span>
       </div>
-      <a href="#upload"
-         class="inline-block bg-white text-blue-800 font-semibold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-blue-50 transition">
-        Review a Project — $49 →
-      </a>
-      <p class="mt-3 text-blue-200 text-sm">Results typically in 2–4 minutes · PDF delivered by email</p>
+      <template x-if="!user">
+        <div>
+          <button @click="openAuth('register')"
+              class="inline-block bg-white text-blue-800 font-semibold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-blue-50 transition cursor-pointer">
+            Get Started Free →
+          </button>
+          <p class="mt-3 text-blue-200 text-sm">1 free review · No credit card required</p>
+        </div>
+      </template>
+      <template x-if="user">
+        <div>
+          <button @click="showDashboard()"
+              class="inline-block bg-white text-blue-800 font-semibold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-blue-50 transition cursor-pointer">
+            Go to Dashboard →
+          </button>
+          <p class="mt-3 text-blue-200 text-sm">Welcome back, <span x-text="user.full_name || user.email.split('@')[0]"></span></p>
+        </div>
+      </template>
     </div>
   </section>
 
   <!-- ───────────────────── HOW IT WORKS ───────────────────── -->
-  <section class="py-16 px-4 bg-white" x-show="!jobId">
+  <section class="py-16 px-4 bg-white" x-show="!jobId && view !== 'dashboard'">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-2xl font-bold text-gray-900 text-center mb-10">How It Works</h2>
       <div class="grid md:grid-cols-3 gap-8">
@@ -104,10 +136,26 @@
   </section>
 
   <!-- ───────────────────── UPLOAD FORM ───────────────────── -->
-  <section id="upload" class="py-16 px-4 bg-gray-50" x-show="!jobId">
+  <section id="upload" class="py-16 px-4 bg-gray-50" x-show="!jobId && view !== 'dashboard'">
     <div class="max-w-2xl mx-auto">
       <h2 class="text-2xl font-bold text-gray-900 text-center mb-2">Start Your Compliance Review</h2>
-      <p class="text-gray-500 text-center mb-8">$49 per report · Secure payment via Stripe</p>
+      <template x-if="user && user.plan !== 'free'">
+        <p class="text-gray-500 text-center mb-8">
+          <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium capitalize" x-text="user.plan + ' plan'"></span>
+          Unlimited reviews included
+        </p>
+      </template>
+      <template x-if="user && user.plan === 'free'">
+        <p class="text-gray-500 text-center mb-8">
+          <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full font-medium">
+            Free tier · <span x-text="user.credits || 0"></span> review<span x-if="(user.credits||0) !== 1">s</span> remaining
+          </span>
+          <button @click="upgradeModal=true" class="ml-2 text-blue-600 text-xs hover:underline">Upgrade for unlimited</button>
+        </p>
+      </template>
+      <template x-if="!user">
+        <p class="text-gray-500 text-center mb-8">$49 per report · Secure payment via Stripe</p>
+      </template>
 
       <form @submit.prevent="submitReview" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
 
@@ -183,6 +231,7 @@
           <input
             type="email"
             x-model="email"
+            :value="user ? user.email : email"
             placeholder="you@firm.com"
             class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -204,18 +253,23 @@
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
             </svg>
           </template>
-          <span x-text="submitting ? 'Processing...' : 'Continue to Payment — $49'"></span>
+          <span x-text="submitting ? 'Processing...' : (user ? 'Run Compliance Review →' : 'Continue to Payment — $49')"></span>
         </button>
 
         <p class="text-center text-xs text-gray-400 mt-4">
-          Secure payment via Stripe · No account required · PDF emailed within minutes
+          <template x-if="user">
+            <span>Report saved to your dashboard · PDF emailed when complete</span>
+          </template>
+          <template x-if="!user">
+            <span>Secure payment via Stripe · No account required · PDF emailed within minutes</span>
+          </template>
         </p>
       </form>
     </div>
   </section>
 
   <!-- ───────────────────── PRICING ───────────────────── -->
-  <section id="pricing" class="py-16 px-4 bg-white" x-show="!jobId">
+  <section id="pricing" class="py-16 px-4 bg-white" x-show="!jobId && view !== 'dashboard'">
     <div class="max-w-4xl mx-auto">
       <h2 class="text-2xl font-bold text-gray-900 text-center mb-2">Pricing</h2>
       <p class="text-gray-500 text-center mb-10">Simple, transparent pricing for every team size</p>
@@ -431,8 +485,226 @@
     </div>
   </div>
 
+  <!-- ───────────────────── DASHBOARD ───────────────────── -->
+  <div x-show="view === 'dashboard'" x-cloak class="min-h-screen bg-gray-50 py-10 px-4">
+    <div class="max-w-4xl mx-auto">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">My Reviews</h1>
+          <p class="text-gray-500 text-sm mt-1">
+            <span x-text="user && user.plan !== 'free' ? (user.plan.charAt(0).toUpperCase()+user.plan.slice(1)) + ' Plan · Unlimited reviews' : 'Free Plan · ' + (user && user.credits || 0) + ' review(s) remaining'"></span>
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <template x-if="user && user.plan === 'free'">
+            <button @click="upgradeModal=true"
+                class="text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-blue-800 transition font-medium">
+              Upgrade Plan
+            </button>
+          </template>
+          <button @click="view='landing'; scrollTo({top:0})"
+              class="text-sm bg-blue-700 text-white px-5 py-2 rounded-lg hover:bg-blue-800 transition font-medium">
+            + New Review
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div x-show="dashboardLoading" class="text-center py-20">
+        <svg class="spinner w-8 h-8 text-blue-600 mx-auto" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+        </svg>
+      </div>
+
+      <!-- Empty state -->
+      <div x-show="!dashboardLoading && myJobs.length === 0" class="bg-white rounded-2xl border border-gray-200 p-16 text-center">
+        <svg class="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <p class="text-gray-500 font-medium mb-2">No reviews yet</p>
+        <p class="text-gray-400 text-sm mb-6">Run your first compliance review to get started.</p>
+        <button @click="view='landing'; setTimeout(()=>document.getElementById('upload').scrollIntoView(),50)"
+            class="bg-blue-700 text-white text-sm px-6 py-2 rounded-lg hover:bg-blue-800 transition">
+          Start a Review
+        </button>
+      </div>
+
+      <!-- Jobs list -->
+      <div x-show="!dashboardLoading && myJobs.length > 0" class="space-y-3">
+        <template x-for="job in myJobs" :key="job.job_id">
+          <div class="bg-white rounded-xl border border-gray-200 p-5 flex items-center justify-between hover:border-blue-200 transition">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-3 mb-1">
+                <!-- Status badge -->
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                  :class="{
+                    'bg-green-100 text-green-700': job.status === 'complete',
+                    'bg-yellow-100 text-yellow-700': job.status === 'pending' || job.status === 'processing',
+                    'bg-red-100 text-red-700': job.status === 'failed'
+                  }"
+                  x-text="job.status === 'complete' ? 'Complete' : job.status === 'failed' ? 'Failed' : 'Processing'">
+                </span>
+                <span class="text-xs text-gray-400" x-text="job.created_at ? new Date(job.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''"></span>
+              </div>
+              <p class="text-sm text-gray-500 font-mono truncate" x-text="'Job ' + job.job_id.slice(0,8) + '...'"></p>
+            </div>
+            <div class="flex items-center gap-2 ml-4">
+              <template x-if="job.status === 'complete'">
+                <button @click="viewJobResults(job.job_id)"
+                    class="text-sm text-blue-700 hover:text-blue-800 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
+                  View Report →
+                </button>
+              </template>
+              <template x-if="job.status !== 'complete' && job.status !== 'failed'">
+                <button @click="viewJobResults(job.job_id)"
+                    class="text-sm text-gray-500 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                  Check Status
+                </button>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ───────────────────── AUTH MODAL ───────────────────── -->
+  <div x-show="authModal" x-cloak
+       class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop px-4"
+       @click.self="authModal=false">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+
+      <!-- Tabs -->
+      <div class="flex rounded-lg bg-gray-100 p-1 mb-6">
+        <button @click="authTab='login'"
+            :class="authTab==='login' ? 'bg-white shadow text-gray-900' : 'text-gray-500'"
+            class="flex-1 text-sm font-medium py-2 rounded-md transition">Sign In</button>
+        <button @click="authTab='register'"
+            :class="authTab==='register' ? 'bg-white shadow text-gray-900' : 'text-gray-500'"
+            class="flex-1 text-sm font-medium py-2 rounded-md transition">Create Account</button>
+      </div>
+
+      <!-- Login form -->
+      <form x-show="authTab==='login'" @submit.prevent="login()">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" x-model="authEmail" required
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 placeholder="you@firm.com" />
+        </div>
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input type="password" x-model="authPassword" required
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 placeholder="••••••••" />
+        </div>
+        <p x-show="authError" x-text="authError" class="text-red-600 text-sm mb-4"></p>
+        <button type="submit" :disabled="authLoading"
+                class="w-full bg-blue-700 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-800 transition disabled:opacity-50">
+          <span x-text="authLoading ? 'Signing in...' : 'Sign In'"></span>
+        </button>
+        <p class="text-center text-sm text-gray-500 mt-4">
+          No account? <button type="button" @click="authTab='register'" class="text-blue-600 hover:underline">Create one free</button>
+        </p>
+      </form>
+
+      <!-- Register form -->
+      <form x-show="authTab==='register'" @submit.prevent="register()">
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input type="text" x-model="authName"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   placeholder="Jane Smith" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+            <input type="text" x-model="authCompany"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   placeholder="Smith AE" />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" x-model="authEmail" required
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 placeholder="you@firm.com" />
+        </div>
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-gray-400 font-normal">(min 8 characters)</span></label>
+          <input type="password" x-model="authPassword" required minlength="8"
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 placeholder="••••••••" />
+        </div>
+        <p x-show="authError" x-text="authError" class="text-red-600 text-sm mb-4"></p>
+        <button type="submit" :disabled="authLoading"
+                class="w-full bg-blue-700 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-800 transition disabled:opacity-50">
+          <span x-text="authLoading ? 'Creating account...' : 'Create Free Account'"></span>
+        </button>
+        <p class="text-center text-xs text-gray-400 mt-3">Includes 1 free compliance review · No credit card required</p>
+        <p class="text-center text-sm text-gray-500 mt-2">
+          Already have an account? <button type="button" @click="authTab='login'" class="text-blue-600 hover:underline">Sign in</button>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ───────────────────── UPGRADE MODAL ───────────────────── -->
+  <div x-show="upgradeModal" x-cloak
+       class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop px-4"
+       @click.self="upgradeModal=false">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8">
+      <h2 class="text-xl font-bold text-gray-900 text-center mb-2">Upgrade Your Plan</h2>
+      <p class="text-gray-500 text-center text-sm mb-8">Unlock unlimited reviews for your firm</p>
+
+      <div class="grid md:grid-cols-2 gap-5 mb-6">
+        <!-- Pro -->
+        <div class="border-2 border-blue-700 rounded-2xl p-6 relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-700 text-white text-xs px-3 py-1 rounded-full">Most Popular</div>
+          <h3 class="font-bold text-gray-900 mb-1">Professional</h3>
+          <p class="text-gray-500 text-xs mb-4">For active AE firms</p>
+          <div class="mb-4"><span class="text-3xl font-bold">$99</span><span class="text-gray-500 text-sm">/mo</span></div>
+          <ul class="text-sm text-gray-600 space-y-1.5 mb-5">
+            <li>✓ Unlimited reviews</li>
+            <li>✓ Priority processing</li>
+            <li>✓ Dashboard history</li>
+            <li>✓ Email support</li>
+          </ul>
+          <button @click="startUpgrade('pro')" :disabled="upgradeLoading"
+                  class="w-full bg-blue-700 text-white text-sm font-semibold py-2 rounded-lg hover:bg-blue-800 transition disabled:opacity-50">
+            <span x-text="upgradeLoading==='pro' ? 'Redirecting...' : 'Upgrade to Pro'"></span>
+          </button>
+        </div>
+        <!-- Agency -->
+        <div class="border border-gray-200 rounded-2xl p-6">
+          <h3 class="font-bold text-gray-900 mb-1">Agency</h3>
+          <p class="text-gray-500 text-xs mb-4">For permit expeditors &amp; large firms</p>
+          <div class="mb-4"><span class="text-3xl font-bold">$299</span><span class="text-gray-500 text-sm">/mo</span></div>
+          <ul class="text-sm text-gray-600 space-y-1.5 mb-5">
+            <li>✓ Everything in Pro</li>
+            <li>✓ REST API access</li>
+            <li>✓ White-label PDF branding</li>
+            <li>✓ Dedicated support</li>
+          </ul>
+          <button @click="startUpgrade('agency')" :disabled="upgradeLoading"
+                  class="w-full border border-blue-700 text-blue-700 text-sm font-semibold py-2 rounded-lg hover:bg-blue-50 transition disabled:opacity-50">
+            <span x-text="upgradeLoading==='agency' ? 'Redirecting...' : 'Upgrade to Agency'"></span>
+          </button>
+        </div>
+      </div>
+
+      <p x-show="upgradeError" x-text="upgradeError" class="text-red-600 text-sm text-center mb-3"></p>
+      <p class="text-center text-xs text-gray-400">Secure billing via Stripe · Cancel anytime</p>
+    </div>
+  </div>
+
   <!-- ───────────────────── FOOTER ───────────────────── -->
-  <footer class="bg-gray-900 text-gray-400 text-sm py-10 px-4 mt-16" x-show="!jobId">
+  <footer class="bg-gray-900 text-gray-400 text-sm py-10 px-4 mt-16" x-show="!jobId && view !== 'dashboard'">
     <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between gap-4">
       <div>
         <p class="font-semibold text-white mb-1">BlueprintIQ</p>
@@ -450,6 +722,30 @@
   <script>
     function hcaiApp() {
       return {
+        // View state — 'landing' | 'dashboard'
+        view: 'landing',
+
+        // Auth state
+        user: null,
+        token: '',
+        authModal: false,
+        authTab: 'login',
+        authEmail: '',
+        authPassword: '',
+        authName: '',
+        authCompany: '',
+        authError: '',
+        authLoading: false,
+
+        // Dashboard state
+        myJobs: [],
+        dashboardLoading: false,
+
+        // Upgrade modal
+        upgradeModal: false,
+        upgradeLoading: null,
+        upgradeError: '',
+
         // Form state
         uploadedFile: null,
         pastedText: '',
@@ -467,19 +763,172 @@
         pollTimer: null,
 
         init() {
-          // Check URL params for returning from Stripe or direct job link
+          // Restore auth from localStorage
+          this.checkAuth();
+
+          // Check URL params for returning from Stripe, direct job link, or upgrade confirmation
           const params = new URLSearchParams(window.location.search);
-          const jid = params.get('job_id');
-          const sid = params.get('session_id');
+          const jid     = params.get('job_id');
+          const sid     = params.get('session_id');
+          const upgraded = params.get('upgraded');
+
+          if (upgraded && this.user) {
+            // Returning from Stripe subscription checkout — reload user to get updated plan
+            this.fetchMe();
+            this.upgradeModal = false;
+          }
 
           if (jid) {
             this.jobId = jid;
             this.startPolling();
           } else if (sid) {
-            // Returning from Stripe — look up job_id for this session
             this.resolveSession(sid);
           }
         },
+
+        // ── Auth helpers ─────────────────────────────────────────────
+
+        checkAuth() {
+          const tok = localStorage.getItem('biq_token');
+          if (!tok) return;
+          this.token = tok;
+          // Decode the JWT payload (no crypto needed — just reading claims)
+          try {
+            const payload = JSON.parse(atob(tok.split('.')[1]));
+            if (payload.exp * 1000 < Date.now()) {
+              this.logout();
+              return;
+            }
+            // Fetch fresh user profile
+            this.fetchMe();
+          } catch {
+            this.logout();
+          }
+        },
+
+        async fetchMe() {
+          try {
+            const res = await fetch('/auth/me', { headers: { Authorization: 'Bearer ' + this.token } });
+            if (!res.ok) { this.logout(); return; }
+            this.user = await res.json();
+          } catch { /* network — keep using cached token */ }
+        },
+
+        openAuth(tab = 'login') {
+          this.authTab = tab;
+          this.authError = '';
+          this.authEmail = '';
+          this.authPassword = '';
+          this.authName = '';
+          this.authCompany = '';
+          this.authModal = true;
+        },
+
+        async login() {
+          this.authLoading = true;
+          this.authError = '';
+          try {
+            const res = await fetch('/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: this.authEmail, password: this.authPassword }),
+            });
+            const data = await res.json();
+            if (!res.ok) { this.authError = data.detail || 'Login failed.'; return; }
+            this._storeAuth(data);
+            this.authModal = false;
+            this.showDashboard();
+          } catch { this.authError = 'Network error. Please try again.'; }
+          finally  { this.authLoading = false; }
+        },
+
+        async register() {
+          this.authLoading = true;
+          this.authError = '';
+          try {
+            const res = await fetch('/auth/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: this.authEmail,
+                password: this.authPassword,
+                full_name: this.authName,
+                company: this.authCompany,
+              }),
+            });
+            const data = await res.json();
+            if (!res.ok) { this.authError = data.detail || 'Registration failed.'; return; }
+            this._storeAuth(data);
+            this.authModal = false;
+            this.showDashboard();
+          } catch { this.authError = 'Network error. Please try again.'; }
+          finally  { this.authLoading = false; }
+        },
+
+        logout() {
+          localStorage.removeItem('biq_token');
+          this.user = null;
+          this.token = '';
+          this.view = 'landing';
+          this.myJobs = [];
+        },
+
+        _storeAuth(data) {
+          this.token = data.access_token;
+          this.user  = data.user;
+          localStorage.setItem('biq_token', data.access_token);
+          if (this.user) this.email = this.user.email;
+        },
+
+        // ── Dashboard ────────────────────────────────────────────────
+
+        async showDashboard() {
+          if (!this.user) { this.openAuth('login'); return; }
+          this.view = 'dashboard';
+          this.dashboardLoading = true;
+          window.scrollTo({ top: 0 });
+          try {
+            const res = await fetch('/reviews/mine?limit=20', {
+              headers: { Authorization: 'Bearer ' + this.token },
+            });
+            if (res.ok) this.myJobs = await res.json();
+          } catch { /* show empty */ }
+          finally { this.dashboardLoading = false; }
+        },
+
+        viewJobResults(jobId) {
+          this.view = 'landing';
+          this.jobId = jobId;
+          this.jobStatus = 'pending';
+          this.result = null;
+          this.startPolling();
+          window.scrollTo({ top: 0 });
+        },
+
+        // ── Upgrade ──────────────────────────────────────────────────
+
+        async startUpgrade(plan) {
+          if (!this.user) { this.upgradeModal = false; this.openAuth('register'); return; }
+          this.upgradeLoading = plan;
+          this.upgradeError = '';
+          try {
+            const res = await fetch('/auth/upgrade', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + this.token },
+              body: JSON.stringify({
+                plan,
+                success_url: window.location.origin + '/',
+                cancel_url:  window.location.origin + '/',
+              }),
+            });
+            const data = await res.json();
+            if (!res.ok) { this.upgradeError = data.detail || 'Could not start upgrade.'; return; }
+            window.location.href = data.checkout_url;
+          } catch { this.upgradeError = 'Network error. Please try again.'; }
+          finally { this.upgradeLoading = null; }
+        },
+
+
 
         handleFile(evt) {
           const f = evt.target.files[0];
@@ -509,7 +958,9 @@
             this.formError = 'Please enter a project name.';
             return;
           }
-          if (!this.email.trim()) {
+
+          const emailVal = this.user ? this.user.email : this.email.trim();
+          if (!emailVal) {
             this.formError = 'Please enter your email address.';
             return;
           }
@@ -518,9 +969,53 @@
           this.submitting = true;
 
           try {
+            // ── Authenticated user — submit directly, no Stripe redirect ──
+            if (this.user) {
+              const headers = { Authorization: 'Bearer ' + this.token };
+              let res, data;
+
+              if (this.uploadedFile) {
+                const fd = new FormData();
+                fd.append('project_name', this.projectName.trim());
+                fd.append('file', this.uploadedFile);
+                res  = await fetch('/review/upload', { method: 'POST', headers, body: fd });
+              } else {
+                res = await fetch('/review', {
+                  method: 'POST',
+                  headers: { ...headers, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ project_name: this.projectName.trim(), text: this.pastedText.trim() }),
+                });
+              }
+
+              // Handle out-of-credits
+              if (res.status === 402) {
+                const err = await res.json().catch(() => ({}));
+                if (err.detail && err.detail.error === 'no_credits') {
+                  this.formError = '';
+                  this.submitting = false;
+                  this.upgradeModal = true;
+                  return;
+                }
+              }
+
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.detail || 'Server error. Please try again.');
+              }
+
+              data = await res.json();
+              this.jobId = data.job_id;
+              history.pushState({}, '', `/?job_id=${data.job_id}`);
+              this.startPolling();
+              // Refresh user credits in the background
+              this.fetchMe();
+              return;
+            }
+
+            // ── Anonymous user — go via Stripe Checkout ──
             const fd = new FormData();
             fd.append('project_name', this.projectName.trim());
-            fd.append('email', this.email.trim());
+            fd.append('email', emailVal);
             if (this.uploadedFile) fd.append('file', this.uploadedFile);
             if (this.pastedText.trim()) fd.append('text', this.pastedText.trim());
 
@@ -531,12 +1026,9 @@
             }
 
             const data = await res.json();
-
             if (data.checkout_url) {
-              // Redirect to Stripe Checkout
               window.location.href = data.checkout_url;
             } else {
-              // Dev mode — no payment required, go straight to results
               this.jobId = data.job_id;
               history.pushState({}, '', `/?job_id=${data.job_id}`);
               this.startPolling();
@@ -592,16 +1084,18 @@
 
         resetApp() {
           clearInterval(this.pollTimer);
-          this.jobId = null;
+          this.jobId     = null;
           this.jobStatus = 'pending';
-          this.result = null;
-          this.jobError = null;
-          this.submitting = false;
+          this.result    = null;
+          this.jobError  = null;
+          this.submitting   = false;
           this.uploadedFile = null;
-          this.pastedText = '';
-          this.projectName = '';
-          this.email = '';
+          this.pastedText   = '';
+          this.projectName  = '';
+          if (!this.user) this.email = '';
           history.pushState({}, '', '/');
+          // Logged-in users return to dashboard after viewing results
+          if (this.user) this.showDashboard();
         },
       };
     }

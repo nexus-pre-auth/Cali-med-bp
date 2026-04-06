@@ -240,6 +240,53 @@ def _m8(conn: sqlite3.Connection) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Migration 9 — user accounts
+# ---------------------------------------------------------------------------
+
+@migration(9, "Add users table for account-based auth")
+def _migration_9(conn: sqlite3.Connection) -> None:
+    """
+    Introduces user accounts: email/password auth, plan tier, Stripe customer link.
+    plan values: 'free' | 'pro' | 'agency'
+    credits: remaining pay-per-review credits (free tier gets 1 on signup)
+    """
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS users (
+            id                  TEXT    PRIMARY KEY,
+            email               TEXT    UNIQUE NOT NULL,
+            password_hash       TEXT    NOT NULL,
+            full_name           TEXT,
+            company             TEXT,
+            plan                TEXT    NOT NULL DEFAULT 'free',
+            credits             INTEGER NOT NULL DEFAULT 1,
+            stripe_customer_id  TEXT,
+            created_at          TEXT    NOT NULL DEFAULT (datetime('now')),
+            email_verified      INTEGER NOT NULL DEFAULT 0
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+        CREATE INDEX IF NOT EXISTS idx_users_stripe ON users(stripe_customer_id);
+    """)
+
+
+# ---------------------------------------------------------------------------
+# Migration 10 — link jobs to users
+# ---------------------------------------------------------------------------
+
+@migration(10, "Add user_id foreign key to jobs table")
+def _migration_10(conn: sqlite3.Connection) -> None:
+    """
+    Links each job to the user who submitted it (NULL = anonymous/API-key job).
+    """
+    # Note: jobs and users live in different SQLite files so we cannot use a
+    # foreign-key constraint here. Integrity is enforced at the application layer.
+    conn.executescript("""
+        ALTER TABLE jobs ADD COLUMN user_id TEXT;
+        CREATE INDEX IF NOT EXISTS idx_jobs_user_id ON jobs(user_id);
+    """)
+
+
+# ---------------------------------------------------------------------------
 # Migration runner
 # ---------------------------------------------------------------------------
 

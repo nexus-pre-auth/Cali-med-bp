@@ -14,6 +14,10 @@ uvicorn[standard]>=0.30.0
 httpx>=0.27.0
 python-multipart>=0.0.9
 stripe>=7.0.0
+# User auth — JWT tokens + bcrypt password hashing
+python-jose[cryptography]>=3.3.0
+bcrypt>=4.0.0
+email-validator>=2.0.0
 # OCR for scanned PDF drawings (image-based pages)
 pdf2image>=1.16.0
 pytesseract>=0.3.10
