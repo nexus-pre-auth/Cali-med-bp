@@ -39,7 +39,7 @@ class SQLiteJobStore:
         conn = sqlite3.connect(str(self._db_path), check_same_thread=False)
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA foreign_keys=ON")
+        # FK enforcement intentionally off: user_id references users in a separate DB file
         try:
             yield conn
             conn.commit()
@@ -119,6 +119,23 @@ class SQLiteJobStore:
     def __len__(self) -> int:
         with self._connect() as conn:
             return conn.execute("SELECT COUNT(*) FROM jobs").fetchone()[0]
+
+    def set_user_id(self, job_id: UUID, user_id: str) -> None:
+        """Tag a job with the owning user's ID."""
+        with self._lock, self._connect() as conn:
+            conn.execute(
+                "UPDATE jobs SET user_id = ? WHERE job_id = ?",
+                (user_id, str(job_id)),
+            )
+
+    def list_by_user(self, user_id: str, limit: int = 50) -> list[ReviewResponse]:
+        """Return jobs belonging to a specific user, newest first."""
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT * FROM jobs WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+                (user_id, limit),
+            ).fetchall()
+        return [self._hydrate(r) for r in rows]
 
     def cleanup_old_jobs(self, keep_days: int = 90) -> int:
         """

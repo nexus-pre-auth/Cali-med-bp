@@ -54,6 +54,12 @@ class JobStore:
             jobs = sorted(self._jobs.values(), key=lambda j: j.created_at, reverse=True)
         return jobs[:limit]
 
+    def set_user_id(self, job_id: UUID, user_id: str) -> None:
+        """No-op for in-memory store (used in tests)."""
+
+    def list_by_user(self, user_id: str, limit: int = 50) -> list[ReviewResponse]:
+        return []
+
     def __len__(self) -> int:
         return len(self._jobs)
 
