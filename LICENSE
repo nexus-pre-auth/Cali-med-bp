@@ -1,21 +1,93 @@
-MIT License
+BlueprintIQ Commercial Software License
+Copyright (c) 2026 Mason. All Rights Reserved.
 
-Copyright (c) 2026 Mason
+NOTICE: This software and its source code are proprietary and confidential.
+Unauthorized copying, distribution, modification, or use of this software,
+in whole or in part, is strictly prohibited without a valid commercial license
+agreement executed with the copyright holder.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+─────────────────────────────────────────────────────────────────────────────
+1.  DEFINITIONS
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+    "Software" means the BlueprintIQ healthcare-facility compliance platform,
+    including all source code, object code, documentation, configuration files,
+    rule sets, and associated materials contained in this repository.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+    "Licensor" means Mason, the copyright holder.
+
+    "Licensee" means the individual or entity that has executed a valid
+    commercial license agreement with Licensor covering use of this Software.
+
+    "Permitted Use" means the specific rights granted to Licensee in a
+    separately executed commercial license agreement.
+
+─────────────────────────────────────────────────────────────────────────────
+2.  GRANT OF RIGHTS
+
+    No rights are granted by this file alone.  The Licensor grants rights
+    solely through separately executed, written commercial license agreements.
+    Contact licensing@blueprintiq.io to obtain a license.
+
+─────────────────────────────────────────────────────────────────────────────
+3.  RESTRICTIONS
+
+    Unless expressly authorized in a signed license agreement, you may NOT:
+
+    a.  Copy, reproduce, or distribute this Software or any portion thereof;
+    b.  Modify, adapt, translate, or create derivative works based upon it;
+    c.  Reverse-engineer, decompile, or disassemble it;
+    d.  Sublicense, sell, rent, lease, transfer, or otherwise make it
+        available to any third party;
+    e.  Remove or alter any copyright, trademark, or proprietary notices;
+    f.  Use it to provide services to third parties (SaaS, bureau processing,
+        managed services, etc.) without a SaaS or White-Label license;
+    g.  Deploy it in a production environment.
+
+─────────────────────────────────────────────────────────────────────────────
+4.  INTELLECTUAL PROPERTY
+
+    All right, title, and interest in and to the Software, including all
+    intellectual property rights therein, remain exclusively with the Licensor.
+    Any feedback, suggestions, or contributions you provide may be incorporated
+    into the Software without obligation or compensation to you.
+
+─────────────────────────────────────────────────────────────────────────────
+5.  CONFIDENTIALITY
+
+    This Software contains trade secrets and proprietary information.  You
+    agree to maintain the confidentiality of the Software with at least the
+    same degree of care you use to protect your own confidential information,
+    but no less than reasonable care.
+
+─────────────────────────────────────────────────────────────────────────────
+6.  DISCLAIMER OF WARRANTIES
+
+    THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED.  LICENSOR DISCLAIMS ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+─────────────────────────────────────────────────────────────────────────────
+7.  LIMITATION OF LIABILITY
+
+    IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
+    EXEMPLARY, OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATED TO THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.  LICENSOR'S
+    TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNTS PAID BY LICENSEE UNDER THE
+    APPLICABLE LICENSE AGREEMENT IN THE TWELVE MONTHS PRECEDING THE CLAIM.
+
+─────────────────────────────────────────────────────────────────────────────
+8.  TERMINATION
+
+    Any license granted hereunder terminates immediately upon your breach of
+    this License.  Upon termination you must destroy all copies of the Software
+    in your possession or control.
+
+─────────────────────────────────────────────────────────────────────────────
+9.  GOVERNING LAW
+
+    This License is governed by the laws of the State of California, without
+    regard to its conflict-of-law principles.  Disputes shall be resolved
+    exclusively in the state or federal courts located in California.
+
+─────────────────────────────────────────────────────────────────────────────
+For licensing inquiries: licensing@blueprintiq.io
