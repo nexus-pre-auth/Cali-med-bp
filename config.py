@@ -47,6 +47,15 @@ RAG_COLLECTION_NAME = "hcai_compliance_kb"
 SUPPORTED_EXTENSIONS = [".pdf", ".dwg", ".dxf"]
 MAX_PDF_PAGES = 500
 
+# Supabase
+SUPABASE_URL         = os.getenv("SUPABASE_URL", "")
+SUPABASE_ANON_KEY    = os.getenv("SUPABASE_ANON_KEY", "")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+
+# blueprintIQ rules API (replaces local JSON when set)
+BLUEPRINTIQ_API_URL  = os.getenv("BLUEPRINTIQ_API_URL", "")   # e.g. https://api.blueprintiq.net
+BLUEPRINTIQ_API_KEY  = os.getenv("BLUEPRINTIQ_API_KEY", "")
+
 # Monitoring / alerting
 ALERT_WEBHOOK_URL  = os.getenv("ALERT_WEBHOOK_URL", "")    # Slack or Teams incoming webhook
 ALERT_EMAIL_FROM   = os.getenv("ALERT_EMAIL_FROM", "")
