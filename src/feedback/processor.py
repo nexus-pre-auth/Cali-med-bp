@@ -125,26 +125,43 @@ class FeedbackProcessor:
         self._append_metric("comment_quality.json", record)
 
     async def _update_rule_accuracy(self, feedback: AHJFeedback) -> None:
-        """Accumulate per-rule false-positive/negative counts."""
+        """Accumulate per-rule TP/FP/FN counts and recompute accuracy."""
         rule_path = self.metrics_path / "rule_accuracy.json"
         rule_accuracy: Dict = {}
         if rule_path.exists():
             with open(rule_path) as f:
                 rule_accuracy = json.load(f)
 
+        _default = lambda: {"true_positives": 0, "false_positives": 0, "false_negatives": 0, "total": 0}
+        fp_set = set(feedback.false_positives)
+
+        # True positives: detected rules confirmed by the AHJ (not in false_positives)
+        for v in feedback.detected_violations:
+            rule_id = v.get("rule_id") if isinstance(v, dict) else None
+            if rule_id and rule_id not in fp_set:
+                stats = rule_accuracy.setdefault(rule_id, _default())
+                stats.setdefault("true_positives", 0)
+                stats["true_positives"] += 1
+                stats["total"] += 1
+
+        # False positives: rules we flagged that the AHJ did not cite
         for rule_id in feedback.false_positives:
-            stats = rule_accuracy.setdefault(rule_id, {"false_positives": 0, "false_negatives": 0, "total": 0})
+            stats = rule_accuracy.setdefault(rule_id, _default())
+            stats.setdefault("true_positives", 0)
             stats["false_positives"] += 1
             stats["total"] += 1
 
+        # False negatives: rules the AHJ cited that we missed
         for rule_id in feedback.false_negatives:
-            stats = rule_accuracy.setdefault(rule_id, {"false_positives": 0, "false_negatives": 0, "total": 0})
+            stats = rule_accuracy.setdefault(rule_id, _default())
+            stats.setdefault("true_positives", 0)
             stats["false_negatives"] += 1
             stats["total"] += 1
 
-        for rule_id, stats in rule_accuracy.items():
-            errors = stats["false_positives"] + stats["false_negatives"]
-            stats["accuracy"] = 1.0 - errors / stats["total"] if stats["total"] > 0 else 1.0
+        # Recompute accuracy: tp / (tp + fp + fn)
+        for stats in rule_accuracy.values():
+            tp = stats.get("true_positives", 0)
+            stats["accuracy"] = tp / stats["total"] if stats["total"] > 0 else 1.0
 
         with open(rule_path, "w") as f:
             json.dump(rule_accuracy, f, indent=2)
@@ -201,7 +218,12 @@ class FeedbackProcessor:
             sum(m[key] for m in filtered_v) / len(filtered_v) if filtered_v else 0.0
         )
 
-        waiver_cal = [m["calibration_error"] for m in waiver_metrics if m.get("calibration_error") is not None]
+        filtered_w = [
+            m for m in waiver_metrics
+            if datetime.fromisoformat(m["timestamp"]) > cutoff
+            and (ahj_name is None or m.get("ahj_name") == ahj_name)
+        ]
+        waiver_cal = [m["calibration_error"] for m in filtered_w if m.get("calibration_error") is not None]
 
         return {
             "period_days": days,
@@ -213,7 +235,7 @@ class FeedbackProcessor:
             },
             "waiver_prediction": {
                 "average_calibration_error": round(sum(waiver_cal) / len(waiver_cal), 3) if waiver_cal else 0.0,
-                "total_waivers": len(waiver_metrics),
+                "total_waivers": len(filtered_w),
             },
             "trend": await self._calculate_trends(violation_metrics),
         }

@@ -230,7 +230,9 @@ class ModelTrainer:
             return True  # Always save the very first model
 
         with open(metrics_path) as f:
-            current = json.load(f)
+            data = json.load(f)
+        # model_metrics.json is written as a list of history entries; use the last one
+        current = data[-1] if isinstance(data, list) else data
 
         waiver_delta    = waiver_metrics.get("f1", 0) - current.get("waiver_f1", 0)
         violation_delta = violation_metrics.get("f1", 0) - current.get("violation_f1", 0)

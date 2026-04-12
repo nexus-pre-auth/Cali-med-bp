@@ -314,11 +314,12 @@ Runtime data directories (created automatically, excluded from git):
 
 1. **Optional web server** — FastAPI is only active when `python main.py serve` is used. The `review`, `demo`, `index-kb`, and `validate` commands remain pure CLI and have no web dependency.
 2. **Fallback mode** — All Claude API calls in `generator.py` have a template-based fallback. Preserve this pattern when modifying AI integration.
-3. **Pydantic v2** — The project uses Pydantic v2 syntax throughout (`model_dump()`, `model_validate()`, `@field_validator`). Do not revert to v1 patterns.
-4. **Data files are source of truth** — Business logic lives in `data/*.json`, not hardcoded in Python. Prefer editing JSON rules over adding Python conditionals.
-5. **No database migrations required** — The feedback/metrics/models pipeline uses JSON files by default. `migrations/003_feedback_tables.sql` is provided for teams that want PostgreSQL persistence; it is not required to run the system.
-6. **ChromaDB collection** — If changing `RAG_COLLECTION_NAME` in `config.py`, delete `chroma_db/` and re-run `index-kb`.
-7. **Regex-heavy extraction** — `condition_extractor.py` uses case-insensitive regex. Test new patterns against varied capitalization.
-8. **Template variables** — `violation_template` and `fix_template` strings use `{key}` placeholders replaced in `rule_matcher.py`. Adding new placeholders requires updating the substitution dict in that file.
-9. **ML retraining gate** — `ModelTrainer._is_improvement()` must return `True` for a new model to be saved. The threshold is 0.02 absolute F1. When writing tests, mock `_is_improvement` to `True` to force saves.
-10. **Scheduler graceful degradation** — `ContinuousLearningPipeline` checks `HAS_SCHEDULER` at import time; if APScheduler is missing the pipeline silently disables itself — it does not crash the server.
+3. **`--no-rag` behavior** — The `--no-rag` flag disables ChromaDB retrieval context only; the Claude API is still called when `ANTHROPIC_API_KEY` is set. To get fully template-based output (no API calls), omit `ANTHROPIC_API_KEY` as well.
+4. **Pydantic v2** — The project uses Pydantic v2 syntax throughout (`model_dump()`, `model_validate()`, `@field_validator`). Do not revert to v1 patterns.
+5. **Data files are source of truth** — Business logic lives in `data/*.json`, not hardcoded in Python. Prefer editing JSON rules over adding Python conditionals.
+6. **No database migrations required** — The feedback/metrics/models pipeline uses JSON files by default. `migrations/003_feedback_tables.sql` is provided for teams that want PostgreSQL persistence; it is not required to run the system.
+7. **ChromaDB collection** — If changing `RAG_COLLECTION_NAME` in `config.py`, delete `chroma_db/` and re-run `index-kb`.
+8. **Regex-heavy extraction** — `condition_extractor.py` uses case-insensitive regex. Test new patterns against varied capitalization.
+9. **Template variables** — `violation_template` and `fix_template` strings use `{key}` placeholders replaced in `rule_matcher.py`. Adding new placeholders requires updating the substitution dict in that file.
+10. **ML retraining gate** — `ModelTrainer._is_improvement()` must return `True` for a new model to be saved. The threshold is 0.02 absolute F1. When writing tests, mock `_is_improvement` to `True` to force saves.
+11. **Scheduler graceful degradation** — `ContinuousLearningPipeline` checks `HAS_SCHEDULER` at import time; if APScheduler is missing the pipeline silently disables itself — it does not crash the server.

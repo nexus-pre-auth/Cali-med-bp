@@ -76,7 +76,7 @@ def cli() -> None:
 @click.option("--name", "-n", "project_name", default="Healthcare Project", help="Project name for report.")
 @click.option("--format", "-f", "fmt", type=click.Choice(["text", "json", "html", "all"]), default="all", help="Output format.")
 @click.option("--output-dir", "-o", default=None, help="Directory for output files.")
-@click.option("--no-rag", is_flag=True, default=False, help="Skip RAG/Claude enrichment (faster, template-based).")
+@click.option("--no-rag", is_flag=True, default=False, help="Disable RAG retrieval context. Claude API is still called when ANTHROPIC_API_KEY is set; omit the key too for fully template-based output.")
 @click.option("--validate", "run_validation", is_flag=True, default=False, help="Run validation checklist after review.")
 @click.option("--ground-truth", default=None, help="Path to ground truth JSON for validation.")
 def review(
@@ -158,7 +158,7 @@ def review(
     # Output
     _print("\n[bold]Output:[/bold] Writing reports..." if HAS_RICH else "\nOutput: Writing reports...")
     writer = ReportWriter(output_dir=output_dir)
-    paths = writer.write_all(enriched, conditions, project_name=project_name)
+    paths = writer.write_all(enriched, conditions, project_name=project_name, fmt=fmt)
 
     for ftype, fpath in paths.items():
         _print(f"  [{ftype.upper()}] → {fpath}")
