@@ -1,0 +1,25 @@
+# Railway deployment configuration for the Medblueprints FastAPI backend.
+# https://docs.railway.app/reference/config-as-code
+#
+# Required environment variables (set in Railway dashboard):
+#   ANTHROPIC_API_KEY     — Claude AI for comment generation
+#   SUPABASE_URL          — Supabase project URL
+#   SUPABASE_SERVICE_KEY  — Supabase service role key (server-side only)
+#   SUPABASE_ANON_KEY     — Supabase anon key
+#
+# Optional:
+#   ALERT_WEBHOOK_URL     — Slack/Teams webhook for performance alerts
+#   ALERT_EMAIL_*         — SMTP settings for daily digest emails
+#   BATCH_MAX_WORKERS     — Parallel PDF workers (default: 4)
+
+[build]
+  builder    = "NIXPACKS"
+  buildCommand = "pip install -r requirements.txt"
+
+[deploy]
+  startCommand = "python main.py serve --host 0.0.0.0 --port $PORT"
+  restartPolicyType = "ON_FAILURE"
+  restartPolicyMaxRetries = 3
+
+[env]
+  PORT = { default = "8000" }

@@ -1,0 +1,60 @@
+# Netlify configuration for Medblueprints.com
+#
+# Architecture:
+#   - Netlify (this):  Static landing page + dashboard shell (CDN)
+#   - Backend API:     Python FastAPI app deployed separately on Railway / Render / Fly.io
+#                      Set the NETLIFY_API_URL env var in Netlify UI to your backend URL.
+#
+# To deploy the backend:
+#   1. Push the repo to Railway/Render
+#   2. Set required env vars: ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY
+#   3. Set NETLIFY_API_URL in Netlify UI → Site settings → Environment variables
+
+[build]
+  publish = "public"
+  command = ""            # No build step; pure static deploy
+
+[build.environment]
+  NODE_VERSION = "22"     # Matches CI
+
+# ---------------------------------------------------------------------------
+# API proxy — route /feedback/* and /query/* to the Python backend.
+# Replace https://api.medblueprints.com with your deployed backend URL,
+# OR set NETLIFY_API_URL in the Netlify UI and re-deploy.
+# ---------------------------------------------------------------------------
+
+[[redirects]]
+  from   = "/feedback/*"
+  to     = "https://api.medblueprints.com/feedback/:splat"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/query/*"
+  to     = "https://api.medblueprints.com/query/:splat"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/docs"
+  to     = "https://api.medblueprints.com/docs"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/openapi.json"
+  to     = "https://api.medblueprints.com/openapi.json"
+  status = 200
+  force  = true
+
+# ---------------------------------------------------------------------------
+# Security headers
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Permissions-Policy     = "camera=(), microphone=(), geolocation=()"

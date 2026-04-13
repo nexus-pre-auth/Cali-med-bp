@@ -1,0 +1,12 @@
+# Netlify redirect rules — proxy API calls to the Python backend.
+#
+# Once your FastAPI backend is deployed (Railway / Render / Fly.io),
+# replace https://api.medblueprints.com with your actual backend URL.
+# Then commit + push to trigger a Netlify re-deploy.
+#
+# Format: FROM   TO   STATUS
+
+/feedback/*    https://api.medblueprints.com/feedback/:splat    200
+/query/*       https://api.medblueprints.com/query/:splat       200
+/docs          https://api.medblueprints.com/docs               200
+/openapi.json  https://api.medblueprints.com/openapi.json       200
