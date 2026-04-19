@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medblueprints — AI-Powered HCAI Plan Review</title>
+  <meta name="description" content="Stop losing money on back-checks. Medblueprints catches California HCAI compliance issues before you submit — saving architects, engineers, and contractors weeks of rework.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1A365D;
+      --blue:   #2B6CB0;
+      --sky:    #3182CE;
+      --light:  #EBF8FF;
+      --green:  #38A169;
+      --red:    #E53E3E;
+      --orange: #DD6B20;
+      --yellow: #D69E2E;
+      --gray:   #718096;
+      --bg:     #F7FAFC;
+      --white:  #FFFFFF;
+      --text:   #2D3748;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--navy);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .logo { color: #fff; font-weight: 700; font-size: 1.25rem; letter-spacing: -.5px; }
+    .logo span { color: #90CDF4; }
+    nav a {
+      color: rgba(255,255,255,.8);
+      text-decoration: none;
+      font-size: .9rem;
+      margin-left: 28px;
+      transition: color .15s;
+    }
+    nav a:hover { color: #fff; }
+    .nav-cta {
+      background: var(--sky);
+      color: #fff !important;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .nav-cta:hover { background: var(--blue) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%);
+      color: #fff;
+      padding: 96px 32px 80px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(144,205,244,.15);
+      border: 1px solid rgba(144,205,244,.4);
+      color: #90CDF4;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+    .hero h1 em { font-style: normal; color: #90CDF4; }
+    .hero p {
+      font-size: 1.15rem;
+      max-width: 580px;
+      margin: 0 auto 36px;
+      opacity: .88;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--sky);
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background .15s, transform .1s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--blue); transform: translateY(-1px); }
+    .btn-outline {
+      border: 2px solid rgba(255,255,255,.5);
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: border-color .15s, transform .1s;
+      display: inline-block;
+    }
+    .btn-outline:hover { border-color: #fff; transform: translateY(-1px); }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 56px;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: #90CDF4; }
+    .stat-label { font-size: .8rem; opacity: .75; text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 32px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      color: var(--sky);
+      font-weight: 700;
+      font-size: .8rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+    .sub {
+      color: var(--gray);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin-bottom: 48px;
+    }
+
+    /* ── PROBLEM ── */
+    .problem { background: var(--white); }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .pain-card {
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      background: var(--bg);
+    }
+    .pain-icon { font-size: 2rem; margin-bottom: 12px; }
+    .pain-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--navy); }
+    .pain-card p  { font-size: .9rem; color: var(--gray); }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--bg); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
+      counter-reset: steps;
+    }
+    .step { position: relative; padding-top: 16px; }
+    .step-num {
+      width: 40px; height: 40px;
+      background: var(--sky);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    .step h3 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .step p  { font-size: .9rem; color: var(--gray); }
+
+    /* ── SEVERITY DEMO ── */
+    .demo { background: var(--white); }
+    .demo-card {
+      background: var(--bg);
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 760px;
+    }
+    .demo-header {
+      background: var(--navy);
+      color: #fff;
+      padding: 16px 20px;
+      font-size: .85rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-item {
+      border-bottom: 1px solid #E2E8F0;
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .demo-item:last-child { border-bottom: none; }
+    .badge {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-critical { background: #FED7D7; color: var(--red); }
+    .badge-high     { background: #FEEBC8; color: var(--orange); }
+    .badge-medium   { background: #FEFCBF; color: var(--yellow); }
+    .demo-text h4   { font-size: .9rem; font-weight: 700; color: var(--navy); }
+    .demo-text p    { font-size: .82rem; color: var(--gray); margin-top: 3px; }
+    .demo-rule      { font-size: .75rem; color: var(--sky); font-family: monospace; }
+
+    /* ── PRICING ── */
+    .pricing { background: var(--bg); }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 860px;
+    }
+    .plan {
+      background: var(--white);
+      border: 2px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .plan:hover { border-color: var(--sky); box-shadow: 0 4px 24px rgba(49,130,206,.12); }
+    .plan.featured {
+      border-color: var(--sky);
+      box-shadow: 0 4px 24px rgba(49,130,206,.18);
+    }
+    .plan-tag {
+      background: var(--light);
+      color: var(--sky);
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .plan h3     { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .plan-price  { font-size: 2.4rem; font-weight: 800; color: var(--navy); line-height: 1; }
+    .plan-price span { font-size: 1rem; font-weight: 400; color: var(--gray); }
+    .plan-desc   { color: var(--gray); font-size: .9rem; margin: 12px 0 20px; }
+    .plan-features { list-style: none; margin-bottom: 28px; }
+    .plan-features li { font-size: .9rem; color: var(--text); padding: 6px 0; display: flex; gap: 10px; }
+    .plan-features li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .plan .btn-primary { width: 100%; text-align: center; }
+
+    /* ── TESTIMONIAL ── */
+    .social-proof { background: var(--light); }
+    .quote {
+      max-width: 640px;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--navy);
+      line-height: 1.7;
+      position: relative;
+      padding-left: 24px;
+    }
+    .quote::before {
+      content: '"';
+      position: absolute;
+      left: 0;
+      top: -8px;
+      font-size: 3rem;
+      color: var(--sky);
+      font-style: normal;
+      line-height: 1;
+    }
+    .quote-attr { margin-top: 16px; font-size: .9rem; color: var(--gray); font-style: normal; }
+    .quote-attr strong { color: var(--navy); }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%);
+      color: #fff;
+      text-align: center;
+      padding: 96px 32px;
+    }
+    .cta-section h2 { color: #fff; }
+    .cta-section p  { opacity: .85; max-width: 480px; margin: 0 auto 36px; font-size: 1.05rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,.6);
+      padding: 32px;
+      text-align: center;
+      font-size: .85rem;
+    }
+    footer a { color: rgba(255,255,255,.7); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: #fff; }
+
+    @media (max-width: 600px) {
+      nav .nav-links { display: none; }
+      .hero { padding: 64px 20px 56px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Med<span>blueprints</span></div>
+  <div class="nav-links">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/docs">API Docs</a>
+    <a href="#get-started" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">California HCAI Compliance AI</div>
+  <h1>Submit your plans right <em>the first time.</em></h1>
+  <p>
+    Medblueprints reviews your healthcare construction documents against California HCAI rules
+    and generates AHJ-style plan review comments — before you submit.
+    Stop losing weeks (and thousands of dollars) to back-checks.
+  </p>
+  <div class="hero-actions">
+    <a href="#get-started" class="btn-primary">Review My Plans — $299</a>
+    <a href="#how-it-works" class="btn-outline">See How It Works</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">15+</div>
+      <div class="stat-label">HCAI Rule Categories</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">&lt; 5 min</div>
+      <div class="stat-label">Review Turnaround</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">85%+</div>
+      <div class="stat-label">Accuracy vs. Real AHJ</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$0</div>
+      <div class="stat-label">Cost Per Back-Check Avoided</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="section-tag">The Problem</div>
+    <h2>HCAI back-checks are expensive and slow</h2>
+    <p class="sub">One missed compliance item can add 6–12 weeks and $50,000+ in project delays. For healthcare construction, that's unacceptable.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">📋</div>
+        <h3>Complex, Evolving Rules</h3>
+        <p>HCAI enforces Title 24 CBC, ASHRAE 170, seismic requirements, infection control, and dozens of Policy Intent Notices — updated constantly.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">⏳</div>
+        <h3>Weeks of Rework</h3>
+        <p>A single back-check comment from HCAI means revised drawings, resubmission, and waiting weeks more for re-review — compounding delays.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">💸</div>
+        <h3>Real Money Lost</h3>
+        <p>Contractor mobilization on hold, change orders accumulate, and client relationships suffer — all because of a missed compliance item.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🔍</div>
+        <h3>Manual Review Is Incomplete</h3>
+        <p>Even experienced engineers miss items under deadline pressure. A systematic AI review catches what human eyes skip.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how-it-works">
+  <div class="container">
+    <div class="section-tag">How It Works</div>
+    <h2>From PDF to compliance report in minutes</h2>
+    <p class="sub">Upload your project documents. Our engine extracts conditions, matches rules, and generates an AHJ-style comment sheet — just like what HCAI would send back.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Upload Your Documents</h3>
+        <p>Submit your project PDFs — specifications, drawings, narratives. Our parser extracts occupancy type, seismic zone, MEP systems, and room types automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>AI Rule Matching</h3>
+        <p>15+ HCAI rule categories are evaluated against your project conditions. Each match is classified as Critical, High, Medium, or Low severity.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>RAG-Enhanced Comments</h3>
+        <p>Claude AI drafts exact AHJ-style plan review comments with Title 24, ASHRAE 170, PIN, and CAN citations — the same language HCAI uses.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Fix & Resubmit With Confidence</h3>
+        <p>Each violation includes step-by-step fix instructions. Address every item before you submit and avoid the back-check entirely.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="demo" id="demo">
+  <div class="container">
+    <div class="section-tag">Sample Output</div>
+    <h2>Real AHJ-style comments, instantly</h2>
+    <p class="sub" style="margin-bottom: 32px;">Here's a sample of what Medblueprints catches — before HCAI does.</p>
+    <div class="demo-card">
+      <div class="demo-header">
+        <div class="demo-dot" style="background:#E53E3E"></div>
+        <div class="demo-dot" style="background:#DD6B20"></div>
+        <div class="demo-dot" style="background:#D69E2E"></div>
+        <span style="margin-left: 8px; opacity: .7">HCAI Compliance Report — Valley Medical Center Expansion</span>
+      </div>
+      <div class="demo-item">
+        <span class="badge badge-critical">Critical</span>
+        <div class="demo-text">
+          <div class="demo-rule">RULE-003 · Infection Control</div>
+          <h4>Isolation Room Negative Pressure Deficiency</h4>
+          <p>Isolation rooms in Occupied Hospital must maintain negative air pressure per ASHRAE 170 Table 7.1. Drawings do not indicate directional airflow or pressure differential monitoring for Room 214-A.</p>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="badge badge-high">High</span>
+        <div class="demo-text">
+          <div class="demo-rule">RULE-007 · MEP / Electrical</div>
+          <h4>Emergency Power Transfer Timing Not Documented</h4>
+          <p>Life safety systems in an Occupied Hospital require automatic transfer to emergency power within 10 seconds per NFPA 99 and Title 24 Part 3. Specification Section 16480 does not address transfer time.</p>
+        </div>
+      </div>
+      <div class="demo-item">
+        <span class="badge badge-medium">Medium</span>
+        <div class="demo-text">
+          <div class="demo-rule">RULE-011 · Seismic</div>
+          <h4>Seismic Bracing for Medical Gas Piping</h4>
+          <p>Seismic Zone D project requires lateral bracing for all medical gas lines &gt; 2" diameter per OSHPD SB-99-04. Bracing schedule missing from Mechanical sheets M-3.1 through M-3.4.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-tag">Pricing</div>
+    <h2>One back-check costs more than a year of reviews</h2>
+    <p class="sub">Compare that to $50,000+ in project delays from a single missed item.</p>
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-tag">Single Review</div>
+        <h3>Per Review</h3>
+        <div class="plan-price">$299 <span>/ document set</span></div>
+        <p class="plan-desc">Perfect for one-off submissions or pilot projects.</p>
+        <ul class="plan-features">
+          <li>Full HCAI rules analysis</li>
+          <li>AHJ-style comment sheet (PDF + HTML)</li>
+          <li>Title 24 &amp; ASHRAE 170 citations</li>
+          <li>Step-by-step fix instructions</li>
+          <li>Severity-prioritized violations</li>
+        </ul>
+        <a href="#get-started" class="btn-primary">Start Review</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-tag">Best Value</div>
+        <h3>Monthly Plan</h3>
+        <div class="plan-price">$499 <span>/ month</span></div>
+        <p class="plan-desc">Unlimited reviews for active project teams.</p>
+        <ul class="plan-features">
+          <li>Unlimited document reviews</li>
+          <li>Batch PDF processing</li>
+          <li>API access for workflow integration</li>
+          <li>AHJ feedback learning (improving accuracy monthly)</li>
+          <li>Priority support</li>
+          <li>Waiver probability scoring</li>
+        </ul>
+        <a href="#get-started" class="btn-primary">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="social-proof">
+  <div class="container">
+    <div class="section-tag">Why It Matters</div>
+    <blockquote class="quote">
+      California healthcare construction is the most heavily regulated building type in the country.
+      A single back-check from HCAI can delay a hospital project by 8–12 weeks and cost far more than the
+      entire design fee. Any tool that catches even one back-check pays for itself a hundredfold.
+      <div class="quote-attr">— <strong>Healthcare Construction Perspective</strong> &nbsp;|&nbsp; California Architects &amp; Engineers</div>
+    </blockquote>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="get-started">
+  <div class="container">
+    <h2>Ready to stop losing money on back-checks?</h2>
+    <p>Upload your project documents and get your HCAI compliance report in under 5 minutes.</p>
+    <a href="mailto:hello@medblueprints.com?subject=Plan Review Request" class="btn-primary" style="font-size: 1.1rem; padding: 16px 40px;">
+      Request a Review — $299
+    </a>
+    <p style="margin-top: 20px; font-size: .85rem; opacity: .65;">
+      No subscription required. Results in minutes. Cancel anytime.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom: 12px;">
+    <a href="/docs">API Docs</a>
+    <a href="mailto:hello@medblueprints.com">Contact</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </p>
+  <p>&copy; 2025 Medblueprints &mdash; Powered by <a href="https://blueprintiq.net">blueprintIQ.net</a></p>
+  <p style="margin-top: 8px; font-size: .75rem; opacity: .6;">
+    Medblueprints is an AI-assisted plan review tool. Always verify compliance with the current adopted
+    edition of Title 24 CBC, OSHPD regulations, and HCAI policy documents. Not a substitute for
+    professional engineering judgment.
+  </p>
+</footer>
+
+</body>
+</html>

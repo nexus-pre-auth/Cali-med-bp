@@ -46,3 +46,25 @@ RAG_COLLECTION_NAME = "hcai_compliance_kb"
 # Parser settings
 SUPPORTED_EXTENSIONS = [".pdf", ".dwg", ".dxf"]
 MAX_PDF_PAGES = 500
+
+# Supabase
+SUPABASE_URL         = os.getenv("SUPABASE_URL", "")
+SUPABASE_ANON_KEY    = os.getenv("SUPABASE_ANON_KEY", "")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+
+# blueprintIQ rules API (replaces local JSON when set)
+BLUEPRINTIQ_API_URL  = os.getenv("BLUEPRINTIQ_API_URL", "")   # e.g. https://api.blueprintiq.net
+BLUEPRINTIQ_API_KEY  = os.getenv("BLUEPRINTIQ_API_KEY", "")
+
+# Monitoring / alerting
+ALERT_WEBHOOK_URL  = os.getenv("ALERT_WEBHOOK_URL", "")    # Slack or Teams incoming webhook
+ALERT_EMAIL_FROM   = os.getenv("ALERT_EMAIL_FROM", "")
+ALERT_EMAIL_TO     = os.getenv("ALERT_EMAIL_TO", "")
+ALERT_SMTP_HOST    = os.getenv("ALERT_SMTP_HOST", "smtp.gmail.com")
+ALERT_SMTP_PORT    = int(os.getenv("ALERT_SMTP_PORT", "587"))
+ALERT_SMTP_USER    = os.getenv("ALERT_SMTP_USER", "")
+ALERT_SMTP_PASS    = os.getenv("ALERT_SMTP_PASS", "")
+
+# Batch processing
+BATCH_MAX_WORKERS  = int(os.getenv("BATCH_MAX_WORKERS", "4"))
+BATCH_CHUNK_SIZE   = int(os.getenv("BATCH_CHUNK_SIZE", "10"))

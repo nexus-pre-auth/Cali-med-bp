@@ -1,0 +1,172 @@
+<!--
+  Feedback Widget — embeds in the existing hcai_report.html output.
+
+  Usage: inject this snippet into report_generator.py's HTML template,
+  passing `job_id` and `ahj_name` as Jinja2 variables.
+
+  Standalone usage (dev/preview): open directly in a browser.
+  The widget gracefully no-ops if the /feedback/submit endpoint is unreachable.
+-->
+
+<div class="feedback-widget" id="feedbackWidget" style="
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 600px;
+    margin: 24px auto;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+        <span style="font-size:1.5rem;">🤖</span>
+        <div>
+            <h3 style="margin:0; font-size:1rem; font-weight:700; color:#1a202c;">Help Improve the AI</h3>
+            <p style="margin:0; font-size:0.8rem; color:#718096;">Rate this plan check result to train the model</p>
+        </div>
+    </div>
+
+    <!-- Star rating -->
+    <label style="font-size:0.85rem; font-weight:600; color:#4a5568; display:block; margin-bottom:6px;">
+        Was this AI comment useful?
+    </label>
+    <div id="starRating" style="display:flex; gap:6px; font-size:1.6rem; margin-bottom:16px; cursor:pointer;">
+        <span class="star" data-value="1" title="Poor">☆</span>
+        <span class="star" data-value="2" title="Fair">☆</span>
+        <span class="star" data-value="3" title="Good">☆</span>
+        <span class="star" data-value="4" title="Very good">☆</span>
+        <span class="star" data-value="5" title="Excellent">☆</span>
+    </div>
+
+    <!-- Used as-is toggle -->
+    <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:#4a5568; margin-bottom:16px;">
+        <input type="checkbox" id="usedAsIs" />
+        I used the AI comment without modifications
+    </label>
+
+    <!-- Time saved -->
+    <label style="font-size:0.85rem; font-weight:600; color:#4a5568; display:block; margin-bottom:6px;">
+        Time saved (minutes):
+    </label>
+    <input
+        type="number"
+        id="timeSaved"
+        min="0"
+        placeholder="e.g. 45"
+        style="
+            width:100%; padding:8px 12px; border:1px solid #cbd5e0;
+            border-radius:6px; font-size:0.9rem; margin-bottom:16px;
+        "
+    />
+
+    <!-- Corrections / notes -->
+    <label style="font-size:0.85rem; font-weight:600; color:#4a5568; display:block; margin-bottom:6px;">
+        Any corrections or comments?
+    </label>
+    <textarea
+        id="corrections"
+        rows="3"
+        placeholder="What did the AI miss or get wrong? Which rules were flagged incorrectly?"
+        style="
+            width:100%; padding:8px 12px; border:1px solid #cbd5e0;
+            border-radius:6px; font-size:0.875rem; resize:vertical;
+            margin-bottom:16px;
+        "
+    ></textarea>
+
+    <!-- Submit -->
+    <button
+        onclick="submitFeedback()"
+        id="submitBtn"
+        style="
+            width:100%; padding:10px; background:linear-gradient(135deg,#667eea,#764ba2);
+            color:#fff; border:none; border-radius:8px; font-size:0.9rem;
+            font-weight:700; cursor:pointer;
+        "
+    >
+        Submit Feedback
+    </button>
+
+    <!-- Confirmation message -->
+    <div
+        id="feedbackSuccess"
+        style="display:none; text-align:center; padding:12px; margin-top:12px;
+               background:#c6f6d5; border-radius:8px; color:#22543d; font-weight:600;"
+    >
+        Thank you! Your feedback will help improve future reviews.
+    </div>
+    <div
+        id="feedbackError"
+        style="display:none; text-align:center; padding:12px; margin-top:12px;
+               background:#fed7d7; border-radius:8px; color:#742a2a; font-size:0.85rem;"
+    ></div>
+</div>
+
+<script>
+(function () {
+    /* ── Configuration — override via data attributes or window globals ── */
+    const JOB_ID   = window.FEEDBACK_JOB_ID   || 'unknown-job';
+    const AHJ_NAME = window.FEEDBACK_AHJ_NAME  || 'unknown-ahj';
+    const API_BASE = window.FEEDBACK_API_BASE  || '';   // e.g. 'http://localhost:8000'
+
+    /* ── Star rating ── */
+    let selectedRating = 0;
+
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('mouseenter', () => highlightStars(+star.dataset.value));
+        star.addEventListener('mouseleave', () => highlightStars(selectedRating));
+        star.addEventListener('click', () => {
+            selectedRating = +star.dataset.value;
+            highlightStars(selectedRating);
+        });
+    });
+
+    function highlightStars(n) {
+        document.querySelectorAll('.star').forEach(s => {
+            s.textContent = +s.dataset.value <= n ? '★' : '☆';
+            s.style.color  = +s.dataset.value <= n ? '#f6ad55' : '#cbd5e0';
+        });
+    }
+
+    /* ── Submit ── */
+    window.submitFeedback = async function () {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled    = true;
+        btn.textContent = 'Submitting…';
+
+        const payload = {
+            job_id:              JOB_ID,
+            project_name:        document.title || 'Unknown Project',
+            ahj_name:            AHJ_NAME,
+            reviewer_id:         'anonymous',
+            feedback_type:       'ai_comment_quality',
+            ai_comment_rating:   selectedRating || null,
+            ai_comment_used_as_is: document.getElementById('usedAsIs').checked,
+            time_saved_minutes:  parseInt(document.getElementById('timeSaved').value) || null,
+            notes:               document.getElementById('corrections').value.trim() || null,
+            review_time_seconds: 0,
+            data_use_consent:    true,
+        };
+
+        try {
+            const res = await fetch(`${API_BASE}/feedback/submit`, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(payload),
+            });
+
+            if (!res.ok) throw new Error(await res.text());
+
+            document.getElementById('feedbackSuccess').style.display = 'block';
+            document.getElementById('feedbackError').style.display   = 'none';
+            btn.style.display = 'none';
+        } catch (err) {
+            document.getElementById('feedbackError').textContent =
+                'Submission failed: ' + err.message + '. Please try again.';
+            document.getElementById('feedbackError').style.display = 'block';
+            btn.disabled    = false;
+            btn.textContent = 'Submit Feedback';
+        }
+    };
+}());
+</script>

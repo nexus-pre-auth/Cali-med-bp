@@ -266,19 +266,23 @@ class ReportWriter:
         conditions: ProjectConditions,
         project_name: str = "Healthcare Project",
         stem: str = "hcai_report",
+        fmt: str = "all",
     ) -> dict[str, Path]:
         paths = {}
 
-        txt_path = self._out / f"{stem}.txt"
-        txt_path.write_text(render_text_report(enriched, conditions, project_name))
-        paths["text"] = txt_path
+        if fmt in ("text", "all"):
+            txt_path = self._out / f"{stem}.txt"
+            txt_path.write_text(render_text_report(enriched, conditions, project_name))
+            paths["text"] = txt_path
 
-        json_path = self._out / f"{stem}.json"
-        json_path.write_text(render_json_report(enriched, conditions, project_name))
-        paths["json"] = json_path
+        if fmt in ("json", "all"):
+            json_path = self._out / f"{stem}.json"
+            json_path.write_text(render_json_report(enriched, conditions, project_name))
+            paths["json"] = json_path
 
-        html_path = self._out / f"{stem}.html"
-        html_path.write_text(render_html_report(enriched, conditions, project_name))
-        paths["html"] = html_path
+        if fmt in ("html", "all"):
+            html_path = self._out / f"{stem}.html"
+            html_path.write_text(render_html_report(enriched, conditions, project_name))
+            paths["html"] = html_path
 
         return paths
