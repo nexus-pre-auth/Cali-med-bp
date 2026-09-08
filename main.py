@@ -423,10 +423,19 @@ def serve(host: str, port: int, no_learning: bool) -> None:
 
     Open http://<host>:<port>/feedback/dashboard in a browser after starting.
     """
+    import logging
+    import os
+
+    logging.basicConfig(
+        level=os.getenv("LOG_LEVEL", "INFO").upper(),
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
+
     try:
         import uvicorn
-        from fastapi import FastAPI
-        from fastapi.responses import HTMLResponse
+        from fastapi import FastAPI, Request
+        from fastapi.middleware.cors import CORSMiddleware
+        from fastapi.responses import HTMLResponse, JSONResponse
         from fastapi.staticfiles import StaticFiles
     except ImportError:
         _print(
@@ -437,21 +446,96 @@ def serve(host: str, port: int, no_learning: bool) -> None:
         )
         sys.exit(1)
 
+    from fastapi import Depends
+
     from src.api.feedback_endpoints import feedback_router
     from src.api.query_endpoints    import query_router
+    from src.api.security import IS_PRODUCTION, get_admin_tokens, get_auth_tokens, require_api_token
+
+    logger = logging.getLogger("hcai.serve")
+
+    if IS_PRODUCTION and not (get_auth_tokens() or get_admin_tokens()):
+        _print(
+            "[red]Refusing to start: ENVIRONMENT=production but no API_AUTH_TOKENS/"
+            "API_ADMIN_TOKENS are configured. Set at least one token before deploying.[/red]"
+            if HAS_RICH else
+            "Refusing to start: ENVIRONMENT=production but no API_AUTH_TOKENS/"
+            "API_ADMIN_TOKENS are configured."
+        )
+        sys.exit(1)
 
     app = FastAPI(
         title="HCAI Compliance Engine",
         description="Real-time AHJ feedback collection, continuous learning, and NL query.",
         version="2.0.0",
+        docs_url=None if IS_PRODUCTION else "/docs",
+        redoc_url=None if IS_PRODUCTION else "/redoc",
+        openapi_url=None if IS_PRODUCTION else "/openapi.json",
     )
+
+    allowed_origins = [o.strip() for o in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if o.strip()]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=allowed_origins,
+        allow_credentials=False,
+        allow_methods=["GET", "POST"],
+        allow_headers=["Authorization", "Content-Type"],
+    )
+
+    @app.exception_handler(Exception)
+    async def _unhandled_exception_handler(request: Request, exc: Exception):
+        logger.exception("Unhandled exception on %s %s", request.method, request.url.path)
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Internal server error."},
+        )
+
+    @app.get("/health", tags=["ops"])
+    async def health():
+        """Liveness probe — always returns ok if the process is running."""
+        return {"status": "ok", "service": "hcai-compliance-engine"}
+
+    @app.get("/ready", tags=["ops"])
+    async def ready():
+        """
+        Readiness probe — checks that critical dependencies are reachable.
+        Returns HTTP 200 with per-check detail even if a non-critical
+        dependency (e.g. RAG KB) is degraded, but flags overall readiness.
+        """
+        checks: dict[str, bool] = {}
+
+        try:
+            import config
+            checks["rules_file_present"] = config.HCAI_RULES_FILE.exists()
+        except Exception:
+            checks["rules_file_present"] = False
+
+        try:
+            from src.database.client import get_supabase
+            checks["database_configured"] = get_supabase() is not None
+        except Exception:
+            checks["database_configured"] = False
+
+        checks["auth_configured"] = bool(get_auth_tokens() or get_admin_tokens())
+
+        overall_ok = checks["rules_file_present"]
+        return JSONResponse(
+            status_code=200 if overall_ok else 503,
+            content={"status": "ready" if overall_ok else "not_ready", "checks": checks},
+        )
+
     app.include_router(feedback_router)
     app.include_router(query_router)
 
     # Serve the dashboard HTML at /feedback/dashboard/ui
     templates_dir = Path(__file__).parent / "templates"
 
-    @app.get("/feedback/dashboard/ui", response_class=HTMLResponse, include_in_schema=False)
+    @app.get(
+        "/feedback/dashboard/ui",
+        response_class=HTMLResponse,
+        include_in_schema=False,
+        dependencies=[Depends(require_api_token)],
+    )
     async def dashboard_ui():
         html_path = templates_dir / "feedback_dashboard.html"
         if not html_path.exists():

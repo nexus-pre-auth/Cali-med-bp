@@ -2,7 +2,12 @@
 
 > Streamlining California Healthcare Construction Plan Reviews
 
-An AI-powered compliance engine that simulates HCAI (Healthcare Construction Analysis and Inspection) plan reviews for California healthcare construction projects. The system achieves **85%+ match with real AHJ review comments** by combining a large HCAI-specific rules dataset, intelligent condition matching, and a RAG (Retrieval-Augmented Generation) layer grounded in official Title 24 codes, PINs, and CANs.
+An AI-assisted compliance engine that helps simulate HCAI (Healthcare Construction Analysis and Inspection) plan reviews for California healthcare construction projects. It combines a deterministic, rule-based HCAI compliance dataset, intelligent condition matching, and a RAG (Retrieval-Augmented Generation) layer grounded in Title 24 codes, PINs, and CANs to draft AHJ-style comments with citations.
+
+**Compliance findings are produced by the deterministic rule engine, not the AI model.** The Claude/RAG layer is used only to *explain, cite, and phrase* findings that the rule engine already determined — it never decides on its own whether something is a violation.
+
+> **Accuracy disclaimer:** This project does not currently have a validated measurement of real-world AHJ match rate. See [Validation & Accuracy](#validation--accuracy) below for what is actually measured today.
+
 
 ---
 
@@ -26,7 +31,8 @@ Raw Project Drawings & Specs (PDF/DWG)
 │  Step 2: Intelligent Decision       │
 │          Mapping                    │
 │  • Matches conditions against       │
-│    10,000+ HCAI-specific entries    │
+│    the HCAI-specific rules dataset  │
+│    (data/hcai_rules.json)           │
 │  • Severity scoring:                │
 │    Critical / High / Medium / Low   │
 └─────────────────────────────────────┘
@@ -181,6 +187,85 @@ Cali-med-bp/
 - **HCAI PINs** — Policy Intent Notices (18-01 through 25-04)
 - **HCAI CANs** — Construction Advisory Notices
 - **FGI Guidelines 2018** — Facility Guidelines Institute
+
+---
+
+## Validation & Accuracy
+
+`python main.py validate` and `python main.py demo --validate` run `src.validation.checklist.ComplianceChecklist`, which measures:
+
+- **extraction** — whether occupancy/seismic/room data was parsed at all
+- **detection** — whether any violations were found, and how many
+- **severity** — whether severities are valid and correctly sorted
+- **citation** — whether generated comments include *a* code citation (not whether that citation is authoritative)
+- **ground_truth** — token/keyword overlap against `data/sample_violations.json`, a small hand-authored **synthetic** fixture, not a real AHJ plan-check record
+
+**What this does *not* measure:** precision, recall, F1, false-positive rate, false-negative rate, or agreement with an actual HCAI/AHJ reviewer on a real project. There is currently no real-world benchmark dataset in this repository, and the previously published **"85%+ match with real AHJ review comments"** claim was not backed by any such benchmark — it has been removed. The `data/hcai_rules.json` dataset currently contains 15 rules, not "10,000+" as an earlier draft of this README claimed.
+
+If/when a real AHJ benchmark dataset is available, `ComplianceChecklist` should be extended to compute precision/recall/F1, critical-finding recall, and citation/provenance completeness against it, and that result should be reported separately from the synthetic/demo checklist score.
+
+## Regulatory Provenance
+
+Every violation returned by the engine now carries a structured `provenance` block (see `MatchedViolation.provenance()` in `src/engine/rule_matcher.py`) so a user can answer "why was this flagged?":
+
+```json
+"provenance": {
+  "rule_id": "RULE-001",
+  "jurisdiction": "California (HCAI)",
+  "code_family": "Title 24",
+  "source_reference": ["Title 24 Part 4 ASHRAE 170 Table 7.1", "HCAI PIN 25-04"],
+  "citation_verified": true,
+  "trigger_condition": "Occupied Hospital",
+  "requirement": "...",
+  "project_evidence": "Occupied Hospital",
+  "recommended_action": "...",
+  "confidence": "rule_override"
+}
+```
+
+`code_family` and `citation_verified` are derived directly from the rule's own `code_references` — the engine never invents a citation. If a rule has no code reference, `citation_verified` is `false` and `code_family` is `null` rather than a fabricated value.
+
+## Security Model
+
+- **API authentication:** The FastAPI server (`python main.py serve`) requires a bearer token for every `/feedback/*` and `/query/*` endpoint once `API_AUTH_TOKENS` is set. `/feedback/retrain` additionally requires a token from `API_ADMIN_TOKENS` — production model retraining cannot be triggered by a standard API caller. `/health` and `/ready` are always public (required for platform health checks).
+- **Fail-closed in production:** if `ENVIRONMENT=production` and no tokens are configured, the server refuses to start rather than running unauthenticated.
+- **No raw exception leakage:** unhandled exceptions are logged server-side and return a generic `Internal server error` message to the client instead of exception internals.
+- **Rate limiting:** a per-IP/per-path in-memory sliding-window limiter (`RATE_LIMIT_MAX_REQUESTS` / `RATE_LIMIT_WINDOW_SECONDS`) protects `/feedback/*` and `/query/*`. This is single-process only; a multi-instance deployment should replace it with a shared store (e.g. Redis) before scaling horizontally.
+- **CORS:** disabled by default; set `CORS_ALLOWED_ORIGINS` (comma-separated) to allow specific frontend origins.
+- **API docs:** `/docs`, `/redoc`, and `/openapi.json` are disabled automatically when `ENVIRONMENT=production`.
+- **Database RLS:** Supabase Row Level Security is enabled on all tenant-scoped tables (`firms`, `projects`, `reviews`, `violations`, `feedback_records`) and on internal ML tables (`model_versions`, `performance_metrics`), which have no end-user access policy at all — see `migrations/005_security_hardening.sql`.
+- **Feedback → model safety:** submitted AHJ feedback is stored as candidate training data only. `ModelTrainer._is_improvement()` gates whether a retrained model ever replaces the active production model (requires ≥0.02 F1 improvement), and manual retraining is admin-token-protected.
+
+**Known gaps (not yet implemented):** there is no end-user login/session system, no organization/membership CRUD API, and no per-request tenant-scoping middleware on the FastAPI layer — the token scheme above is a service-level API key, not a Supabase-JWT-based per-user auth flow.
+
+## Environment Variables
+
+| Variable | Purpose | Required |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Claude API for AHJ comment generation | No (template fallback used if unset) |
+| `CLAUDE_MODEL` | Claude model name | No |
+| `SUPABASE_URL` / `SUPABASE_SERVICE_KEY` / `SUPABASE_ANON_KEY` | Supabase database/auth | No (file-based fallback if unset) |
+| `API_AUTH_TOKENS` | Comma-separated bearer tokens for standard API access | Yes, in production |
+| `API_ADMIN_TOKENS` | Comma-separated bearer tokens for admin endpoints (`/feedback/retrain`) | Yes, in production |
+| `ENVIRONMENT` | Set to `production` to enforce fail-closed auth and disable API docs | Recommended in production |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated allowed origins for browser clients | No |
+| `RATE_LIMIT_MAX_REQUESTS` / `RATE_LIMIT_WINDOW_SECONDS` | Rate limiter tuning | No |
+| `ALERT_WEBHOOK_URL`, `ALERT_EMAIL_*` | Monitoring alerts | No |
+| `BATCH_MAX_WORKERS`, `BATCH_CHUNK_SIZE` | Batch PDF processing | No |
+
+## Deployment
+
+- **Backend (Railway):** `railway.toml` runs `python main.py serve --host 0.0.0.0 --port $PORT`. Set `ENVIRONMENT=production`, `API_AUTH_TOKENS`, `API_ADMIN_TOKENS`, and the Supabase/Anthropic variables above in the Railway dashboard. `/health` and `/ready` are available for Railway's health checks.
+- **Frontend (Netlify):** `netlify.toml` deploys the static `public/` site and proxies `/feedback/*`, `/query/*`, `/docs`, and `/openapi.json` to the Railway backend.
+- **Database/Auth/Storage (Supabase):** apply `migrations/003_feedback_tables.sql`, `migrations/004_supabase_platform.sql`, and `migrations/005_security_hardening.sql` in order.
+
+## Limitations
+
+- The engine analyzes **extracted text and regex-derived structured data** from PDFs — it does not currently perform sheet/drawing classification, geometry extraction, or CAD/BIM (DWG/Revit/IFC) analysis. Compliance findings are only as good as what the parser/condition-extractor can detect from text.
+- There is no versioned `/api/v1` project/document/analysis REST API (projects, documents, analyses, findings, reports as first-class resources with background job IDs) in this repository yet — the current API surface is limited to `/feedback/*`, `/query/*`, `/health`, and `/ready`. This is the single largest remaining gap toward the full SaaS architecture described in the product vision.
+- There is no browser-based login/session flow; API access is currently a shared bearer token, not per-user Supabase Auth.
+- The rate limiter is in-memory and per-process; it will not enforce a global limit across multiple server instances.
+- Do not treat any generated comment as a substitute for a licensed HCAI/AHJ plan reviewer's determination.
 
 ---
 

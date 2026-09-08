@@ -14,12 +14,22 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional
 
-from fastapi import APIRouter, HTTPException
+import logging
+
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
+from src.api.security import rate_limit, require_api_token
 from src.rag.nl_query import NLQueryEngine
 
-query_router = APIRouter(prefix="/query", tags=["natural-language query"])
+logger = logging.getLogger("hcai.query_endpoints")
+_GENERIC_ERROR = "Request could not be processed. Please check your input and try again."
+
+query_router = APIRouter(
+    prefix="/query",
+    tags=["natural-language query"],
+    dependencies=[Depends(require_api_token), Depends(rate_limit)],
+)
 
 # Shared engine instance (KB loaded lazily on first request)
 _engine: Optional[NLQueryEngine] = None
@@ -73,8 +83,9 @@ async def ask_compliance_question(req: AskRequest):
     try:
         result = await _get_engine().query(req.question, top_k=req.top_k)
         return result.to_dict()
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except Exception:
+        logger.exception("ask_compliance_question failed")
+        raise HTTPException(status_code=500, detail=_GENERIC_ERROR)
 
 
 @query_router.post("/checklist")
@@ -90,8 +101,9 @@ async def generate_checklist(req: ChecklistRequest):
             req.occupancy, req.project_type
         )
         return {"occupancy": req.occupancy, "project_type": req.project_type, "checklist": checklist}
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except Exception:
+        logger.exception("generate_checklist failed")
+        raise HTTPException(status_code=500, detail=_GENERIC_ERROR)
 
 
 @query_router.post("/violations/summarise")
@@ -111,5 +123,6 @@ async def summarise_violations(req: ViolationFilterRequest):
             "total_input":     len(req.violations),
             "summary":         summary,
         }
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except Exception:
+        logger.exception("summarise_violations failed")
+        raise HTTPException(status_code=500, detail=_GENERIC_ERROR)

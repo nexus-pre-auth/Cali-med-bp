@@ -127,6 +127,7 @@ def render_json_report(
                 "ahj_comment": ev.ahj_comment,
                 "fix_instructions": ev.fix_instructions,
                 "citations": ev.citations,
+                "provenance": ev.violation.provenance(),
             }
             for ev in enriched
         ],

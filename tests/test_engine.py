@@ -95,3 +95,24 @@ class TestRuleMatcher:
         # Rules specific to Occupied Hospital should not fire for Clinic
         rule_ids = [v.rule_id for v in violations]
         assert "RULE-004" not in rule_ids  # EES rule is hospital-only
+
+    def test_provenance_reflects_actual_citations(self, hospital_conditions):
+        """Provenance must never claim a citation exists when the rule has none,
+        and must never invent a code family that isn't actually referenced."""
+        matcher = RuleMatcher(DATA_DIR / "hcai_rules.json")
+        violations = matcher.match(hospital_conditions)
+        assert violations, "expected at least one violation for hospital fixture"
+
+        for v in violations:
+            prov = v.provenance()
+            assert prov["rule_id"] == v.rule_id
+            assert prov["jurisdiction"] == "California (HCAI)"
+            # citation_verified must be true iff there is at least one citation
+            assert prov["citation_verified"] == bool(v.code_references)
+            if not v.code_references:
+                assert prov["code_family"] is None
+            if prov["code_family"] is not None:
+                assert any(
+                    prov["code_family"].lower() in ref.lower()
+                    for ref in v.code_references
+                )
