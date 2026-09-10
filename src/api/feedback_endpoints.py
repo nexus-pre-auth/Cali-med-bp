@@ -8,18 +8,28 @@ Mount this router in the FastAPI app created by main.py's `serve` command:
 
 from __future__ import annotations
 
+import logging
 from typing import List, Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 
+from src.api.security import rate_limit, require_admin_token, require_api_token
 from src.feedback.models import AHJFeedback
 from src.feedback.processor import FeedbackProcessor
 from src.ml.trainer import ModelTrainer
 
-feedback_router = APIRouter(prefix="/feedback", tags=["feedback"])
+logger = logging.getLogger("hcai.feedback_endpoints")
+
+feedback_router = APIRouter(
+    prefix="/feedback",
+    tags=["feedback"],
+    dependencies=[Depends(require_api_token), Depends(rate_limit)],
+)
 
 _processor = FeedbackProcessor()
 _trainer   = ModelTrainer()
+
+_GENERIC_ERROR = "Request could not be processed. Please check your input and try again."
 
 
 # ---------------------------------------------------------------------------
@@ -35,7 +45,10 @@ async def submit_ahj_feedback(
     Submit real-time feedback from an AHJ plan check.
 
     Stores the feedback asynchronously, then checks whether the accumulated
-    batch is large enough to trigger model retraining.
+    batch is large enough to trigger model retraining. Feedback is stored as
+    candidate training data only — it never updates the production model
+    without going through `ModelTrainer`'s evaluation/improvement gate
+    (see `/feedback/retrain`, which is admin-protected).
     """
     try:
         stored = await _processor.store_feedback(feedback)
@@ -53,8 +66,11 @@ async def submit_ahj_feedback(
             "feedback_id": stored.feedback_id,
             "message": "Feedback recorded. Thank you for improving the system!",
         }
-    except Exception as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("submit_ahj_feedback failed")
+        raise HTTPException(status_code=400, detail=_GENERIC_ERROR)
 
 
 @feedback_router.post("/batch")
@@ -76,8 +92,11 @@ async def submit_batch_feedback(
             "feedback_count": len(stored_ids),
             "feedback_ids": stored_ids,
         }
-    except Exception as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("submit_batch_feedback failed")
+        raise HTTPException(status_code=400, detail=_GENERIC_ERROR)
 
 
 # ---------------------------------------------------------------------------
@@ -85,24 +104,41 @@ async def submit_batch_feedback(
 # ---------------------------------------------------------------------------
 
 @feedback_router.get("/metrics")
-async def get_feedback_metrics(days: int = 30, ahj_name: Optional[str] = None):
+async def get_feedback_metrics(
+    days: int = Query(default=30, ge=1, le=365),
+    ahj_name: Optional[str] = Query(default=None, max_length=200),
+):
     """Return aggregated accuracy metrics for the requested time window."""
-    return await _processor.get_metrics(days=days, ahj_name=ahj_name)
+    try:
+        return await _processor.get_metrics(days=days, ahj_name=ahj_name)
+    except Exception:
+        logger.exception("get_feedback_metrics failed")
+        raise HTTPException(status_code=500, detail=_GENERIC_ERROR)
 
 
 @feedback_router.get("/dashboard")
 async def get_feedback_dashboard():
     """Return all data needed to render the real-time feedback dashboard."""
-    return await _processor.get_dashboard()
+    try:
+        return await _processor.get_dashboard()
+    except Exception:
+        logger.exception("get_feedback_dashboard failed")
+        raise HTTPException(status_code=500, detail=_GENERIC_ERROR)
 
 
 # ---------------------------------------------------------------------------
-# Model management
+# Model management (administrative — requires API_ADMIN_TOKENS)
 # ---------------------------------------------------------------------------
 
-@feedback_router.post("/retrain")
+@feedback_router.post("/retrain", dependencies=[Depends(require_admin_token)])
 async def trigger_manual_retraining(background_tasks: BackgroundTasks):
-    """Manually kick off model retraining (admin use)."""
+    """
+    Manually kick off model retraining (administrative endpoint).
+
+    Retraining still goes through `ModelTrainer`'s improvement gate
+    (`_is_improvement`, requires >= 0.02 F1 gain) before any new model
+    artifact replaces the active production model.
+    """
     background_tasks.add_task(_trainer.trigger_retraining, "manual_request")
     return {"status": "retraining_queued", "message": "Model retraining has been scheduled."}
 

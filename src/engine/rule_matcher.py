@@ -41,6 +41,51 @@ class MatchedViolation:
     # Populated later by RAG layer
     ahj_comment: Optional[str] = None
     rag_citations: list[str] = field(default_factory=list)
+    # --- Provenance (Phase 4) ---------------------------------------------
+    # These fields exist to let a user answer "why was this flagged?" without
+    # fabricating regulatory authority. `jurisdiction` reflects the scope of
+    # this rules dataset (California/HCAI only). `code_family` and
+    # `citation_verified` are derived directly from `code_references` — if a
+    # rule has no code reference, we say so explicitly rather than inventing
+    # one.
+    jurisdiction: str = "California (HCAI)"
+    code_family: Optional[str] = None
+    citation_verified: bool = False
+    confidence: str = "auto_scored"  # "rule_override" when severity is hard-coded in the rule
+
+    def provenance(self) -> dict:
+        """Structured provenance for 'why was this flagged?' explanations."""
+        return {
+            "finding_id": None,  # assigned by the caller/report layer once persisted
+            "rule_id": self.rule_id,
+            "discipline": self.discipline,
+            "severity": self.severity.value,
+            "jurisdiction": self.jurisdiction,
+            "code_family": self.code_family,
+            "source_reference": self.code_references,
+            "citation_verified": self.citation_verified,
+            "trigger_condition": self.trigger_condition,
+            "requirement": self.description,
+            "project_evidence": self.trigger_condition,
+            "recommended_action": self.fix_text,
+            "confidence": self.confidence,
+        }
+
+
+_KNOWN_CODE_FAMILIES = ("Title 24", "CBC", "CMC", "CPC", "CEC", "NFPA", "ASHRAE", "PIN", "CAN")
+
+
+def _infer_code_family(code_references: list[str]) -> Optional[str]:
+    """Best-effort classification of the code family from a citation string.
+
+    Returns None (never a guess) when no known family prefix is found, so we
+    never fabricate a citation's authority.
+    """
+    for ref in code_references:
+        for family in _KNOWN_CODE_FAMILIES:
+            if family.lower() in ref.lower():
+                return family
+    return None
 
 
 class RuleMatcher:
@@ -75,6 +120,7 @@ class RuleMatcher:
                     description=description,
                 )
 
+            code_refs = rule.get("code_references", [])
             violations.append(
                 MatchedViolation(
                     rule_id=rule["id"],
@@ -84,7 +130,10 @@ class RuleMatcher:
                     description=description,
                     violation_text=self._render(rule.get("violation_template", description), conditions),
                     fix_text=self._render(rule.get("fix_template", "Refer to code section."), conditions),
-                    code_references=rule.get("code_references", []),
+                    code_references=code_refs,
+                    code_family=_infer_code_family(code_refs),
+                    citation_verified=bool(code_refs),
+                    confidence="rule_override" if rule.get("severity_override") else "auto_scored",
                 )
             )
 

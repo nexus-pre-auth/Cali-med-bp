@@ -101,6 +101,106 @@ def render_text_report(
 
 
 # ---------------------------------------------------------------------------
+# PDF renderer
+# ---------------------------------------------------------------------------
+
+def render_pdf_report(
+    enriched: list[EnrichedViolation],
+    conditions: ProjectConditions,
+    project_name: str,
+    output_path: str | Path,
+) -> Path:
+    """Render a professional PDF report using reportlab.
+
+    Raises ImportError if reportlab is not installed, so callers can decide
+    whether PDF generation is optional (it is — JSON/HTML remain the primary
+    machine/human-readable formats).
+    """
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import LETTER
+    from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+    from reportlab.lib.units import inch
+    from reportlab.platypus import (
+        Paragraph,
+        SimpleDocTemplate,
+        Spacer,
+        Table,
+        TableStyle,
+    )
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    styles = getSampleStyleSheet()
+    title_style = styles["Title"]
+    heading_style = styles["Heading2"]
+    body_style = styles["BodyText"]
+    small_style = ParagraphStyle("small", parent=body_style, fontSize=8, textColor=colors.grey)
+
+    severity_colors = {
+        "Critical": colors.HexColor("#E53E3E"),
+        "High": colors.HexColor("#DD6B20"),
+        "Medium": colors.HexColor("#D69E2E"),
+        "Low": colors.HexColor("#38A169"),
+    }
+
+    doc = SimpleDocTemplate(str(output_path), pagesize=LETTER,
+                             topMargin=0.75 * inch, bottomMargin=0.75 * inch)
+    story = [
+        Paragraph("MedBlueprints HCAI Pre-Check Report", title_style),
+        Paragraph(f"Project: {project_name}", heading_style),
+        Paragraph(f"Generated: {datetime.now().isoformat()}", small_style),
+        Paragraph(
+            f"Occupancy: {conditions.occupancy_type or 'Not detected'} | "
+            f"County: {conditions.county or 'N/A'}",
+            body_style,
+        ),
+        Spacer(1, 0.25 * inch),
+    ]
+
+    summary_rows = [["Severity", "Count"]]
+    for sev in Severity:
+        count = sum(1 for ev in enriched if ev.violation.severity.value == sev.value)
+        summary_rows.append([sev.value, str(count)])
+    summary_table = Table(summary_rows, hAlign="LEFT")
+    summary_table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1A202C")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ]
+        )
+    )
+    story.append(summary_table)
+    story.append(Spacer(1, 0.3 * inch))
+
+    for idx, ev in enumerate(enriched, start=1):
+        v = ev.violation
+        sev_color = severity_colors.get(v.severity.value, colors.black)
+        story.append(
+            Paragraph(
+                f"<font color='{sev_color.hexval()}'><b>[{v.severity.value}]</b></font> "
+                f"Finding {idx}: {v.rule_id} — {v.discipline}",
+                heading_style,
+            )
+        )
+        story.append(Paragraph(f"<b>Requirement:</b> {v.description}", body_style))
+        story.append(Paragraph(f"<b>Project evidence:</b> {v.trigger_condition}", body_style))
+        story.append(Paragraph(f"<b>AHJ comment:</b> {ev.ahj_comment}", body_style))
+        story.append(Paragraph(f"<b>Recommended fix:</b> {ev.fix_instructions}", body_style))
+        if v.code_references:
+            story.append(
+                Paragraph(f"<b>Cited references (unverified unless noted):</b> {', '.join(v.code_references)}", small_style)
+            )
+        story.append(Spacer(1, 0.2 * inch))
+
+    doc.build(story)
+    return output_path
+
+
+# ---------------------------------------------------------------------------
 # JSON renderer
 # ---------------------------------------------------------------------------
 
@@ -127,6 +227,7 @@ def render_json_report(
                 "ahj_comment": ev.ahj_comment,
                 "fix_instructions": ev.fix_instructions,
                 "citations": ev.citations,
+                "provenance": ev.violation.provenance(),
             }
             for ev in enriched
         ],
@@ -284,5 +385,14 @@ class ReportWriter:
             html_path = self._out / f"{stem}.html"
             html_path.write_text(render_html_report(enriched, conditions, project_name))
             paths["html"] = html_path
+
+        if fmt in ("pdf", "all"):
+            try:
+                pdf_path = self._out / f"{stem}.pdf"
+                render_pdf_report(enriched, conditions, project_name, pdf_path)
+                paths["pdf"] = pdf_path
+            except ImportError:
+                # reportlab not installed — PDF is best-effort, not required.
+                pass
 
         return paths
