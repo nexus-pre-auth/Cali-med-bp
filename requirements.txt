@@ -24,6 +24,9 @@ pandas>=2.2.0
 joblib>=1.4.0
 APScheduler>=3.10.0
 
+# JWT verification for Supabase-issued access tokens (SaaS API auth)
+PyJWT>=2.12.0
+
 # Test-only: required by fastapi.testclient.TestClient
 httpx>=0.27.0
 pytest>=8.0.0
