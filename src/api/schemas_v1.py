@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -117,7 +117,7 @@ class FindingOut(BaseModel):
     section: Optional[str] = None
     subsection: Optional[str] = None
     source_document: Optional[str] = None
-    source_reference: Optional[List[Dict[str, Any]]] = None
+    source_reference: Optional[List[str]] = None
     citation_verified: bool = False
     confidence: Optional[str] = None
     recommended_action: Optional[str] = None
