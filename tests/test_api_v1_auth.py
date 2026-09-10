@@ -7,7 +7,6 @@ from __future__ import annotations
 import time
 
 import jwt
-import pytest
 
 from tests.conftest import TEST_JWT_SECRET, auth_header, make_token
 

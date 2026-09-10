@@ -6,7 +6,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from src.auth.deps import OrgContext, ProjectContext, require_project_role, resolve_org_context
+from src.auth.deps import ProjectContext, require_project_role, resolve_org_context
 from src.auth.jwt_auth import AuthenticatedUser, get_current_user
 from src.auth.roles import Role
 from src.api.schemas_v1 import ProjectCreate, ProjectOut, ProjectUpdate

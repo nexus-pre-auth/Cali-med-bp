@@ -44,8 +44,10 @@ ALLOWED_CONTENT_TYPES = {
     "text/plain",
 }
 
+
 def _max_upload_bytes() -> int:
     return int(os.getenv("MAX_UPLOAD_BYTES", str(50 * 1024 * 1024)))
+
 
 _SAFE_FILENAME_RE = re.compile(r"^[A-Za-z0-9._ ()\-]+$")
 
