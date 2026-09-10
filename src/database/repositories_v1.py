@@ -39,6 +39,7 @@ class _BaseRepository:
     """Shared Supabase-or-local-store CRUD helpers for a single table."""
 
     TABLE: str = ""
+    HAS_UPDATED_AT: bool = False
 
     def _store(self):
         return get_local_store()
@@ -84,7 +85,8 @@ class _BaseRepository:
 
     def update(self, row_id: str, patch: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         patch = dict(patch)
-        patch.setdefault("updated_at", _now())
+        if self.HAS_UPDATED_AT:
+            patch.setdefault("updated_at", _now())
         db = get_supabase()
         if db:
             try:
@@ -108,6 +110,7 @@ class _BaseRepository:
 
 class OrganizationRepository(_BaseRepository):
     TABLE = "organizations"
+    HAS_UPDATED_AT = True
 
 
 class MembershipRepository(_BaseRepository):
@@ -126,6 +129,7 @@ class MembershipRepository(_BaseRepository):
 
 class ProjectRepositoryV1(_BaseRepository):
     TABLE = "projects"
+    HAS_UPDATED_AT = True
 
     def list_for_org(self, organization_id: str) -> List[Dict[str, Any]]:
         return self.list(organization_id=organization_id)
