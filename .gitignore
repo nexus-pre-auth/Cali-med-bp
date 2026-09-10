@@ -15,6 +15,11 @@ env/
 chroma_db/
 output/
 reports/output/
+data/saas/
+data/feedback/
+data/metrics/
+data/models/
+uploads/
 *.pyc
 .pytest_cache/
 htmlcov/

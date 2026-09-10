@@ -450,6 +450,7 @@ def serve(host: str, port: int, no_learning: bool) -> None:
 
     from src.api.feedback_endpoints import feedback_router
     from src.api.query_endpoints    import query_router
+    from src.api.v1.router          import v1_router
     from src.api.security import IS_PRODUCTION, get_admin_tokens, get_auth_tokens, require_api_token
 
     logger = logging.getLogger("hcai.serve")
@@ -478,7 +479,7 @@ def serve(host: str, port: int, no_learning: bool) -> None:
         CORSMiddleware,
         allow_origins=allowed_origins,
         allow_credentials=False,
-        allow_methods=["GET", "POST"],
+        allow_methods=["GET", "POST", "PATCH", "DELETE"],
         allow_headers=["Authorization", "Content-Type"],
     )
 
@@ -517,6 +518,7 @@ def serve(host: str, port: int, no_learning: bool) -> None:
             checks["database_configured"] = False
 
         checks["auth_configured"] = bool(get_auth_tokens() or get_admin_tokens())
+        checks["saas_jwt_auth_configured"] = bool(os.getenv("SUPABASE_JWT_SECRET"))
 
         overall_ok = checks["rules_file_present"]
         return JSONResponse(
@@ -526,6 +528,7 @@ def serve(host: str, port: int, no_learning: bool) -> None:
 
     app.include_router(feedback_router)
     app.include_router(query_router)
+    app.include_router(v1_router)
 
     # Serve the dashboard HTML at /feedback/dashboard/ui
     templates_dir = Path(__file__).parent / "templates"
