@@ -1,0 +1,499 @@
+[
+  {
+    "id": "TX-WIN-001",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Structural / Wind",
+    "description": "Storm shelter / FEMA P-361 safe room required for new hospitals in tornado-prone regions (Zone V+)",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital",
+      "Ambulatory Surgical Center"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "The submitted construction documents for the {occupancy} located in {county} County do not include provisions for a FEMA P-361 compliant storm shelter or safe room as required for new hospital construction in Texas tornado-prone regions (Zone V and above). Texas Health & Safety Code §241.026 and DSHS Chapter 133 mandate that staff shelter facilities meeting FEMA P-361 performance criteria be incorporated into the facility design. The current drawings lack designation of a safe room location, structural detailing to FEMA P-361 wind speed criteria (250 mph), and documentation of occupant capacity calculations for all on-duty staff.",
+    "fix_template": "1. Designate a FEMA P-361 compliant safe room on the floor plan with occupant capacity sufficient to shelter all staff on peak shift; submit updated architectural drawings showing safe room location, dimensions, and adjacency to staff work areas.\n2. Provide structural calculations demonstrating compliance with FEMA P-361 wind speed criteria (250 mph, 3-second gust) and debris impact resistance requirements, stamped by a Texas-licensed structural engineer.\n3. Submit a safe room occupancy analysis documenting the number of staff positions per shift and confirming the safe room square footage meets FEMA P-361 Table 4-1 minimum area-per-occupant requirements.\n4. Include signage plan and emergency procedures document indicating safe room activation protocols in the life safety drawings package.\n5. Reference: Texas Health & Safety Code §241.026, 25 TAC §133 Subchapter B, FEMA P-361 (2015 or current edition).",
+    "code_references": [
+      "Texas Health & Safety Code §241.026",
+      "25 TAC §133 Subchapter B",
+      "FEMA P-361 Safe Rooms for Tornadoes and Hurricanes",
+      "DSHS Chapter 133 Architectural Guidelines"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "TX-WIN-002",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Structural / Wind",
+    "description": "Wind design and impact-resistant glazing for coastal Texas counties in wind-borne debris regions (Exposure D)",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "The construction documents for the {occupancy} in {county} County, a coastal Texas county located within an ASCE 7 wind-borne debris region (Exposure Category D), do not specify impact-resistant glazing or approved opening protection as required by the Texas Building Code §1609 and 25 TAC §133.162. All exterior glazing in wind-borne debris regions must meet ASTM E1996 and ASTM E1886 large-missile impact resistance standards, or be protected by approved storm shutters meeting equivalent criteria. The window and curtain wall schedules submitted do not identify impact ratings, and no opening protection plan has been provided.",
+    "fix_template": "1. Revise the window and curtain wall schedule to specify glazing products tested and labeled per ASTM E1996 (large missile, Zone 4 or 5 as applicable) and ASTM E1886 for all exterior openings in wind-borne debris regions.\n2. Submit manufacturer's product data sheets and independent test reports confirming impact resistance ratings for all proposed glazing assemblies.\n3. Provide ASCE 7 wind load calculations with site-specific wind speed from the Texas Building Code wind speed maps, stamped by a Texas-licensed engineer, confirming design wind pressures for the coastal exposure category.\n4. If storm shutters are proposed as an alternative, submit a shutter schedule with deployment procedures, hardware details, and test certification to the same ASTM standards.\n5. Reference: Texas Building Code §1609, ASCE 7-22 Chapter 26-30, ASTM E1996, ASTM E1886, 25 TAC §133.162.",
+    "code_references": [
+      "Texas Building Code §1609",
+      "25 TAC §133.162",
+      "ASCE 7-22 Chapter 26–30",
+      "ASTM E1996",
+      "ASTM E1886"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "TX-FLS-001",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Fire / Life Safety",
+    "description": "Complete automatic fire sprinkler system (NFPA 13) required throughout all new Texas-licensed hospitals per NFPA 101-2018 with Texas amendments",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital",
+      "Ambulatory Surgical Center"
+    ],
+    "trigger_systems": [
+      "fire sprinkler",
+      "fire suppression",
+      "fire protection"
+    ],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "The construction documents for the {occupancy} in {county} County do not provide a complete automatic fire sprinkler system designed and installed in accordance with NFPA 13 as required by 25 TAC §133.162 and the Texas edition of NFPA 101 (2018). All new Texas-licensed hospital construction must include total coverage automatic sprinkler protection throughout the building, including attic spaces exceeding 3 feet in height, elevator machine rooms, mechanical penthouses, and all accessory occupancies. The submitted drawings are either silent on sprinkler coverage in specific areas or indicate partial systems that do not meet the total-coverage mandate.",
+    "fix_template": "1. Revise the fire protection drawings to show automatic fire sprinkler coverage throughout all areas of the facility per NFPA 13, including attic spaces >3 ft, elevator machine rooms, mechanical/electrical rooms, and all accessory spaces.\n2. Provide a sprinkler system hydraulic calculation summary stamped by a NICET Level III or licensed fire protection engineer demonstrating compliance with NFPA 13 density/area requirements for the applicable hazard classification.\n3. Submit a fire protection design narrative describing system type (wet pipe, dry pipe, pre-action) for each zone, water supply source, and backflow prevention configuration.\n4. Coordinate sprinkler head locations with reflected ceiling plans to confirm coverage is not obstructed by HVAC diffusers, light fixtures, or equipment per NFPA 13 Chapter 10.\n5. Reference: 25 TAC §133.162, NFPA 101-2018 §18.3.5, NFPA 13-2019.",
+    "code_references": [
+      "25 TAC §133.162",
+      "NFPA 101-2018 §18.3.5",
+      "NFPA 13-2019",
+      "Texas Health & Safety Code §241"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "TX-EP-001",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Emergency Power",
+    "description": "Texas hospitals must maintain 96-hour on-site fuel supply for essential electrical system generator with transfer time ≤10 seconds",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [
+      "generator",
+      "emergency power",
+      "essential electrical",
+      "standby power",
+      "fuel storage"
+    ],
+    "trigger_rooms": [
+      "generator room",
+      "electrical room",
+      "fuel storage"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "The construction documents for the {occupancy} in {county} County do not demonstrate compliance with the Texas DSHS requirement for a minimum 96-hour on-site fuel supply for the essential electrical system emergency generator as required by 25 TAC §133.162 and NFPA 110. The submitted electrical drawings and specifications indicate a fuel storage capacity insufficient to sustain generator operation for 96 consecutive hours at full essential load demand. Additionally, the automatic transfer switch sequence documentation does not confirm the required ≤10-second transfer time from normal to emergency power for life safety and critical branch circuits.",
+    "fix_template": "1. Recalculate fuel storage requirements based on the full essential electrical system load (kW) and the engine-generator set fuel consumption rate (gal/hr at 100% load), and revise tank sizing to provide ≥96-hour runtime; submit updated fuel storage specifications and tank sizing calculations.\n2. Confirm automatic transfer switch (ATS) type and settings to achieve ≤10-second transfer time for Life Safety Branch per NFPA 110 §6.4; provide ATS product data sheets and sequence-of-operations narrative.\n3. Fuel storage design and tank installation must comply with NFPA 30 (Flammable and Combustible Liquids Code); submit secondary containment, leak detection, and fill/vent detail drawings.\n4. Provide a load analysis for all essential electrical system branches (Life Safety, Critical, Equipment) per NFPA 99 and coordinate with the mechanical engineer to include HVAC loads on emergency circuits.\n5. Reference: 25 TAC §133.162, NFPA 110-2019 §6.4 and §8.3, NFPA 99-2021 §6.4, NFPA 30.",
+    "code_references": [
+      "25 TAC §133.162",
+      "NFPA 110-2019 §6.4",
+      "NFPA 110-2019 §8.3",
+      "NFPA 99-2021 §6.4",
+      "NFPA 30"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "TX-SU-001",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Mechanical / Surgical HVAC",
+    "description": "Dedicated N+1 redundant HVAC system for surgical suite required for all Texas-licensed hospital operating rooms",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
+    "trigger_systems": [
+      "HVAC",
+      "air handling",
+      "ventilation",
+      "surgical HVAC"
+    ],
+    "trigger_rooms": [
+      "operating room",
+      "OR",
+      "surgical suite",
+      "surgery"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "The mechanical design for the {occupancy} surgical suite in {county} County does not provide the dedicated, non-shared HVAC system with N+1 (100% standby) air handling unit redundancy required by 25 TAC §133.162 and DSHS Architectural Guidelines for Texas-licensed hospital operating rooms. The submitted drawings indicate that the surgical suite AHU serves both operating rooms and non-surgical areas, which is prohibited, and no standby AHU with automatic failover capability is shown. The documented design conditions do not confirm maintenance of 68–73°F dry-bulb temperature and 30–60% relative humidity throughout all operating modes.",
+    "fix_template": "1. Redesign the surgical suite HVAC system to be fully dedicated (no supply air shared with non-surgical occupancies) with a minimum of two equal-capacity air handling units configured for N+1 redundancy with automatic failover controls; update HVAC drawings and equipment schedules accordingly.\n2. Provide duct layout and air balance calculations demonstrating that each operating room will maintain 20 total air changes per hour (minimum 4 outdoor air ACH) under normal and standby AHU conditions.\n3. Submit controls sequence-of-operations documenting automatic transfer to standby AHU upon primary unit failure, including failover time and alarm notification to nursing/facilities staff.\n4. Confirm room pressurization (positive), temperature range (68–73°F), and humidity range (30–60% RH) are maintained throughout all operating modes; provide psychrometric analysis if required.\n5. Reference: 25 TAC §133.162, DSHS Hospital Architectural Guidelines, FGI 2022 Table 2.1-2, ASHRAE 170-2021 Table 7.1.",
+    "code_references": [
+      "25 TAC §133.162",
+      "DSHS Hospital Architectural Guidelines",
+      "FGI 2022 Table 2.1-2",
+      "ASHRAE 170-2021 Table 7.1",
+      "NFPA 99-2021"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "TX-INF-001",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Infection Control",
+    "description": "Written ICRA plan (minimum Class III/IV) required with construction documents for projects in or adjacent to occupied patient care areas",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "The construction documents submitted for the {occupancy} renovation or addition in {county} County do not include a written Infection Control Risk Assessment (ICRA) plan as required by 25 TAC §133.41 and DSHS Hospital Licensing Standards for any project located in or immediately adjacent to occupied patient care areas. Texas DSHS requires a minimum ICRA Class III or Class IV plan — prepared jointly by the infection preventionist, project manager, and contractor — to be submitted with construction documents prior to DSHS review approval. The submitted package contains neither the ICRA risk matrix nor the corresponding infection control mitigation measures.",
+    "fix_template": "1. Prepare a written ICRA document using the ICRA matrix to classify the construction activity type and patient risk group; determine the required ICRA class (minimum Class III for projects adjacent to patient care; Class IV for immunocompromised patient areas) and submit with the construction documents.\n2. The ICRA plan must be signed by the hospital's Infection Preventionist and include: project description, construction activity class, patient risk group classification, required control measures (barriers, pressure relationships, air filtration), and monitoring protocols.\n3. Include on the construction drawings a phasing plan with physical barrier locations, identification of interim negative pressure or HEPA filtration requirements, and designated construction worker egress routes that avoid patient care corridors.\n4. Submit an ICRA inspection and monitoring log template that will be used by the contractor throughout construction and made available to DSHS surveyors upon request.\n5. Reference: 25 TAC §133.41, DSHS Hospital Licensing Standards, APIC Implementation Guide for ICRA, FGI 2022 Appendix 1.A.",
+    "code_references": [
+      "25 TAC §133.41",
+      "DSHS Hospital Licensing Standards",
+      "APIC Implementation Guide for ICRA",
+      "FGI 2022 Appendix 1.A"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "TX-INF-002",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Infection Control",
+    "description": "Phased construction in occupied hospitals requires physical barriers, negative pressure anterooms, and HEPA air scrubbers per ICRA Class IV; daily inspection log required",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [
+      "HEPA",
+      "air scrubber",
+      "negative pressure"
+    ],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "The submitted phasing plan and construction documents for the occupied {occupancy} project in {county} County do not adequately demonstrate ICRA Class IV infection control measures as required by 25 TAC §133.41 for construction occurring within or immediately adjacent to occupied patient care areas. The drawings do not show sealed, floor-to-deck physical barriers at the construction boundary, negative pressure anterooms at each entry point to the construction zone, or HEPA-filtered air scrubber placement and quantities sufficient to achieve the required number of air changes per hour in the construction area. A daily contractor inspection log — required to be maintained on-site and available to DSHS surveyors — has not been referenced in the contract documents.",
+    "fix_template": "1. Add a dedicated infection control phasing sheet to the construction documents showing the location, type (hard-wall or heavy-duty poly), and height (floor-to-structural deck, sealed) of all construction zone barriers, including all penetrations for utilities sealed with fire-rated materials.\n2. Designate a negative pressure anteroom (minimum 25 SF clear area) at each construction zone entry point; provide HVAC or portable unit specifications confirming negative pressure of at least -0.01 in. WG relative to adjacent patient areas.\n3. Calculate required HEPA air scrubber capacity (minimum 12 air changes per hour for the construction zone volume) and show unit locations on the plan; submit equipment specifications confirming HEPA filtration to 0.3 micron at 99.97% efficiency.\n4. Include a requirement in the project specifications (Division 01) for the contractor to maintain a daily ICRA inspection log documenting barrier integrity, negative pressure readings, HEPA unit operation, and any incidents; log must be retained on-site and provided to DSHS on request.\n5. Reference: 25 TAC §133.41, DSHS Hospital Licensing Standards, APIC ICRA Implementation Guide Class IV requirements.",
+    "code_references": [
+      "25 TAC §133.41",
+      "DSHS Hospital Licensing Standards",
+      "APIC ICRA Implementation Guide",
+      "FGI 2022 Appendix 1.A"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "TX-GEN-001",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "General / Regulatory",
+    "description": "DSHS plan review submission requirements: Form H-111, site plan, floor plan, equipment schedule, and applicable MEP drawings required prior to construction",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital",
+      "Ambulatory Surgical Center",
+      "Clinic"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "The construction documents submitted for the {occupancy} project in {county} County are incomplete for DSHS Health Facility Compliance Division plan review as required by 25 TAC §133.163. A complete submittal must include: a completed and signed Form H-111 (Project Notification and Plan Review Application), civil/site plan, dimensioned floor plan(s) with room use labels, a complete equipment schedule identifying medical equipment, and applicable mechanical, electrical, and plumbing engineering drawings. The current submission is missing one or more of these required components, and DSHS cannot complete its review until all required documents are received.",
+    "fix_template": "1. Complete and submit DSHS Form H-111 (Project Notification and Plan Review Application) signed by the project architect or engineer of record and the hospital administrator or authorized representative.\n2. Provide a fully dimensioned architectural floor plan(s) at a minimum scale of 1/8\" = 1'-0\" with all rooms labeled by function, door swings shown, and room areas (SF) indicated for each patient care room and support space.\n3. Submit a civil/site plan showing building footprint, property lines, parking, utility connections, and accessible routes per TAS (Texas Accessibility Standards).\n4. Include a complete equipment schedule listing all major fixed medical equipment (imaging, surgical tables, sterilizers) with utility connection requirements (electrical, medical gas, plumbing) and clearance zones.\n5. Provide mechanical, electrical, and plumbing engineering drawings sufficient to demonstrate compliance with 25 TAC §133.162 and applicable codes; reference: 25 TAC §133.163, DSHS Health Facility Compliance Plan Review Guide.",
+    "code_references": [
+      "25 TAC §133.163",
+      "25 TAC §133.162",
+      "DSHS Health Facility Compliance Plan Review Guide",
+      "Texas Health & Safety Code §241.027"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "TX-GEN-002",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "General / Patient Care",
+    "description": "Nurse station visibility: direct line-of-sight or electronic monitoring to each patient room door; nursing units >30 beds require 2 or more stations",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [
+      "nurse station",
+      "nursing unit",
+      "patient room"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "The nursing unit floor plan for the {occupancy} in {county} County does not demonstrate compliance with 25 TAC §133.162, which requires each nurse station to maintain direct line-of-sight or approved electronic monitoring capability (closed-circuit video) to each patient room door within the nursing unit. The submitted floor plan indicates patient rooms that are not visible from the nurse station due to corridor bends or wing configurations, and no video monitoring system is shown or specified. Additionally, the nursing unit exceeds 30 licensed beds but provides only one nurse station, contrary to the requirement for two stations or an approved satellite station configuration.",
+    "fix_template": "1. Revise the floor plan to demonstrate direct line-of-sight from the nurse station to each patient room door; where geometry prevents direct sightlines, add a CCTV/video monitoring station at the nurse station covering all patient room doors in the affected corridor.\n2. If the nursing unit contains more than 30 licensed beds, add a second nurse station or a fully equipped satellite nurse station at the opposite end of the unit; show staffing zones on the floor plan.\n3. Submit a video monitoring system narrative describing camera coverage, monitor locations at the nurse station(s), recording capability, and HIPAA-compliant privacy provisions.\n4. Confirm nurse station counter height, knee space, and sight-line elevation are compatible with staff working both seated and standing, and consistent with ADA/TAS accessibility requirements.\n5. Reference: 25 TAC §133.162, DSHS Hospital Licensing Standards §133.162(e), FGI 2022 §2.2-2.2.1.",
+    "code_references": [
+      "25 TAC §133.162",
+      "DSHS Hospital Licensing Standards §133.162(e)",
+      "FGI 2022 §2.2-2.2.1",
+      "Texas Health & Safety Code §241"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "TX-SU-002",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Medical Gas / Surgical",
+    "description": "Piped medical gas outlets (O2, vacuum, WAGD, medical air) required in ALL procedure rooms where anesthesia or sedation may be administered",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital",
+      "Ambulatory Surgical Center"
+    ],
+    "trigger_systems": [
+      "medical gas",
+      "oxygen",
+      "vacuum",
+      "WAGD",
+      "anesthesia"
+    ],
+    "trigger_rooms": [
+      "procedure room",
+      "operating room",
+      "endoscopy",
+      "cath lab",
+      "interventional radiology",
+      "bronchoscopy"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "The medical gas and vacuum systems drawings for the {occupancy} in {county} County do not provide piped medical gas outlets in all procedure rooms where anesthesia or conscious sedation may be administered, as required by 25 TAC §133.162 and NFPA 99. Texas DSHS requires that oxygen (O2), medical-grade vacuum, waste anesthetic gas disposal (WAGD), and medical air outlets be provided at each procedure room location where inhalation anesthesia or moderate/deep sedation agents may be used — this requirement is not limited to designated operating rooms but extends to endoscopy suites, cardiac catheterization labs, interventional radiology, and bronchoscopy rooms. The current drawings show cylinder connections or portable equipment in lieu of piped systems in one or more of these locations.",
+    "fix_template": "1. Identify all rooms in the facility where anesthesia or sedation (including moderate/conscious sedation) may be administered and list them in the medical gas design narrative; confirm piped O2, medical vacuum, WAGD, and medical air outlets are provided at each location per NFPA 99 §5.1.\n2. Revise medical gas piping plans to extend piped systems to all identified procedure rooms; show outlet quantity, type (DISS, quick-connect), and mounting height per NFPA 99 and manufacturer requirements.\n3. Provide WAGD system design with dedicated exhaust fan, capacity calculations, and connection to each anesthesia machine or scavenging interface in every applicable procedure room.\n4. Submit medical gas system design documentation per NFPA 99 Chapter 5, including pipe sizing calculations, source equipment sizing (manifolds, compressors, vacuum pumps) accounting for all new outlets.\n5. Reference: 25 TAC §133.162, NFPA 99-2021 §5.1, FGI 2022 Table 2.1-5 (Medical Gas Outlets).",
+    "code_references": [
+      "25 TAC §133.162",
+      "NFPA 99-2021 §5.1",
+      "NFPA 99-2021 Chapter 5",
+      "FGI 2022 Table 2.1-5"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "TX-GEN-003",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "General / Nursing Unit",
+    "description": "Medication pass-through window or secured medication cart alcove with direct sight line from nurse station required for nursing units >20 beds",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [
+      "nurse station",
+      "medication room",
+      "nursing unit",
+      "med room"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "The nursing unit floor plan for the {occupancy} in {county} County, which exceeds 20 licensed beds, does not include a medication pass-through window or a secured medication cart alcove accessible from the patient corridor with a direct sight line from the nurse station, as required by 25 TAC §133.162. Texas DSHS regulations require that medication distribution be observable from the nurse station to support patient safety and controlled substance oversight. The submitted drawings show a medication room with a single door opening away from the nurse station, with no pass-through window or recessed cart alcove, and no unobstructed visual connection to the nurse station.",
+    "fix_template": "1. Add a medication pass-through window between the medication room and the patient corridor, positioned with a direct sight line from the nurse station; provide a detail drawing showing the window dimensions (minimum 18\" wide x 24\" tall clear opening), counter height, and locking hardware.\n2. Alternatively, provide a recessed medication cart alcove (minimum 3'-6\" wide x 2'-0\" deep) in the patient corridor within the nurse station's line of sight, with a lockable enclosure and electrical outlet for powered medication carts.\n3. Confirm the medication room or alcove is equipped with a controlled-access door lock (card reader or keypad) per DEA requirements for Schedule II controlled substance storage.\n4. Show the sight line from the nurse station to the medication pass-through or alcove on the floor plan using a dashed line or sight-line diagram annotation.\n5. Reference: 25 TAC §133.162, DSHS Hospital Licensing Standards, Texas State Board of Pharmacy regulations.",
+    "code_references": [
+      "25 TAC §133.162",
+      "DSHS Hospital Licensing Standards",
+      "Texas State Board of Pharmacy Regulations",
+      "FGI 2022 §2.2-2.6"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "TX-ENV-001",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Mechanical / Energy",
+    "description": "Hospital HVAC systems must meet Texas IECC 2021 energy efficiency requirements; mechanical commissioning report required at project closeout",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital",
+      "Ambulatory Surgical Center"
+    ],
+    "trigger_systems": [
+      "HVAC",
+      "mechanical",
+      "energy",
+      "commissioning",
+      "chiller",
+      "boiler",
+      "AHU"
+    ],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "The mechanical design documents for the {occupancy} in {county} County do not demonstrate compliance with the Texas IECC 2021 energy efficiency requirements applicable to hospital HVAC systems, as required by 25 TAC §133.162. The submitted mechanical drawings and specifications do not include an IECC compliance form, equipment efficiency documentation (minimum EER/COP per IECC 2021 Table C403.3), or a mechanical commissioning scope confirming that a commissioning report will be prepared and submitted to DSHS at project closeout. Texas DSHS requires the commissioning report to be on file before issuing final licensure approval for new or substantially renovated hospital facilities.",
+    "fix_template": "1. Prepare and submit a Texas IECC 2021 Mechanical Compliance Form (COMcheck or equivalent) demonstrating that all HVAC equipment meets or exceeds the minimum efficiency requirements in IECC 2021 Table C403.3 for the applicable climate zone.\n2. Revise mechanical specifications (MasterFormat Division 23) to require a commissioning authority (CxA) and commissioning scope covering air handling units, chillers, cooling towers, boilers, VAV systems, and building automation system (BAS) sequences.\n3. Add a commissioning plan requirement in the project specifications stating that a final commissioning report — including functional performance test results, air and water balance reports, and training records — will be submitted to DSHS prior to final licensure inspection.\n4. Confirm that HVAC controls include demand-controlled ventilation (DCV) where required by IECC 2021 §C403.8 and that economizer provisions are addressed for the applicable climate zone.\n5. Reference: Texas IECC 2021 (as adopted by the Texas State Energy Conservation Office), 25 TAC §133.162, ASHRAE Standard 202-2018 (Commissioning Process).",
+    "code_references": [
+      "Texas IECC 2021",
+      "25 TAC §133.162",
+      "ASHRAE Standard 202-2018",
+      "IECC 2021 Table C403.3"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "TX-GEN-004",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "General / Licensure",
+    "description": "As-built floor plans showing each licensed bed location, room dimensions, toilet room configuration, and clearances required to be filed with DSHS prior to licensure",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [
+      "patient room",
+      "bed",
+      "toilet room",
+      "bathroom"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "The construction documents for the {occupancy} in {county} County do not include as-built (or construction document) floor plans that sufficiently document each proposed licensed bed location with the information required by 25 TAC §133.163 for DSHS licensure. Texas DSHS requires that floor plans filed prior to licensure show each licensed bed position with room clear dimensions, required clearances at the head, foot, and sides of each bed, toilet room configuration (private vs. shared), and accessible route from bed to toilet. The submitted plans do not dimensionally verify minimum room sizes per DSHS standards (minimum 100 SF clear area for single-bed rooms; 80 SF/bed for multi-bed rooms) nor show required clearances.",
+    "fix_template": "1. Revise patient room floor plans to show each licensed bed position with dimension strings confirming minimum clear floor area: 100 SF for private rooms, 80 SF per bed for semi-private rooms (excluding toilet room and fixed casework).\n2. Annotate required clearances on the floor plan: minimum 36\" at the head of bed (wall to bed), 24\" on one side, and 36\" on the transfer/accessible side; confirm compliance at each bed position.\n3. Show the toilet room configuration for each patient room: label as private (within room) or shared (Jack-and-Jill between rooms); confirm accessible toilet rooms meet TAS Chapter 603 requirements with grab bar blocking shown.\n4. Submit a licensed bed count summary table on the drawings listing each patient room number, bed count, room type, and toilet room type; total must match the requested licensed bed count on DSHS Form H-111.\n5. Reference: 25 TAC §133.163, 25 TAC §133.162, DSHS Hospital Architectural Guidelines, FGI 2022 §2.2-2.1.1.",
+    "code_references": [
+      "25 TAC §133.163",
+      "25 TAC §133.162",
+      "DSHS Hospital Architectural Guidelines",
+      "FGI 2022 §2.2-2.1.1",
+      "Texas Accessibility Standards (TAS) Chapter 603"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "TX-FLS-002",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Fire / Life Safety",
+    "description": "Smoke compartments must not exceed 22,500 SF; cross-corridor smoke barrier doors required at maximum 200-foot intervals on inpatient floors",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [
+      "smoke barrier",
+      "smoke compartment",
+      "cross-corridor doors",
+      "fire doors"
+    ],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "The fire and life safety drawings for the {occupancy} in {county} County do not demonstrate compliance with the smoke compartmentation requirements of 25 TAC §133.162 and NFPA 101-2018 §18.3.7. One or more smoke compartments on the inpatient floors exceed the 22,500 SF maximum area limit, and cross-corridor smoke barrier doors are not provided at maximum 200-foot intervals along the length of inpatient corridors. Smoke barrier walls are required to extend from the floor to the underside of the floor or roof deck above and must provide a minimum 1-hour fire resistance rating with smoke-rated door assemblies (S-label) at all corridor crossings.",
+    "fix_template": "1. Revise the life safety floor plan to delineate smoke compartment boundaries such that no compartment exceeds 22,500 SF; annotate each compartment with its area in SF on the drawing.\n2. Add cross-corridor smoke barrier doors at intervals not exceeding 200 feet along all inpatient corridors; show door locations on the life safety plan with door hardware designation confirming automatic hold-open with smoke detector release (per NFPA 101 §18.3.7.5).\n3. Provide wall sections and details for all smoke barrier walls confirming 1-hour fire-resistance-rated construction (tested per ASTM E119 or UL 263), extending continuously from floor to underside of floor or roof deck, with all penetrations sealed by listed firestop systems.\n4. Schedule all smoke barrier doors as minimum 1-3/4\" solid-core, 20-minute fire-rated with 'S' smoke label, self-closing and positive-latching hardware, and confirm corridor width is maintained through the door pairs per NFPA 101 §18.2.3.\n5. Reference: 25 TAC §133.162, NFPA 101-2018 §18.3.7, NFPA 101-2018 §18.2.3.",
+    "code_references": [
+      "25 TAC §133.162",
+      "NFPA 101-2018 §18.3.7",
+      "NFPA 101-2018 §18.2.3",
+      "ASTM E119"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "TX-GEN-005",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-137",
+    "discipline": "General / Birthing",
+    "description": "Texas-licensed birthing center LDR rooms must provide minimum 300 SF clear area with private toilet/shower within or immediately adjacent to each LDR room",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Clinic"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [
+      "LDR",
+      "LDRP",
+      "birthing",
+      "labor delivery",
+      "labor room",
+      "delivery room"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "The LDR (Labor, Delivery, and Recovery) room floor plan for the {occupancy} in {county} County does not meet the minimum room size and toilet facility requirements of 25 TAC §137 (Birthing Centers) and DSHS Architectural Guidelines. Each LDR room in a Texas-licensed birthing center or hospital birthing unit must provide a minimum 300 SF of clear floor area (excluding toilet room, vestibule, and fixed casework) with a private toilet room and shower accessible directly from within the LDR room or through a private vestibule immediately adjacent to it. The submitted plans show LDR rooms with insufficient clear floor area and/or toilet rooms shared between LDR rooms, which is not permitted.",
+    "fix_template": "1. Revise LDR room floor plans to confirm a minimum 300 SF clear area per room, measured from the interior face of walls and excluding the toilet room, entry vestibule, and fixed cabinetry; annotate the clear area on each room plan.\n2. Provide a private toilet room with shower (or tub/shower combination) for each LDR room, accessible directly from within the room or through a private vestibule exclusively serving that LDR room; shared toilet rooms between two LDR rooms are not acceptable under 25 TAC §137.\n3. Confirm the toilet room meets TAS (Texas Accessibility Standards) accessible toilet room requirements per TAS Chapter 603 with grab bars at toilet, shower seat, and shower controls within accessible reach.\n4. Show medical gas outlets (O2, vacuum), emergency call system, and fetal monitoring equipment connection points within the LDR room consistent with 25 TAC §137 equipment requirements.\n5. Reference: 25 TAC §137 (Birthing Centers), DSHS Birthing Center Architectural Guidelines, FGI 2022 §2.2-3.5, Texas Accessibility Standards Chapter 603.",
+    "code_references": [
+      "25 TAC §137",
+      "DSHS Birthing Center Architectural Guidelines",
+      "FGI 2022 §2.2-3.5",
+      "Texas Accessibility Standards Chapter 603"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "TX-INF-003",
+    "state": "TX",
+    "ahj": "DSHS",
+    "rule_source": "25-TAC-133",
+    "discipline": "Infection Control",
+    "description": "All Texas-licensed hospitals, including critical access hospitals, must provide at minimum one airborne infection isolation (AII) room meeting FGI 2022 requirements regardless of bed count",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [
+      "negative pressure",
+      "HEPA",
+      "exhaust",
+      "AII",
+      "isolation ventilation"
+    ],
+    "trigger_rooms": [
+      "isolation room",
+      "AII room",
+      "airborne isolation",
+      "negative pressure room",
+      "TB room"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "The construction documents for the {occupancy} in {county} County do not include an airborne infection isolation (AII) room meeting FGI 2022 and ASHRAE 170-2021 requirements as mandated by 25 TAC §133.162 and 25 TAC §169 for all Texas-licensed hospitals, including critical access hospitals, regardless of bed count. Texas DSHS requires a minimum of one AII room per facility that provides continuous negative pressure (minimum -0.01 in. WG relative to the corridor), a minimum of 12 total air changes per hour (2 outdoor air ACH minimum), HEPA-filtered exhaust or direct outdoor exhaust with no recirculation, a self-closing entry door, and an anteroom. The submitted plans do not designate any room as an AII room or provide the required ventilation parameters.",
+    "fix_template": "1. Designate at least one patient room on the floor plan as a full-compliance AII room per FGI 2022 §2.2-2.1.2 and ASHRAE 170-2021; label it 'Airborne Infection Isolation Room' with the required ventilation parameters noted on the drawing.\n2. Provide mechanical design documentation for the AII room confirming: continuous negative pressure of -0.01 in. WG (minimum) relative to the adjacent corridor, monitored by a visual pressure indicator (Magnehelic gauge or electronic monitor) visible from the corridor; 12 total ACH (minimum 2 outdoor ACH); and 100% exhaust air with no recirculation.\n3. Design the AII room exhaust to discharge directly to the outside at a location per ASHRAE 170-2021 §7.2 (minimum 25 feet from any air intake, pedestrian area, or operable window), or provide HEPA filtration on the exhaust where direct outdoor discharge is not feasible.\n4. Include an anteroom of minimum 30 SF between the AII room and the corridor with its own HVAC supply/exhaust maintaining slight negative pressure relative to the corridor and positive pressure relative to the AII room (directional airflow to contain pathogens).\n5. Reference: 25 TAC §133.162, 25 TAC §169 (Critical Access Hospitals), FGI 2022 §2.2-2.1.2, ASHRAE 170-2021 Table 7.1, CDC Guidelines for Environmental Infection Control.",
+    "code_references": [
+      "25 TAC §133.162",
+      "25 TAC §169",
+      "FGI 2022 §2.2-2.1.2",
+      "ASHRAE 170-2021 Table 7.1",
+      "CDC Guidelines for Environmental Infection Control in Health-Care Facilities"
+    ],
+    "severity_override": "High"
+  }
+]

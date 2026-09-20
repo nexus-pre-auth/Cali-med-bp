@@ -1,0 +1,339 @@
+[
+  {
+    "id": "NY-IC-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Infection Control / Mechanical",
+    "description": "Operating room ventilation must meet NYSDOH-enhanced ACH and HEPA filtration requirements exceeding FGI baseline",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": ["HVAC", "ventilation"],
+    "trigger_rooms": ["operating room", "OR"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — INFECTION CONTROL / MECHANICAL: The submitted mechanical drawings for the operating room(s) indicate a total air change rate of fewer than 25 ACH, which does not comply with 10 NYCRR §711.2(a)(7) and NYSDOH DAL 10-04. New York State requires a minimum of 25 total air changes per hour (ACH) in all {occupancy} operating rooms, which exceeds the FGI 2022 baseline of 20 ACH. Additionally, all OR supply air must pass through HEPA filtration (minimum 99.97% efficiency at 0.3 microns) prior to delivery to the space; no exceptions are permitted for new construction or major renovation. Failure to provide HEPA-filtered, 25-ACH ventilation in the OR(s) constitutes a material deficiency under NYS Health Code and will result in a disapproval of the submitted construction documents.",
+    "fix_template": "1. Revise mechanical schedules and plans to reflect a minimum of 25 total air changes per hour (ACH) in all operating rooms, with a minimum of 20 outdoor ACH as required by NYSDOH DAL 10-04 and 10 NYCRR §711.2(a)(7).\n2. Add HEPA filtration units (99.97% efficiency at 0.3 microns) to all OR supply air handling units or terminal boxes; clearly indicate HEPA filter locations and access panels on mechanical drawings.\n3. Provide a ventilation schedule table on the drawings listing each OR by room number, supply CFM, exhaust CFM, total ACH, outdoor ACH, pressurization relationship (positive), filtration level, and temperature/humidity setpoints.\n4. Submit updated mechanical calculations demonstrating compliance with NYSDOH 25 ACH requirement, signed and sealed by a licensed NYS Professional Engineer.\n5. Reference NYSDOH DAL 10-04 and 10 NYCRR §711.2(a)(7) explicitly in the code analysis portion of the NYSDOH OHSM project application submittal.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(a)(7)",
+      "NYSDOH DAL 10-04",
+      "FGI 2022 Table 7.1 (baseline)",
+      "ASHRAE 170-2021 Table 7.1"
+    ],
+    "severity_override": "Critical"
+  },
+  {
+    "id": "NY-IC-002",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-599",
+    "discipline": "Infection Control / Behavioral Health Safety",
+    "description": "All patient care areas in NYS psychiatric and behavioral health units must use fully ligature-resistant hardware, plumbing, lighting, and door hardware throughout",
+    "trigger_occupancies": ["Psychiatric Facility", "Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": ["plumbing", "electrical"],
+    "trigger_rooms": ["psychiatric", "behavioral health", "mental health"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — BEHAVIORAL HEALTH SAFETY: The submitted construction documents for the {occupancy} psychiatric/behavioral health unit do not demonstrate compliance with NYSDOH ligature-resistance requirements as required by 10 NYCRR Part 599 and NYSDOH DAL 17-03. New York State mandates that ALL patient care areas within licensed psychiatric and behavioral health units employ ligature-resistant hardware (door handles, hinges, closers), plumbing fixtures (faucets, shower valves, drains), light fixtures (fully recessed or ligature-resistant vandal-resistant), and door hardware (no exposed screws, loops, or anchor points capable of supporting body weight). These requirements exceed the standard hospital construction requirements and apply to all new construction and major renovation projects in {county} County. Drawings must include product cut sheets and a room-by-room ligature-resistance compliance matrix demonstrating that every patient-accessible surface and fixture meets the NYSDOH standard.",
+    "fix_template": "1. Provide a complete ligature-resistance compliance matrix (spreadsheet or table on drawings) listing every patient-accessible room, each fixture/hardware type, the specified product, and its certified ligature-resistance rating.\n2. Replace all standard door hardware (levers, hinges, closers) throughout patient care areas with NYSDOH-approved ligature-resistant equivalents; provide manufacturer cut sheets demonstrating ligature resistance per NYSDOH DAL 17-03 Appendix A criteria.\n3. Specify ligature-resistant plumbing fixtures for all patient-accessible lavatories, toilets, and showers; exposed supply lines and drain configurations must be anti-anchor type; submit plumbing fixture schedule with product data.\n4. Revise electrical/lighting plans to show fully recessed or ligature-resistant vandal-resistant light fixtures in all patient care areas; surface-mounted fixtures with exposed attachment points are not acceptable.\n5. Coordinate with NYSDOH Office of Mental Health (OMH) reviewer concurrently with OHSM review; attach OMH pre-approval letter to the NYSDOH OHSM construction application.",
+    "code_references": [
+      "10 NYCRR Part 599 (Psychiatric Facilities)",
+      "NYSDOH DAL 17-03",
+      "NYS Mental Hygiene Law §31.02",
+      "VA Ligature Risk Reduction Design Guide (reference standard)"
+    ],
+    "severity_override": "Critical"
+  },
+  {
+    "id": "NY-IC-003",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Emergency Preparedness / Infection Control",
+    "description": "New York emergency departments must include a dedicated HAZMAT/chemical decontamination room or shower station for a minimum of 2 patients simultaneously",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": ["plumbing", "HVAC", "ventilation"],
+    "trigger_rooms": ["emergency room", "ER", "emergency department"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — EMERGENCY PREPAREDNESS: The submitted emergency department drawings for the {occupancy} facility in {county} County do not indicate a dedicated HAZMAT/chemical patient decontamination room or decontamination shower station as required by 10 NYCRR §711.2 and NYSDOH Emergency Preparedness requirements. New York State mandates that all licensed hospital emergency departments provide a dedicated decontamination space capable of simultaneously decontaminating a minimum of two (2) patients following HAZMAT or chemical exposure incidents. The required decontamination room must include dedicated negative-pressure exhaust separate from the general ED HVAC system, a floor drain connected to an isolated containment system (not the sanitary sewer without treatment), physical separation from clean patient care areas, and access from an exterior entry point to avoid contaminating the main ED. This deficiency constitutes a life-safety and emergency preparedness non-compliance that must be resolved prior to NYSDOH approval.",
+    "fix_template": "1. Add a dedicated decontamination room or decontamination shower station to the ED floor plan, sized to accommodate simultaneous decontamination of at least two (2) adult patients on stretchers or standing, with a minimum clear area of 100 SF.\n2. Provide a dedicated exhaust system for the decontamination room that is entirely separate from the main ED HVAC; minimum 12 ACH exhaust, negative pressure relative to adjacent spaces, with exhaust discharge at roof level away from air intakes.\n3. Specify a floor drain connected to an isolated containment sump or holding tank; show containment system on plumbing drawings; coordinate with {county} County sewer authority regarding HAZMAT discharge permitting.\n4. Show a direct exterior entry/access point (separate from main ED entrance) on the site plan and floor plan to allow HAZMAT-contaminated patients to enter the decontamination area without transiting through clean ED spaces.\n5. Include decontamination room in the NYSDOH OHSM Emergency Preparedness narrative submitted with the project application, referencing applicable NYSDOH guidelines and the facility's HAZMAT response plan.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2",
+      "NYSDOH Emergency Preparedness Requirements for Hospitals",
+      "NY Public Health Law §2803-l",
+      "FGI 2022 §2.2-3.3 (Decontamination)"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "NY-PR-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Patient Room Design / Plumbing",
+    "description": "NYSDOH requires a private toilet room with grab bars and accessible fixtures for each single-bed patient room in new hospital construction",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": ["plumbing"],
+    "trigger_rooms": ["patient room", "inpatient", "medical surgical"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — PATIENT ROOM DESIGN / PLUMBING: The submitted floor plans for the {occupancy} inpatient nursing unit indicate that one or more single-bed patient rooms in {county} County do not include a private, dedicated toilet room directly accessible from the patient room, as required by 10 NYCRR §711.2(b)(1). New York State regulations prohibit shared toilet facilities for new construction of single-bed inpatient rooms and require that each room have its own private toilet room equipped with a water closet, lavatory, grab bars on both sides of the toilet and behind, and fixtures that comply with NYS accessibility standards. This requirement applies to all new construction and major renovation projects at NYS-licensed hospitals and is more stringent than FGI 2022 in that shared corridor toilet rooms are not an acceptable substitute. Shared toilet room arrangements found in the current submission must be redesigned to provide one private toilet room per single-bed patient room.",
+    "fix_template": "1. Redesign the inpatient floor plan to provide a private, dedicated toilet room directly accessible from each single-bed patient room; the toilet room must contain a water closet, lavatory with knee clearance, and sufficient turning radius (60-inch minimum) for wheelchair access.\n2. Add grab bars on both sides of the water closet and on the rear wall, per NYS Accessibility Standard dimensions; show grab bar locations, heights, and blocking reinforcement on architectural drawings.\n3. Specify all fixtures in the patient toilet room as ADA/NYS-accessible compliant; provide fixture schedule referencing applicable standards.\n4. Confirm on drawings that the toilet room door swings outward (or is a sliding/pocket door) to allow emergency egress if a patient collapses against the door.\n5. Update the room data sheets and fixture schedule to reflect one toilet room per single-bed patient room throughout the nursing unit, and revise the plumbing fixture count accordingly in the NYSDOH project application.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(b)(1)",
+      "NYS Accessibility Standard (equivalent to ADA Standards)",
+      "NY Public Health Law §2802",
+      "FGI 2022 §2.2-2.2 (Patient Rooms)"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "NY-PR-002",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Patient Room Design",
+    "description": "NYSDOH strictly limits inpatient rooms to a maximum of 2 beds; no 3-bed or 4-bed rooms permitted in new construction or major renovation",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": ["patient room", "inpatient", "medical surgical", "semi-private"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — PATIENT ROOM DESIGN: The submitted floor plans for the {occupancy} inpatient unit in {county} County depict one or more patient rooms containing three (3) or more patient beds, which is not permitted under 10 NYCRR §711.2(b)(2). New York State regulations strictly limit inpatient patient rooms to a maximum of two (2) beds in all new construction and major renovation projects at NYS-licensed hospitals. Rooms with three or more beds were phased out under prior NYSDOH regulatory guidance and are categorically prohibited in new licensure submissions. Each two-bed room must also comply with minimum square footage, privacy curtain, and patient toilet room requirements applicable to multi-bed rooms under NYSDOH rules. The non-compliant multi-bed rooms identified in the submitted drawings must be redesigned as single- or double-occupancy rooms prior to NYSDOH approval.",
+    "fix_template": "1. Redesign all patient rooms exceeding two (2) beds to single-bed or double-bed (two-bed) configurations; revise the affected floor plans, room numbering, and bed count calculations accordingly.\n2. Verify that each redesigned two-bed room meets the NYSDOH minimum square footage requirement for multi-bed rooms and includes privacy curtain tracks that fully screen each bed from the other and from the corridor.\n3. Update the project program and bed count narrative in the NYSDOH OHSM project application to reflect the revised room configuration; confirm that the total licensed bed count is unchanged or submit a revised Certificate of Need (CON) if the count changes.\n4. Ensure each two-bed room provides individual patient bed privacy curtain tracks as required by 10 NYCRR §711.2(b)(3) and that the room layout allows nursing staff to access each bed without disturbing the other patient.\n5. Submit revised floor plans with room areas tabulated (net SF per room) and annotated with bed count to facilitate NYSDOH reviewer confirmation of compliance.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(b)(2)",
+      "NY Public Health Law §2802",
+      "NYSDOH OHSM Design Guidelines for Hospitals",
+      "FGI 2022 §2.2-2.2"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "NY-PR-003",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Patient Room Design / Patient Privacy",
+    "description": "Each patient bed in NY licensed hospitals must have a full-length privacy curtain tracking system that fully screens the patient from the corridor when the room door is open",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": ["patient room", "inpatient"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — PATIENT PRIVACY: The submitted architectural drawings for the {occupancy} inpatient unit in {county} County do not clearly indicate full-length privacy curtain tracking systems at each patient bed position as required by 10 NYCRR §711.2(b)(3). New York State regulations require that every patient bed in a licensed hospital be provided with a ceiling-mounted, full-length privacy curtain track that, when closed, completely screens the patient from view of the corridor when the room door is open, as well as from any other bed in a multi-bed room. The curtain track layout must be shown on the reflected ceiling plan (RCP), with sufficient detail to confirm full perimeter coverage of each bed. Partial curtains, half-height screens, or fixed partitions alone are not a substitute for the required full-length curtain track system. The omission or under-specification of privacy curtain tracks at any patient bed position is a recurring NYSDOH deficiency and must be corrected prior to approval.",
+    "fix_template": "1. Add full-length privacy curtain tracks to the reflected ceiling plan (RCP) at every patient bed position; dimension the track layout to confirm it provides complete screening of the patient from the room corridor opening and from adjacent beds in multi-bed rooms.\n2. Specify curtain track type, mounting method (ceiling-mounted recessed or surface), and curtain fabric (antimicrobial, flame-resistant per NFPA 101) in the finish schedule and specifications.\n3. For single-bed rooms with direct corridor visibility when the door is open, confirm on the RCP that the curtain track extends to the doorway opening width and can be drawn to fully block the line of sight into the room.\n4. In multi-bed rooms, show individual curtain tracks for each bed that, when closed, create a fully enclosed private space around each patient area without gaps.\n5. Cross-reference the curtain track layout on the architectural floor plan and RCP to the room data sheets, and confirm the privacy curtain track system is included in the interior specifications section of the project manual.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(b)(3)",
+      "NFPA 101 Life Safety Code §18.3.7 (Draperies/Curtains)",
+      "NYSDOH OHSM Plan Review Checklist — Patient Room Privacy",
+      "FGI 2022 §2.2-2.2.3"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "NY-NU-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Nursing Unit Design",
+    "description": "NYSDOH requires nurse station to be located within 30 linear feet of the most distant patient room served; satellite stations or remote monitoring required when exceeded",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": ["nurse station", "nursing unit", "patient room", "inpatient"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — NURSING UNIT DESIGN: The submitted floor plan for the {occupancy} nursing unit in {county} County indicates that the nurse station is located more than 30 linear feet from one or more patient rooms within the unit it serves, in potential conflict with 10 NYCRR §711.2(b)(4). New York State requires that the nurse station serving a patient care unit be positioned so that no patient room within the unit is more than 30 linear feet (measured along the corridor centerline) from the nurse station. Where the nursing unit layout results in patient rooms exceeding the 30 LF threshold, the design must incorporate satellite nurse stations or an NYSDOH-accepted electronic remote patient monitoring system to compensate for the reduced proximity. The current floor plan submission does not include satellite stations or remote monitoring documentation for the rooms exceeding the proximity limit. This deficiency must be resolved through design revision or written justification and documentation of the remote monitoring technology proposed.",
+    "fix_template": "1. Scale and dimension the submitted floor plan to measure the corridor-centerline distance from the nurse station to every patient room door in the unit; tabulate these distances and identify all rooms exceeding the 30 LF NYSDOH limit.\n2. For rooms exceeding 30 LF, add satellite nurse station(s) at intermediate locations so that no patient room is more than 30 LF from a staffed station, OR provide a written description and product documentation for an electronic remote patient monitoring system (continuous bedside monitoring with central console at nurse station) acceptable to NYSDOH.\n3. If a remote monitoring approach is used, include the system layout, monitor locations, and central console location on the floor plan, and submit a narrative describing how the system provides equivalent nursing oversight to a proximate station.\n4. Revise the nursing unit design narrative in the project program and NYSDOH application to document compliance with the 30 LF proximity requirement for every patient room.\n5. Coordinate nurse station location changes with electrical (nurse call system), data/communications, and casework drawings to reflect the revised or added nurse station position(s).",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(b)(4)",
+      "NYSDOH OHSM Design Guidelines — Nursing Units",
+      "NY Public Health Law §2802",
+      "FGI 2022 §2.2-3.1 (Nursing Unit Support)"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "NY-NU-002",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Nursing Unit Design / Infection Control",
+    "description": "NYSDOH requires separate clean utility room and soiled utility room within 60 linear feet of each patient room; combined clean/soiled rooms are not acceptable",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": ["plumbing"],
+    "trigger_rooms": ["clean utility", "soiled utility", "utility room", "patient room"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — NURSING UNIT DESIGN / INFECTION CONTROL: The submitted nursing unit floor plan for the {occupancy} facility in {county} County either combines clean and soiled utility functions within a single room, or locates one or both utility rooms more than 60 linear feet from the most distant patient room served by that utility area, in violation of 10 NYCRR §711.2(b)(6). New York State requires that each nursing unit provide a dedicated CLEAN utility room and a physically separate SOILED utility room, with each room located within 60 linear feet (measured along the corridor centerline) of every patient room in the unit. Combining clean and soiled functions — even with physical partitions — within a single room is not acceptable under NYSDOH regulations, as this arrangement creates infection control risks incompatible with licensed hospital operations. The failure to provide properly separated and appropriately located utility rooms is a plan review deficiency requiring redesign.",
+    "fix_template": "1. Revise the nursing unit floor plan to provide two physically distinct and separately enclosed rooms: one clearly designated as CLEAN UTILITY and one as SOILED UTILITY; label each room with its designated function on the drawings.\n2. Measure and document the corridor-centerline distance from each utility room to the most distant patient room it serves; confirm both rooms are within 60 LF; if not, add a second set of utility rooms at the remote end of the unit.\n3. Confirm the clean utility room includes: locked medication-adjacent or separate med room access if applicable, counter space, sink, storage for clean supplies and linen, and positive-pressure ventilation relative to the corridor.\n4. Confirm the soiled utility room includes: a clinical sink (hopper or service sink), counter space for soiled item handling, waste receptacles, negative-pressure ventilation relative to the corridor, and direct access to the soiled linen/waste cart staging area.\n5. Update the room data sheets, door schedule, and plumbing fixture schedule to reflect the separate clean and soiled utility rooms and reference 10 NYCRR §711.2(b)(6) in the code compliance matrix.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(b)(6)",
+      "NYSDOH OHSM Design Guidelines — Nursing Unit Support Spaces",
+      "ASHRAE 170-2021 Table 7.1 (Pressure Relationships)",
+      "FGI 2022 §2.2-3.2 (Clean and Soiled Workrooms)"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "NY-NU-003",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Nursing Unit Design / Medication Safety",
+    "description": "NY medication room must be lockable with electronic or keyed access control, have a locked refrigerator, adequate prep counter with lighting, and be directly accessible from the nurse station",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": ["electrical"],
+    "trigger_rooms": ["medication room", "med room"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — MEDICATION SAFETY: The submitted floor plan and room data sheet for the {occupancy} nursing unit medication room in {county} County do not demonstrate full compliance with 10 NYCRR §711.2(b)(5), which establishes specific requirements for hospital medication room design in New York State. The medication room must be fully enclosed, lockable via keyed hardware or electronic access control (keypad, badge reader), have an internally locked refrigerator unit for temperature-sensitive medications, provide a dedicated medication preparation counter with task lighting of no less than 50 foot-candles at counter level, and be directly accessible from the nurse station without requiring travel through a public corridor. The current submission either lacks access control documentation, does not clearly locate the medication room relative to the nurse station, or omits required equipment designations. All medication room deficiencies must be addressed prior to NYSDOH approval.",
+    "fix_template": "1. Confirm on the floor plan and door schedule that the medication room door is equipped with a lockable access control device (keyed hardware or electronic badge/keypad system); specify the product and manufacturer in the hardware schedule.\n2. Add a locked medication refrigerator to the room data sheet and equipment plan; specify the refrigerator type (medical-grade, alarmed for temperature excursion) and verify it is shown in the room on the floor plan.\n3. Dimension the medication preparation counter to confirm adequate work surface; add a lighting note specifying minimum 50 foot-candles of task illumination at counter level; reflect this on the electrical/lighting plan.\n4. Demonstrate on the floor plan that the medication room door opens directly into or is immediately adjacent to the nurse station without requiring traversal of a patient or public corridor; if not currently located as such, relocate the medication room or provide a written justification and NYSDOH-accepted alternative arrangement.\n5. Include the medication room in the room-by-room code compliance matrix in the NYSDOH project application, citing 10 NYCRR §711.2(b)(5) for each required feature (access control, refrigeration, lighting, prep counter, nurse station access).",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(b)(5)",
+      "NYS Education Law (Pharmacy Practice — access control)",
+      "NYSDOH OHSM Medication Room Design Guidelines",
+      "FGI 2022 §2.2-3.4 (Medication Rooms)"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "NY-SU-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Surgical Suite Design",
+    "description": "NYSDOH Part 711 specifies OR minimum clear areas: 360 SF for general ORs, 600 SF minimum for cardiac/orthopedic ORs, with specific NY layout configuration requirements",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": ["operating room", "OR"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — SURGICAL SUITE DESIGN: The submitted surgical suite floor plan for the {occupancy} in {county} County indicates one or more operating rooms that do not meet the minimum clear floor area requirements of 10 NYCRR §711.2(a)(6). New York State requires a minimum of 360 SF of clear floor area (measured between fixed cabinets and walls) for general operating rooms, and a minimum of 600 SF clear for cardiac surgery, orthopedic, or other specialty procedure rooms where additional equipment and personnel are required. These requirements coexist with specific NYSDOH layout configuration standards that mandate particular clearances around the operating table, equipment storage zones along the walls, and defined zones for sterile field, anesthesia, and scrub positions. General ORs that are close to but below the 360 SF minimum, and specialty ORs below 600 SF, represent a non-correctable design deficiency that will result in disapproval. Note that while the NYSDOH general OR minimum (360 SF) is less than FGI 2022 (400 SF), the NYSDOH-specific layout configuration requirements must be satisfied concurrently.",
+    "fix_template": "1. Dimension all operating rooms on the floor plan and calculate the net clear area (between fixed casework faces and finished walls); tabulate results on the drawing and confirm general ORs are at minimum 360 SF clear and cardiac/orthopedic/specialty ORs are at minimum 600 SF clear.\n2. For any OR below the applicable minimum, revise the room dimensions to meet or exceed the NYSDOH minimum; coordinate with structural, mechanical, and electrical to accommodate revised room boundaries.\n3. Show on each OR floor plan the designated zones for: sterile field (around operating table), anesthesia zone (head of table, minimum 4 feet clearance), scrub sink alcove, and wall-mounted/built-in equipment storage; confirm that these zones do not overlap and that the layout meets NYSDOH configuration requirements per the OHSM design guidelines.\n4. Indicate on the drawing the table-to-wall clearance on all four sides of the operating table position (minimum 3 feet each side and foot end; minimum 4 feet at head/anesthesia end).\n5. Submit a surgical suite summary table with the NYSDOH project application listing each OR by room number, designation (general, cardiac, ortho, etc.), gross room dimensions, and calculated net clear SF.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(a)(6)",
+      "NYSDOH OHSM Surgical Suite Design Guidelines",
+      "FGI 2022 §2.2-4.3 (Operating Rooms)",
+      "NY Public Health Law §2802"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "NY-ICU-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Critical Care Design / Infection Control",
+    "description": "NYSDOH requires a handwashing sink or alcohol-based hand rub (ABHR) station at each individual ICU patient space, not shared between bays",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": ["plumbing"],
+    "trigger_rooms": ["ICU", "intensive care", "critical care"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — CRITICAL CARE / INFECTION CONTROL: The submitted ICU floor plan for the {occupancy} in {county} County does not provide individual handwashing sinks or alcohol-based hand rub (ABHR) stations at each patient space as required by 10 NYCRR §711.2(c)(1). New York State mandates that every individual ICU patient bed position — whether in an open-bay, semi-enclosed, or private room configuration — have a dedicated handwashing sink or ABHR dispenser that serves only that patient space and is not shared with any adjacent patient bay. This requirement is consistent with CDC hand hygiene guidelines and NYSDOH infection control standards for critical care environments. The current submission shows shared sinks between patient bays or sinks located at the nursing station only, which does not satisfy the individual-patient-space requirement. Providing one sink or ABHR per patient space is essential to prevent healthcare-associated infections in the ICU and is non-negotiable under NYSDOH regulations.",
+    "fix_template": "1. Revise the ICU floor plan to provide a dedicated handwashing sink or ABHR wall-mounted dispenser station within or immediately at the entry to EACH individual patient bed space (open bay or enclosed room); no sharing between adjacent patient bays is permitted.\n2. For open-bay ICU configurations, show sink or ABHR locations on the floor plan with a clear indication of which patient bay each fixture serves; position sinks to be reachable by staff entering or exiting the patient space without crossing to an adjacent bay.\n3. Update the plumbing fixture schedule to add a lavatory or clinical sink for each ICU patient space not currently shown; calculate the revised fixture count and confirm compliance with NYSDOH minimum fixture ratios.\n4. If ABHR dispensers are used in lieu of sinks at individual patient spaces, confirm on the drawings that at least one handwashing sink with soap and water is available within the ICU pod (not more than one patient bay away) for situations where soap and water hand hygiene is required (e.g., C. diff precautions).\n5. Add a hand hygiene compliance note to the plumbing drawings referencing 10 NYCRR §711.2(c)(1) and CDC Hand Hygiene Guidelines, and include in the infection control risk assessment (ICRA) submitted with the NYSDOH application.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(c)(1)",
+      "CDC Hand Hygiene in Healthcare Settings Guidelines",
+      "NYSDOH OHSM Critical Care Design Guidelines",
+      "FGI 2022 §2.2-5.2 (Critical Care)"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "NY-NICU-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Neonatal Care Design",
+    "description": "New York licensed newborn nurseries (Level I) must provide minimum 40 SF per bassinet; NICU Level III minimum 120 SF per station per FGI 2022 as adopted by NYSDOH",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": ["NICU", "neonatal", "newborn nursery"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — NEONATAL CARE DESIGN: The submitted floor plan for the {occupancy} newborn nursery or neonatal intensive care unit (NICU) in {county} County does not meet the minimum space-per-bassinet or space-per-station requirements under 10 NYCRR §711.2(d) and the FGI 2022 guidelines adopted by NYSDOH for neonatal facility design. New York State requires Level I newborn nurseries to provide a minimum of 40 net SF per bassinet position, and Level III NICUs to provide a minimum of 120 net SF per patient station (measured as clear floor area around the incubator or warmer, accessible to staff and equipment on all necessary sides). The current submission appears to show a net area per bassinet/station below these minimums based on the room dimensions and bed/bassinet count indicated. Insufficient space per neonatal patient position creates safety risks associated with equipment access, infection control, and staff workflow, and is a plan review deficiency that must be corrected.",
+    "fix_template": "1. Calculate and tabulate on the drawings the net SF per bassinet (Level I nursery) or per patient station (Level II/III NICU), measured as the clear area within the station zone; confirm Level I minimum 40 SF/bassinet and Level III minimum 120 SF/station are met.\n2. If the current room area is insufficient, increase the room dimensions or reduce the number of bassinets/stations to achieve compliance; revise the bed/bassinet count and room program accordingly in the NYSDOH project application.\n3. Show individual patient station boundaries on the NICU floor plan, dimensioning the clear space around each incubator/warmer on all four sides; indicate the location of the parent/family chair, nursing charting position, and emergency equipment storage within the station footprint.\n4. Confirm on the drawings that the NICU provides a handwashing sink within each pod per NYSDOH infection control requirements (ref. NY-ICU-001), family consultation room, breast milk expression room, and staff support spaces as required by FGI 2022 and NYSDOH guidelines.\n5. Include the NICU/nursery space compliance table in the NYSDOH OHSM project application, referencing 10 NYCRR §711.2(d) and the applicable FGI 2022 section for the care level, with supporting calculations signed by the architect of record.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(d)",
+      "FGI 2022 §2.2-6 (Newborn and Neonatal Care)",
+      "NYSDOH OHSM Neonatal Design Guidelines",
+      "NY Public Health Law §2803"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "NY-GEN-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "General / Regulatory Process",
+    "description": "All projects exceeding $500,000 in construction costs at NYS-licensed hospitals must receive NYSDOH OHSM review and approval before construction commences",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — REGULATORY PROCESS: The project submission for the {occupancy} facility in {county} County indicates a construction cost estimate that meets or exceeds the $500,000 threshold requiring formal NYSDOH Office of Health Systems Management (OHSM) review and written approval prior to commencement of construction under NY Public Health Law §2802 and 10 NYCRR Part 711. The submitted materials do not include a complete NYSDOH Project Application, a programmatic justification narrative demonstrating that the proposed project supports the facility's approved program of services, or a code compliance analysis referencing 10 NYCRR Part 711 and the FGI 2022 guidelines. Commencing construction without written NYSDOH approval constitutes a violation of the NYS Public Health Law and may result in stop-work orders, civil penalties, and potential jeopardy to the facility's operating certificate. The applicant must submit a complete NYSDOH project application package and await written approval before breaking ground.",
+    "fix_template": "1. Complete and submit the NYSDOH OHSM Facility Construction Project Application (available at health.ny.gov/facilities/construction), including project description, construction cost estimate, programmatic justification, and architect/engineer information.\n2. Prepare and include a code compliance analysis matrix referencing 10 NYCRR Part 711 and identifying each applicable section and how the project design meets each requirement; have this analysis prepared or reviewed by a NYS-licensed architect.\n3. Include the following required attachments in the NYSDOH application package: construction drawings and specifications (at design development level minimum), a phasing plan if the project involves occupied areas, and an Infection Control Risk Assessment (ICRA) for projects in or adjacent to patient care areas.\n4. Submit a programmatic justification narrative demonstrating how the proposed project supports or maintains the facility's approved program of services and licensed bed/treatment station capacity, per NYSDOH OHSM requirements.\n5. Allow a minimum 60-90 day NYSDOH review period from the date of a complete application submission; do not release construction documents for bid or issue a notice to proceed until written NYSDOH OHSM approval has been received and is on file at the facility.",
+    "code_references": [
+      "NY Public Health Law §2802",
+      "10 NYCRR Part 711",
+      "NYSDOH OHSM Construction Project Application Requirements",
+      "NY Public Health Law §2803 (Operating Certificates)"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "NY-GEN-002",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Emergency Department Design / Diagnostic Imaging",
+    "description": "NYSDOH requires X-ray viewing capability (digital PACS workstation or view box) within or immediately adjacent to each ED treatment bay",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": ["data/communications", "electrical"],
+    "trigger_rooms": ["emergency room", "ER", "ED"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — EMERGENCY DEPARTMENT DESIGN: The submitted emergency department floor plan and equipment layout for the {occupancy} facility in {county} County do not provide X-ray viewing capability within or immediately adjacent to each treatment bay as required by 10 NYCRR §711.2(a)(8). New York State regulations require that every ED treatment bay have access to X-ray viewing capability — either a digital PACS workstation integrated into the treatment bay design or a traditional X-ray view box — located within the bay or in an alcove or workstation immediately adjacent and directly accessible from the bay without traveling through another patient space. Clinicians must be able to review radiographic images without leaving the immediate treatment area or compromising another patient's privacy. The current submission does not indicate PACS workstation locations, data outlet positions for diagnostic workstations, or view box mounting locations at treatment bays, constituting a plan review deficiency under NYSDOH standards.",
+    "fix_template": "1. Add to the ED treatment bay floor plan and equipment layout the location of a digital PACS workstation or X-ray view box at each treatment bay; indicate whether the viewing capability is a fixed in-bay workstation, wall-mounted monitor, or shared bay-cluster workstation in an immediately adjacent alcove.\n2. Coordinate with the low-voltage/data design to provide data and power outlets at each PACS workstation location; show on the electrical and data plans with appropriate circuit designations.\n3. If a centralized PACS viewing workstation is proposed to serve multiple bays (cluster model), demonstrate on the floor plan that the workstation is positioned so that the treating clinician can access it from any bay in the cluster without traveling through another patient bay or a public corridor.\n4. Include PACS workstation equipment in the ED equipment list submitted with the NYSDOH application; specify monitor size, data connection type (fiber, Cat6A), and identify the responsible service provider/IT system.\n5. Reference 10 NYCRR §711.2(a)(8) in the code compliance matrix and include the X-ray viewing capability compliance note on the ED floor plan keynote legend.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(a)(8)",
+      "NYSDOH OHSM Emergency Department Design Guidelines",
+      "FGI 2022 §2.2-3.6 (Emergency Department)",
+      "ACR-AAPM Technical Standard for Electronic Practice of Medical Imaging"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "NY-ENV-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Environmental Services / Medication Safety",
+    "description": "NYSDOH requires chemical and cleaning supply storage to be in a separate, labeled, locked room entirely separate from medication storage areas; combined storage is prohibited",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital"],
+    "trigger_systems": [],
+    "trigger_rooms": ["chemical storage", "housekeeping", "medication room", "clean utility"],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — ENVIRONMENTAL SERVICES / MEDICATION SAFETY: The submitted floor plans for the {occupancy} facility in {county} County do not clearly demonstrate that chemical and cleaning supply storage is located in a separate, dedicated, and locked room entirely independent from medication storage areas, as required by 10 NYCRR §711.2(f). New York State regulations prohibit any co-location of chemical cleaning supplies and medications — even within a subdivided or partitioned common room — because of the risk of accidental medication contamination, dispensing errors, and Joint Commission/NYSDOH survey deficiencies. The chemical storage room must be separately labeled ('Chemical Storage' or 'Housekeeping'), independently lockable, and physically enclosed by floor-to-deck partitions on all sides; proximity to or adjacency with the medication room or medication cart alcove is not acceptable. The current submission either co-locates these functions or does not clearly identify the chemical storage room as a separate, enclosed, lockable space.",
+    "fix_template": "1. Revise the floor plan to designate a separate, enclosed, independently lockable room specifically for chemical and cleaning supply storage; label the room 'Chemical Storage' or 'Housekeeping Supply Room' on the drawings and confirm it is enclosed by floor-to-deck partitions.\n2. Verify and document on the floor plan that the chemical storage room has no direct door opening, pass-through, or shared access with the medication room, medication cart alcove, clean utility room, or any space where medications are stored or prepared.\n3. Add a door schedule entry for the chemical storage room specifying a lockable door hardware set (keyed or electronic); confirm the lock is specified in the hardware schedule and that key control is separate from the medication room key system.\n4. Include ventilation for the chemical storage room per OSHA and NYSDOH requirements: minimum 10 ACH exhaust, negative pressure relative to adjacent occupied spaces, with exhaust discharge that prevents re-entry of chemical vapors into the building.\n5. In the project's code compliance matrix and NYSDOH application narrative, explicitly address the physical separation of chemical and medication storage and reference 10 NYCRR §711.2(f); confirm the facility's policies prohibiting co-storage will be documented in the operational plan.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2(f)",
+      "OSHA Hazard Communication Standard (29 CFR 1910.1200)",
+      "NYSDOH OHSM Environmental Services Design Guidelines",
+      "The Joint Commission EC.02.02.01 (Hazardous Materials)"
+    ],
+    "severity_override": "Medium"
+  },
+  {
+    "id": "NY-FLS-001",
+    "state": "NY",
+    "ahj": "NYSDOH",
+    "rule_source": "10-NYCRR-711",
+    "discipline": "Fire and Life Safety / Regulatory Coordination",
+    "description": "NYC facilities must comply with both 10 NYCRR Part 711 and NYC Fire Code; FDNY approval required in addition to NYSDOH review, and FDNY filing receipt must be included in NYSDOH submittal",
+    "trigger_occupancies": ["Occupied Hospital", "Acute Care Hospital", "Ambulatory Surgery Center"],
+    "trigger_systems": ["fire suppression", "fire alarm", "sprinkler"],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "NYSDOH PLAN REVIEW COMMENT — FIRE AND LIFE SAFETY / REGULATORY COORDINATION: The submitted construction documents for the {occupancy} facility do not include evidence of concurrent FDNY (Fire Department of New York) filing and approval, which is required for healthcare facilities located within the five boroughs of New York City under 10 NYCRR §711.2 and NYC Administrative Code Title 15. New York City healthcare facilities must satisfy BOTH the NYSDOH 10 NYCRR Part 711 requirements AND the NYC Fire Code (Administrative Code Chapter 15) for fire suppression systems, fire alarm systems, and means of egress — these are independent regulatory frameworks with separate filing, inspection, and approval processes. NYSDOH OHSM requires that the project application package for NYC facilities include a copy of the FDNY job filing receipt or plan approval letter confirming that fire protection systems have been filed with and are under review by FDNY. Absent this documentation, NYSDOH cannot confirm coordinated regulatory compliance for the fire and life safety systems and may withhold approval pending its receipt.",
+    "fix_template": "1. File the project's fire protection drawings (sprinkler system, fire alarm system, standpipe system) with the FDNY through the NYC Department of Buildings (DOB) online filing system (NYC DOB NOW) and obtain a job filing number and receipt; attach a copy of the FDNY filing receipt to the NYSDOH OHSM project application.\n2. Engage a NYS-licensed fire protection engineer to prepare fire suppression and alarm drawings that simultaneously comply with 10 NYCRR Part 711, the NYC Building Code (2022 edition), and the NYC Fire Code (Administrative Code Title 15); document dual-compliance in the code analysis.\n3. Coordinate the egress design with both NYSDOH and NYC DOB/FDNY requirements; where the two regulatory frameworks impose different egress widths, exit counts, travel distances, or rated corridor requirements, apply the more stringent standard and document the reconciliation in the code analysis.\n4. Identify on the drawings any areas where NYC Fire Code requirements for healthcare occupancies exceed NFPA 101 Life Safety Code requirements (which NYSDOH references), and confirm that the design meets the higher NYC standard in those areas.\n5. Include in the NYSDOH project application a regulatory coordination cover letter describing the dual-approval process (NYSDOH + FDNY/DOB), listing all concurrent filing numbers, and identifying the design team members responsible for each regulatory submission; update this letter and resubmit if FDNY requires revisions that affect the NYSDOH-reviewed documents.",
+    "code_references": [
+      "10 NYCRR Part 711 §711.2",
+      "NYC Administrative Code Title 15 (Fire Code)",
+      "NYC Building Code 2022 — Chapter 4 (Special Detailed Requirements for Occupancies)",
+      "NFPA 101 Life Safety Code 2021 (as referenced by NYSDOH)",
+      "NY Public Health Law §2802"
+    ],
+    "severity_override": "High"
+  }
+]

@@ -26,8 +26,24 @@ CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
 
 # Compliance engine settings
 HCAI_RULES_FILE = DATA_DIR / "hcai_rules.json"
+FGI_RULES_FILE  = DATA_DIR / "fgi_rules.json"
+STATES_RULES_DIR = DATA_DIR / "states"
 TITLE24_REFS_FILE = DATA_DIR / "title24_references.json"
 PINS_FILE = DATA_DIR / "pins_cans.json"
+
+# Maps state name / code → AHJ abbreviation and rules filename
+STATE_AHJ_MAP: dict[str, dict] = {
+    "CA": {"ahj": "HCAI",   "file": "hcai_rules.json",  "state_name": "California"},
+    "TX": {"ahj": "DSHS",   "file": "tx_rules.json",    "state_name": "Texas"},
+    "NY": {"ahj": "NYSDOH", "file": "ny_rules.json",    "state_name": "New York"},
+    "FL": {"ahj": "AHCA",   "file": "fl_rules.json",    "state_name": "Florida"},
+    "WA": {"ahj": "WADOH",  "file": "wa_rules.json",    "state_name": "Washington"},
+    "IL": {"ahj": "IDPH",   "file": "il_rules.json",    "state_name": "Illinois"},
+    "PA": {"ahj": "PADOH",  "file": "pa_rules.json",    "state_name": "Pennsylvania"},
+    "GA": {"ahj": "GADPH",  "file": "ga_rules.json",    "state_name": "Georgia"},
+    "NC": {"ahj": "NCDHSR", "file": "nc_rules.json",    "state_name": "North Carolina"},
+    "OH": {"ahj": "ODH",    "file": "oh_rules.json",    "state_name": "Ohio"},
+}
 
 # Severity levels
 SEVERITY_LEVELS = ["Critical", "High", "Medium", "Low"]

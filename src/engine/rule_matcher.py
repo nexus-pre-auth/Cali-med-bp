@@ -44,14 +44,17 @@ class MatchedViolation:
 
 
 class RuleMatcher:
-    """Loads HCAI rules and returns violations that apply to the given conditions."""
+    """Matches project conditions against a rule list (file path or pre-loaded list)."""
 
-    def __init__(self, rules_file: str | Path) -> None:
-        rules_path = Path(rules_file)
-        if not rules_path.exists():
-            raise FileNotFoundError(f"Rules file not found: {rules_file}")
-        with open(rules_path) as f:
-            self._rules: list[dict] = json.load(f)
+    def __init__(self, rules: "str | Path | list[dict]") -> None:
+        if isinstance(rules, list):
+            self._rules: list[dict] = rules
+        else:
+            rules_path = Path(rules)
+            if not rules_path.exists():
+                raise FileNotFoundError(f"Rules file not found: {rules}")
+            with open(rules_path) as f:
+                self._rules = json.load(f)
 
     def match(self, conditions: ProjectConditions) -> list[MatchedViolation]:
         violations: list[MatchedViolation] = []

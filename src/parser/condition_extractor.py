@@ -62,6 +62,7 @@ class ProjectConditions:
     county: Optional[str] = None
     city: Optional[str] = None
     state: str = "California"
+    state_code: str = "CA"
 
     # Raw extraction confidence
     raw_snippets: dict[str, list[str]] = field(default_factory=dict)
@@ -135,12 +136,34 @@ ROOM_TYPES = [
     "recovery room", "waiting room", "toilet room", "shower room",
     "janitor closet", "electrical room", "mechanical room",
     "loading dock", "kitchen", "dietary", "laundry",
+    # FGI / multi-state room types
+    "AII room", "airborne infection isolation", "protective environment",
+    "PE room", "LDR", "LDRP", "labor delivery recovery",
+    "decontamination", "decon room", "soiled workroom", "clean workroom",
+    "scrub sink", "substerile", "sterile storage", "instrument processing",
+    "family consultation", "family lounge", "family waiting",
+    "psychiatric", "behavioral health", "seclusion room",
 ]
 
 COUNTY_PATTERN = re.compile(
     r"(?:county\s+of\s+|)([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+county", re.I
 )
 CITY_PATTERN = re.compile(r"(?:city\s+of\s+)([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)", re.I)
+
+# State detection: full names and common abbreviations in document text
+_STATE_PATTERNS: list[tuple[str, str, str]] = [
+    # (regex, state_name, code)
+    (r"\bCalifornia\b|\bCA\b",         "California",      "CA"),
+    (r"\bTexas\b|\bTX\b",              "Texas",           "TX"),
+    (r"\bNew York\b|\bNY\b",           "New York",        "NY"),
+    (r"\bFlorida\b|\bFL\b",            "Florida",         "FL"),
+    (r"\bWashington\b(?!\s+D\.?C\.?)|\bWA\b", "Washington", "WA"),
+    (r"\bIllinois\b|\bIL\b",           "Illinois",        "IL"),
+    (r"\bPennsylvania\b|\bPA\b",       "Pennsylvania",    "PA"),
+    (r"\bGeorgia\b|\bGA\b",            "Georgia",         "GA"),
+    (r"\bNorth Carolina\b|\bNC\b",     "North Carolina",  "NC"),
+    (r"\bOhio\b|\bOH\b",               "Ohio",            "OH"),
+]
 
 
 # ---------------------------------------------------------------------------
@@ -231,3 +254,10 @@ class ConditionExtractor:
         m = CITY_PATTERN.search(text)
         if m:
             c.city = m.group(1).strip()
+
+        # Detect project state from document text (first match wins)
+        for pattern, state_name, state_code in _STATE_PATTERNS:
+            if re.search(pattern, text):
+                c.state = state_name
+                c.state_code = state_code
+                return
