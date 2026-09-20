@@ -3540,198 +3540,252 @@
     "severity_override": "High"
   },
   {
-    "id": "NC-WIN-001",
-    "state": "NC",
-    "ahj": "NCDHSR",
-    "rule_source": "10A-NCAC-14C",
-    "discipline": "Structural / Wind",
-    "description": "Hurricane wind design and impact glazing required for hospitals in North Carolina coastal and CAMA counties",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital"
-    ],
-    "trigger_systems": [],
-    "trigger_rooms": [],
-    "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 COASTAL WIND DESIGN: The proposed {occupancy} is located in a North Carolina coastal county subject to enhanced wind design requirements under 10A NCAC 14C and the North Carolina Building Code. Hospitals in Brunswick, Carteret, Columbus, Craven, Dare, New Hanover, Onslow, Pender, and other CAMA-designated coastal counties are Risk Category IV structures and must be designed for ASCE 7 wind loads applicable to the coastal North Carolina location. The construction documents do not demonstrate compliance with wind-borne debris region requirements; no impact-resistant glazing or approved storm protection system is specified for exterior glazing. This deficiency must be corrected prior to plan approval.",
-    "fix_template": "1. Perform a wind design analysis per ASCE 7 (current North Carolina Building Code adopted edition) for the specific site location using Risk Category IV; document the design wind speed from ASCE 7 wind maps and include wind design parameters on the cover sheet.\n2. Determine whether the project site is within the wind-borne debris region per the North Carolina Building Code \u00a71609.2 and ASCE 7 \u00a726.12.3; for sites within the debris region, specify impact-resistant glazing products (tested per ASTM E1886/E1996 or ANSI/DASMA 115) for all exterior windows, doors, and skylights.\n3. Provide a glazing product schedule on the architectural drawings identifying the tested impact rating, product approval, and installation instructions for all impact-resistant glazing elements in the wind-borne debris zone.\n4. Confirm that roof-to-wall and wall-to-foundation connections are designed for ASCE 7 Risk Category IV wind uplift and lateral loads; include uplift connection details and calculations in the structural drawings submitted to NCDHSR.",
-    "code_references": [
-      "10A NCAC 14C",
-      "NC Building Code \u00a71609",
-      "ASCE 7",
-      "ASTM E1886",
-      "ASTM E1996"
-    ],
-    "severity_override": "High"
-  },
-  {
     "id": "NC-EP-001",
     "state": "NC",
     "ahj": "NCDHSR",
-    "rule_source": "10A-NCAC-14C",
-    "discipline": "Electrical / Emergency Power",
-    "description": "Emergency generator minimum 72-hour on-site fuel supply required for North Carolina hospitals",
+    "rule_source": "10A NCAC 14C",
+    "discipline": "Emergency Power",
+    "description": "Emergency generator 96-hour fuel supply with 10-second transfer and 30-day fuel tank inspection log required",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
+      "Acute Care Hospital",
+      "Critical Access Hospital"
     ],
     "trigger_systems": [
+      "emergency power",
       "generator",
-      "emergency power"
+      "ATS",
+      "automatic transfer switch"
     ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 EMERGENCY POWER / FUEL SUPPLY (72-HOUR): The electrical specifications and generator design documents for the proposed {occupancy} do not comply with 10A NCAC 14C .0501, which requires a minimum 72-hour on-site fuel supply for emergency generators at North Carolina-licensed hospitals. The submitted specifications indicate a fuel tank capacity providing less than 72 hours of generator operation at full rated load. This requirement exceeds the NFPA 110 minimum and is specific to North Carolina-licensed healthcare facilities. Revise the fuel storage system design to provide the required 72-hour minimum supply and resubmit drawings to NCDHSR for review.",
-    "fix_template": "1. Calculate the fuel consumption rate (gallons per hour) for all emergency generators at full rated load; size the on-site fuel storage system to provide a minimum 72-hour fuel supply at that rate and include the fuel demand calculation in the electrical design narrative.\n2. Revise the electrical and plumbing drawings to show the new fuel storage tank configuration, secondary containment, fill connections, level monitoring, and fuel transfer pump arrangement; specify tank design per NFPA 30 and NFPA 110 Level 1.\n3. Include in the Division 26 electrical specifications for essential electrical systems a reference to 10A NCAC 14C .0501 and NFPA 110 Level 1 compliance; specify automatic transfer switch transfer time not to exceed 10 seconds for life safety branch loads.\n4. Coordinate on-site fuel storage with North Carolina Division of Air Quality and DENR above-ground or underground storage tank registration requirements; include tank registration in the project closeout checklist.",
+    "violation_template": "NCDHSR PLAN REVIEW COMMENT \u2014 EMERGENCY POWER (NC-EP-001): The electrical construction documents submitted for the {occupancy} project in {county} County, {city} do not demonstrate compliance with North Carolina's emergency electrical system requirements under 10A NCAC 14C .2202 and the FGI Guidelines for Design and Construction of Hospitals as adopted by NCDHSR. The following deficiencies have been identified: (1) the emergency generator fuel storage capacity has not been specified or demonstrated to provide a minimum of 96 hours of continuous operation at full essential electrical system load without resupply; (2) the automatic transfer switch (ATS) has not been confirmed to transfer the essential electrical system to emergency power within 10 seconds of normal power loss; and (3) the construction documents do not identify the fuel log station location or establish the facility's obligation to perform and record the required 30-day fuel tank inspection and level verification. These provisions are mandatory for all ODH-licensed hospitals. Deficiencies must be corrected on the permit drawings prior to approval by the NCDHSR Construction Section.",
+    "fix_template": "1. Revise the electrical drawings and fuel system specifications to document that on-site fuel storage is sized for a minimum of 96 continuous hours of full essential-load operation; include a load calculation schedule confirming the design load figure used for tank sizing.\n2. Confirm on the single-line electrical diagram that each automatic transfer switch (ATS) serving essential electrical system loads is rated and programmed to complete transfer within 10 seconds of normal-power failure; reference the manufacturer's time-delay settings in the specifications.\n3. Add a note on the mechanical or electrical site plan identifying the on-site fuel tank location, secondary containment provisions per NC DEQ requirements, and access route for resupply vehicles.\n4. Include in the O&M section of the specifications a note establishing the facility's obligation to maintain a written 30-day fuel-tank inspection log per NFPA 110 Section 8.3 and NCDHSR licensing requirements; indicate where the log will be stored and who is responsible for entries.\n5. Resubmit revised drawings to the NCDHSR Construction Section, 1202 Mail Service Center, Raleigh, NC 27699-1202, for continued review.",
     "code_references": [
-      "10A NCAC 14C .0501",
-      "NFPA 110",
-      "NFPA 30"
+      "10A NCAC 14C .2202",
+      "NFPA 110-2021 Sections 7.9 and 8.3",
+      "FGI Guidelines 2022 Section 2.1-8.3"
     ],
-    "severity_override": "High"
+    "severity_override": "Critical"
   },
   {
-    "id": "NC-ASC-001",
+    "id": "NC-INF-001",
     "state": "NC",
     "ahj": "NCDHSR",
-    "rule_source": "10A-NCAC-14D",
-    "discipline": "Architecture",
-    "description": "North Carolina licensed ambulatory surgical facilities require minimum 200 SF clear floor area per operating room",
-    "trigger_occupancies": [
-      "Ambulatory Surgery Center",
-      "Surgical Center"
-    ],
-    "trigger_systems": [],
-    "trigger_rooms": [
-      "operating room",
-      "OR"
-    ],
-    "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 ASC OPERATING ROOM MINIMUM SIZE: The floor plan for the proposed ambulatory surgical facility does not comply with 10A NCAC 14D .5500, which requires a minimum 200 SF clear floor area per operating room in North Carolina-licensed ambulatory surgical facilities. The clear floor area must be measured from the interior face of finished walls, excluding fixed casework, equipment recesses, column projections, and scrub sink enclosures. The submitted floor plan indicates one or more operating rooms with clear floor areas below the required 200 SF minimum. Provide dimensioned floor plans confirming compliance with this minimum for each OR.",
-    "fix_template": "1. Revise the operating room floor plan to provide a minimum 200 SF net clear floor area measured from the interior face of finished walls, excluding fixed casework, equipment alcoves, column projections, and scrub sink enclosures.\n2. Provide an enlarged dimensioned plan for each OR annotating the net clear area calculation; confirm that the surgical table, anesthesia zone, instrument back table, and surgical team circulation can be accommodated within the revised layout per FGI 2022 Part 2.\n3. Include an OR room schedule listing each room's gross area and net clear area and referencing 10A NCAC 14D .5500 compliance for each room.\n4. Verify that HVAC supply and exhaust air quantities, room pressure relationships, and filtration requirements per ASHRAE 170 and NCDHSR standards are maintained in the revised OR layout.",
-    "code_references": [
-      "10A NCAC 14D .5500",
-      "FGI 2022 Part 2 Chapter 3"
-    ],
-    "severity_override": "High"
-  },
-  {
-    "id": "NC-IC-001",
-    "state": "NC",
-    "ahj": "NCDHSR",
-    "rule_source": "10A-NCAC-14C",
-    "discipline": "Infection Control",
-    "description": "Written ICRA required to accompany construction document submittal for projects in or adjacent to occupied licensed healthcare facilities",
+    "rule_source": "10A NCAC 14C",
+    "discipline": "Infection Control / Ventilation",
+    "description": "Airborne Infection Isolation (AII) room required with negative pressure, minimum 12 ACH exhaust, and HEPA filtration",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
-    ],
-    "trigger_systems": [],
-    "trigger_rooms": [],
-    "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 INFECTION CONTROL RISK ASSESSMENT: The construction document submittal for the proposed project in or adjacent to the occupied {occupancy} does not include a written Infection Control Risk Assessment (ICRA) as required by 10A NCAC 14C .0501. North Carolina DHSR requires that a completed ICRA accompany the construction document submittal for any project in an occupied licensed healthcare facility. The ICRA must identify the patient risk group and construction activity type, determine the required ICRA class level, and document the infection control measures to be implemented throughout the project. This document has not been included in the current submittal. Provide the required ICRA prior to plan approval.",
-    "fix_template": "1. Complete an ICRA matrix with the facility infection preventionist identifying patient risk group (based on proximity to high-risk patient populations) and construction activity type (Class A\u2013D); determine the required ICRA class level and document specific control measures.\n2. Prepare a written ICRA report documenting: physical barrier types and locations, negative pressure requirements and monitoring protocols, HEPA vacuum and dustcontrol requirements for all tools, construction traffic routing, and restrictions on working hours relative to patient care activities.\n3. Show on the construction documents (phasing plan or ICRA barrier plan) the physical locations of construction barriers, HVAC isolation points, and construction access/egress routes; confirm barriers are shown from finished floor to structural deck above.\n4. Include the completed ICRA as an appendix to the NCDHSR construction document submittal; identify the facility infection preventionist responsible for ongoing ICRA compliance monitoring and include their contact information.",
-    "code_references": [
-      "10A NCAC 14C .0501"
-    ],
-    "severity_override": "High"
-  },
-  {
-    "id": "NC-CON-001",
-    "state": "NC",
-    "ahj": "NCDHSR",
-    "rule_source": "NC-GEN-STAT-131E",
-    "discipline": "Administrative / Regulatory",
-    "description": "North Carolina CON required for new hospitals, additional beds, or capital expenditures exceeding NC thresholds; must precede DHSR plan review",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital"
-    ],
-    "trigger_systems": [],
-    "trigger_rooms": [],
-    "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 CERTIFICATE OF NEED (CON): The proposed project for the {occupancy} appears to involve the establishment of a new hospital, addition of licensed inpatient beds, or capital expenditures that require a Certificate of Need (CON) from the NC Department of Health and Human Services (DHHS) Certificate of Need Section under NC General Statute \u00a7131E-175 et seq. CON approval must be obtained before NCDHSR plan review is initiated for qualifying projects. The current submittal does not include a CON approval letter or a DHHS determination confirming the project does not require CON review. Provide this documentation before NCDHSR plan review can proceed.",
-    "fix_template": "1. Determine whether the proposed project meets the CON threshold under NC Gen. Stat. \u00a7131E-175 by evaluating whether it involves new hospital establishment, addition of licensed beds, or capital expenditures exceeding NC DHHS CON program thresholds.\n2. If CON is required, submit a complete CON application to the NC DHHS Certificate of Need Section and obtain a CON approval letter before submitting construction documents to NCDHSR.\n3. If the project does not require CON (below threshold, exemption category, or replacement of existing facilities without added beds/services), obtain a written determination from the NC DHHS Certificate of Need Section confirming the exemption and include this determination in the NCDHSR submittal package.\n4. Include the CON approval letter or written exemption determination as the first document in the NCDHSR plan review submittal; NCDHSR plan review will not commence for qualifying projects without this documentation.",
-    "code_references": [
-      "NC Gen. Stat. \u00a7131E-175",
-      "10A NCAC 14C .0501"
-    ],
-    "severity_override": "Medium"
-  },
-  {
-    "id": "NC-ENV-001",
-    "state": "NC",
-    "ahj": "NCDHSR",
-    "rule_source": "10A-NCAC-14C",
-    "discipline": "Mechanical / Energy",
-    "description": "North Carolina Energy Conservation Code compliance and mechanical commissioning required for licensed hospital construction",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital"
+      "Acute Care Hospital",
+      "Critical Access Hospital"
     ],
     "trigger_systems": [
       "HVAC",
-      "lighting"
+      "ventilation",
+      "exhaust",
+      "air handling"
     ],
-    "trigger_rooms": [],
+    "trigger_rooms": [
+      "isolation room",
+      "AII room",
+      "airborne infection isolation",
+      "negative pressure room"
+    ],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 ENERGY CODE / COMMISSIONING: The construction documents for the proposed {occupancy} do not include a North Carolina Energy Conservation Code (NCECC, based on ASHRAE 90.1 with NC amendments) compliance certification or a mechanical commissioning plan as required under 10A NCAC 14C and the NCECC. New licensed hospital construction in North Carolina must demonstrate energy code compliance for HVAC, lighting, and building envelope, and mechanical commissioning is required for new hospital HVAC systems. No energy code compliance documentation and no commissioning scope plan or commissioning authority designation have been included in the current submittal. Provide these documents prior to plan approval.",
-    "fix_template": "1. Complete and include North Carolina Energy Conservation Code compliance documentation (COMcheck report for envelope and systems, or equivalent NC-approved energy compliance form) for HVAC, lighting, and building envelope systems; confirm compliance with current ASHRAE 90.1 edition as amended by North Carolina.\n2. Review and document any NCECC exceptions applicable to 24-hour healthcare occupancies (e.g., lighting power density exceptions, HVAC setback exceptions for infection control areas); include justification for any exceptions applied.\n3. Identify an independent commissioning authority (CxA) for the HVAC systems; include a commissioning scope in the specifications covering pre-functional checklists, functional performance testing, air balance verification, and pressure relationship testing for all critical care areas.\n4. Submit the final mechanical commissioning report signed by the CxA to NCDHSR as a project closeout document; the report must include air balance results, pressure relationship measurements for critical spaces, temperature/humidity setpoint verification, and a list of resolved deficiencies.",
+    "violation_template": "NCDHSR PLAN REVIEW COMMENT \u2014 INFECTION CONTROL / VENTILATION (NC-INF-001): The mechanical construction documents submitted for the {occupancy} project in {county} County do not demonstrate that the proposed Airborne Infection Isolation (AII) room(s) comply with the ventilation requirements of 10A NCAC 14C .1917 and the FGI Guidelines as adopted by North Carolina DHSR. The following deficiencies have been identified: the AII room(s) are not confirmed to maintain a continuous negative pressure differential of at least -0.01 inches water gauge (2.5 Pa) with respect to the adjacent corridor; the minimum exhaust airflow rate of 12 air changes per hour (ACH) total, with all exhaust discharged directly to the outdoors, has not been specified; and HEPA filtration (99.97% efficiency at 0.3 microns) has not been specified at the exhaust discharge point where recirculation to another space may occur. Failure to provide code-compliant AII rooms presents a direct patient safety risk and will preclude licensure of the facility.",
+    "fix_template": "1. Revise the HVAC design to establish a minimum negative pressure differential of -0.01 inches water gauge (2.5 Pa) in each AII room relative to all adjacent spaces; provide pressure-relationship diagrams on the mechanical drawings showing all room-to-room pressure differentials.\n2. Confirm the exhaust system delivers a minimum 12 total air changes per hour in each AII room; provide an air-balance schedule listing supply CFM, exhaust CFM, net pressure relationship, and ACH for each isolation room.\n3. Route all AII room exhaust ductwork to fans that discharge directly to the building exterior; show exhaust fan locations and duct routing on the mechanical floor plan and roof plan, confirming discharge points are separated from any air intakes per FGI Guidelines Section 2.1-3.6.\n4. Where exhaust cannot be fully dedicated to outdoor discharge, specify HEPA filtration rated at minimum 99.97% efficiency at 0.3 microns at the exhaust terminal or air-handling unit prior to any recirculation; include filter housing access and replacement provisions in the specifications.\n5. Resubmit revised mechanical drawings and air-balance schedule to NCDHSR Construction Section for continued review, and coordinate with the infection control officer to confirm ICRA requirements for occupied construction are addressed.",
     "code_references": [
-      "10A NCAC 14C",
-      "NCECC",
-      "ASHRAE 90.1",
-      "ASHRAE 170-2021"
+      "10A NCAC 14C .1917",
+      "FGI Guidelines 2022 Section 2.1-3.6 and Table 2.1-2",
+      "ASHRAE 170-2021 Table 7.1",
+      "CDC Guidelines for Environmental Infection Control 2003"
     ],
-    "severity_override": "Medium"
+    "severity_override": "Critical"
   },
   {
-    "id": "NC-GEN-001",
+    "id": "NC-SU-001",
     "state": "NC",
     "ahj": "NCDHSR",
-    "rule_source": "10A-NCAC-14C",
-    "discipline": "Administrative / Plan Review",
-    "description": "NCDHSR plan review submission required with completed application, project description, and estimated construction cost",
+    "rule_source": "10A NCAC 14C",
+    "discipline": "Surgical Suite / HVAC",
+    "description": "Operating room minimum 360 SF net area; positive pressure 20 ACH; temperature 68-75 degrees F; humidity 20-60 percent",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
+      "Acute Care Hospital",
+      "Ambulatory Surgical Center"
+    ],
+    "trigger_systems": [
+      "HVAC",
+      "ventilation",
+      "air handling",
+      "humidity control"
+    ],
+    "trigger_rooms": [
+      "operating room",
+      "OR",
+      "surgical suite",
+      "procedure room"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "NCDHSR PLAN REVIEW COMMENT \u2014 SURGICAL SUITE / HVAC (NC-SU-001): Review of the architectural and mechanical construction documents for the {occupancy} project in {county} County reveals that the proposed operating room(s) do not comply with one or more of the minimum standards established under 10A NCAC 14C .1909 and the FGI Guidelines as adopted by NCDHSR. The identified deficiencies include: (1) one or more operating rooms appear to be less than the required 360 square feet net clear floor area, excluding fixed and moveable equipment; (2) the mechanical drawings do not specify that the OR is maintained at continuous positive pressure relative to adjacent corridors and sub-sterile areas; (3) a minimum of 20 total air changes per hour (ACH) has not been confirmed on the air-balance schedule; and/or (4) the HVAC specifications do not confirm maintenance of a temperature range of 68\u00b0F to 75\u00b0F and a relative humidity of 20% to 60% at all times the OR is occupied. All four requirements are mandatory for licensure and must be addressed before NCDHSR will approve the construction documents.",
+    "fix_template": "1. Verify on the architectural floor plan that each operating room provides a minimum 360 square feet of net clear floor area, measured exclusive of fixed casework, booms, columns, and other fixed obstructions; add a net-area calculation note to the drawings and revise room size or layout as necessary.\n2. Revise the HVAC design to maintain a continuous positive pressure differential in each OR with respect to all adjacent spaces; update the pressure-relationship diagram to show the OR at higher pressure than the sub-sterile corridor and scrub sink alcove.\n3. Update the air-balance schedule to confirm a minimum 20 total air changes per hour in each OR, with at least 4 ACH composed of outside air; specify laminar-flow or diffuser ceiling configuration per FGI Guidelines Section 2.1-3.6 if applicable.\n4. Add mechanical specifications and control sequences confirming the temperature control system maintains 68\u00b0F to 75\u00b0F and the humidification/dehumidification system maintains relative humidity within 20% to 60% at all times; specify BAS monitoring with an alarm for out-of-range conditions.\n5. Resubmit revised architectural and mechanical drawings \u2014 including the updated air-balance schedule and HVAC control sequences \u2014 to the NCDHSR Construction Section for review and approval.",
+    "code_references": [
+      "10A NCAC 14C .1909",
+      "FGI Guidelines 2022 Section 2.2-3.4",
+      "ASHRAE 170-2021 Table 7.1",
+      "NFPA 101-2021 Chapter 18"
+    ],
+    "severity_override": "Critical"
+  },
+  {
+    "id": "NC-PR-001",
+    "state": "NC",
+    "ahj": "NCDHSR",
+    "rule_source": "10A NCAC 14C",
+    "discipline": "Patient Room / Architectural",
+    "description": "Minimum patient room 120 SF single occupancy, 100 SF per bed semi-private; toilet within room or shared with one adjacent room only",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
     ],
     "trigger_systems": [],
-    "trigger_rooms": [],
-    "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 NCDHSR PLAN REVIEW SUBMISSION: The construction document submittal for the proposed {occupancy} is incomplete and does not fully meet the requirements of 10A NCAC 14C .0501. A complete NCDHSR Plan Review Section submittal must include a completed DHSR plan review application, a written project description, an estimated construction cost, and a complete set of construction documents including site plan, architectural floor plans, mechanical, electrical, plumbing, and fire protection drawings, and technical specifications. The current submittal is missing [required application / project description / estimated construction cost / drawing disciplines]. Resubmit with all required elements.",
-    "fix_template": "1. Complete the NC DHSR Health Care Facility Plan Review application form (available from the NCDHSR Plan Review Section) in full, including facility name, license number, county, project scope, and authorized signature from the facility administrator or owner.\n2. Prepare a written project description (minimum 1\u20132 pages) summarizing the scope of work, affected areas, occupancy classification, proposed changes to licensed services or bed count, construction type, and fire protection approach; include the estimated total construction cost.\n3. Assemble the complete construction document set: site plan, floor plans at minimum 1/8-inch scale, reflected ceiling plans, sections as needed, HVAC/mechanical plans and schedules, plumbing plans, electrical plans and single-line diagram, fire protection plans, and project specifications.\n4. Submit the complete package to the NC DHSR Plan Review Section, 2711 Mail Service Center, Raleigh, NC 27699-2711, with the applicable plan review fee per the DHSR fee schedule; retain the DHSR receipt of submission for permit tracking.",
-    "code_references": [
-      "10A NCAC 14C .0501"
+    "trigger_rooms": [
+      "patient room",
+      "patient bedroom",
+      "inpatient room",
+      "semi-private room"
     ],
-    "severity_override": "Medium"
+    "trigger_seismic_zones": [],
+    "violation_template": "NCDHSR PLAN REVIEW COMMENT \u2014 PATIENT ROOM / ARCHITECTURAL (NC-PR-001): The architectural construction documents submitted for the {occupancy} project in {county} County do not demonstrate compliance with 10A NCAC 14C .1908 minimum patient room area and toilet access requirements. The following deficiencies have been noted: (1) one or more single-occupancy patient rooms appear to provide less than the required 120 square feet of clear floor area, measured exclusive of toilet rooms, closets, lockers, vestibules, and fixed equipment; (2) one or more semi-private (multi-bed) rooms appear to provide less than 100 square feet of clear floor area per bed; and/or (3) the in-room toilet room or water closet serving each patient does not open directly from the patient room or from a shared toilet accessible exclusively to no more than one immediately adjacent patient room. Shared toilet arrangements that require patients to enter a public corridor to reach the toilet are not permitted. NCDHSR will not approve documents that do not meet these minimum space standards.",
+    "fix_template": "1. Add net clear floor area calculations to the architectural floor plan for every patient room; confirm single-occupancy rooms are 120 SF minimum and semi-private rooms provide 100 SF per bed, measuring from finished wall face and excluding toilet rooms, closets, vestibules, and fixed equipment zones.\n2. Revise any non-compliant rooms by adjusting room dimensions, relocating non-essential elements, or reconfiguring the unit layout to achieve the required clear floor area; clearly dimension all revised rooms on the drawings.\n3. Confirm that every patient sleeping position is served by an in-room toilet room or a toilet room directly accessible from within the patient room and from no more than one immediately adjacent patient room; show the adjacency and interconnecting door on the floor plan.\n4. Ensure each toilet room serving inpatients is accessible and meets ADA 2010 Standards for Accessible Design as adopted by North Carolina; provide dimensioned toilet room plans confirming turning radius and fixture clearances.\n5. Resubmit revised architectural floor plans with area calculations and toilet adjacency notes to the NCDHSR Construction Section for review and approval.",
+    "code_references": [
+      "10A NCAC 14C .1908",
+      "FGI Guidelines 2022 Section 2.2-2.2",
+      "ADA Standards for Accessible Design 2010",
+      "NFPA 101-2021 Chapter 18"
+    ],
+    "severity_override": "High"
   },
   {
     "id": "NC-FLS-001",
     "state": "NC",
     "ahj": "NCDHSR",
-    "rule_source": "10A-NCAC-14C",
-    "discipline": "Fire Protection / Life Safety",
-    "description": "Complete automatic fire sprinkler system per NFPA 13 required throughout new NC licensed hospital construction",
+    "rule_source": "10A NCAC 14C",
+    "discipline": "Fire and Life Safety",
+    "description": "NFPA 101-2021 adopted statewide; automatic sprinkler system per NFPA 13 required throughout all hospital occupancies",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
+      "Acute Care Hospital",
+      "Critical Access Hospital",
+      "Ambulatory Surgical Center"
     ],
     "trigger_systems": [
       "sprinkler",
+      "fire suppression",
+      "fire alarm",
       "fire protection"
     ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 AUTOMATIC FIRE SPRINKLER SYSTEM: The fire protection drawings for the proposed {occupancy} do not demonstrate that a complete automatic fire sprinkler system designed per NFPA 13 is provided throughout the entire new hospital building as required by 10A NCAC 14C and NFPA 101 as adopted in the North Carolina Building Code with NC amendments. All areas of a new North Carolina-licensed hospital must be protected by an automatic sprinkler system, including mechanical and electrical rooms, storage areas, interstitial spaces, and all occupied and unoccupied spaces. The current fire protection drawings show sprinkler coverage omitted from one or more areas. Revise the drawings to provide complete building sprinkler coverage.",
-    "fix_template": "1. Revise the fire protection drawings to show complete automatic fire sprinkler coverage throughout all areas of the building per NFPA 13 (NC-adopted edition), including concealed and accessible spaces above ceilings, mechanical rooms, electrical rooms, storage rooms, and all occupied spaces.\n2. Provide a hydraulic design summary on the fire protection drawings confirming the design density, area of application, water supply available, and residual pressure at the most remote sprinkler head; reference the public or private water supply source and flow test data.\n3. Specify sprinkler system type, pipe material, hanger design, and seismic bracing in Division 21 specifications per NFPA 13; address sprinkler head type in patient care areas (semi-recessed or concealed as appropriate for infection control and anti-ligature requirements in behavioral health areas).\n4. Coordinate the fire sprinkler system design with the NCDHSR plan review submission and the local authority having jurisdiction building permit; both approvals are required before commencing fire protection installation.",
+    "violation_template": "NCDHSR PLAN REVIEW COMMENT \u2014 FIRE AND LIFE SAFETY (NC-FLS-001): The fire protection construction documents submitted for the {occupancy} in {county} County do not confirm full compliance with the 2021 edition of NFPA 101, Life Safety Code, as adopted in North Carolina under 10A NCAC 14C, and the North Carolina State Fire Code (NCSFC). The submitted plans do not clearly demonstrate that an automatic sprinkler system designed and installed in accordance with NFPA 13 is provided throughout the entire building, including all occupied spaces, mechanical rooms, storage areas, and interstitial spaces where required. The fire alarm system narrative and riser diagrams are also insufficient to confirm compliance with NFPA 72, National Fire Alarm and Signaling Code. All sprinkler and fire alarm systems in healthcare occupancies must be submitted to and approved by both NCDHSR and the local Authority Having Jurisdiction \u2014 typically the Office of the State Fire Marshal (OSFM) \u2014 before construction begins.",
+    "fix_template": "1. Provide complete NFPA 13 sprinkler system drawings, including hydraulic calculations, riser diagram, water supply test data, and a reflected ceiling plan showing all sprinkler head locations, types, and coverage areas for every space in the building.\n2. Confirm on the drawings that sprinkler coverage extends to all spaces, including mechanical rooms, electrical rooms, storage rooms, elevator shafts (where applicable), and any interstitial or crawl space areas per NFPA 13 and NFPA 101-2021 Chapter 18.\n3. Submit fire alarm system drawings and a complete system narrative per NFPA 72; include the initiating device schedule, notification appliance layout, FACP location, and annunciator panel locations on the architectural floor plans.\n4. Obtain a separate permit and plan review from the North Carolina Office of the State Fire Marshal (OSFM) for all fire protection systems; provide NCDHSR with a copy of the OSFM approval letter or permit number prior to NCDHSR final approval.\n5. Resubmit coordinated fire protection, fire alarm, and architectural drawings to NCDHSR and confirm coordination with the local fire jurisdiction for inspection scheduling.",
     "code_references": [
-      "10A NCAC 14C",
-      "NFPA 101",
-      "NFPA 13",
-      "NC Building Code \u00a7903"
+      "10A NCAC 14C .2000",
+      "NFPA 101-2021 Chapter 18",
+      "NFPA 13-2022",
+      "NFPA 72-2022",
+      "North Carolina State Fire Code (NCSFC) 2018"
+    ],
+    "severity_override": "Critical"
+  },
+  {
+    "id": "NC-GEN-001",
+    "state": "NC",
+    "ahj": "NCDHSR",
+    "rule_source": "10A NCAC 14C",
+    "discipline": "Plan Review / General",
+    "description": "NCDHSR Construction Section plan review and written approval required before construction begins; submit to Raleigh office",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital",
+      "Ambulatory Surgical Center",
+      "Nursing Home"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "NCDHSR PLAN REVIEW COMMENT \u2014 PLAN REVIEW / GENERAL (NC-GEN-001): This comment serves as notice that construction, renovation, or alteration of a licensed healthcare facility in North Carolina may not commence until the North Carolina Department of Health and Human Services, Division of Health Service Regulation (DHSR), Construction Section has reviewed and issued written approval of the construction documents under 10A NCAC 14C .0100. A review of the submission package for the {occupancy} project in {county} County, {city} indicates that one or more of the following required elements are incomplete or missing: (a) a completed NCDHSR Plan Submittal Form (DHSR-100); (b) a statement of program describing the proposed use, occupancy, licensed bed count, and project scope; (c) the name, license number, and seal of the licensed North Carolina architect or engineer of record; and/or (d) evidence of concurrent local building department submittal. Construction commenced prior to NCDHSR approval is a violation of 10A NCAC 14C .0100 and may result in a Notice of Violation, required demolition of non-compliant work, and delay of facility licensure.",
+    "fix_template": "1. Complete and submit a NCDHSR Plan Submittal Form (DHSR-100), available on the DHSR Construction Section website; include the facility license number, owner's representative contact information, and the name of the licensed North Carolina design professional of record.\n2. Prepare a written Statement of Program describing the full scope of work, proposed changes to licensed bed count or occupancy type, affected departments, and phasing plan for any construction in an occupied facility; attach to the submission package.\n3. Ensure all drawings bear the original seal, signature, and license number of a licensed North Carolina architect (for architectural work) and licensed North Carolina engineers (structural, mechanical, electrical, plumbing); unlicensed or out-of-state seals are not accepted without a Certificate of Authorization from the NC Board of Architecture or NCBELS.\n4. Submit complete construction documents \u2014 including site plan, floor plans, reflected ceiling plans, elevations, details, and specifications for all engineering disciplines \u2014 to the NCDHSR Construction Section, 1202 Mail Service Center, Raleigh, NC 27699-1202; include three (3) paper sets or submit electronically through the DHSR ePlans portal.\n5. Coordinate the NCDHSR submittal with the local building department submittal; provide NCDHSR with a copy of the local building permit application receipt, and do not begin construction until both the NCDHSR written approval and the local building permit have been issued.",
+    "code_references": [
+      "10A NCAC 14C .0100",
+      "10A NCAC 14C .0200",
+      "NC General Statutes \u00a7131E-79",
+      "NC General Statutes \u00a783A (Architecture Licensing)"
     ],
     "severity_override": "High"
+  },
+  {
+    "id": "NC-INF-002",
+    "state": "NC",
+    "ahj": "NCDHSR",
+    "rule_source": "10A NCAC 14C",
+    "discipline": "Infection Control / Construction",
+    "description": "ICRA plan required for all construction in or adjacent to an occupied healthcare facility; submit with permit application to NCDHSR",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "NCDHSR PLAN REVIEW COMMENT \u2014 INFECTION CONTROL / CONSTRUCTION (NC-INF-002): The construction documents submitted for the {occupancy} renovation or addition project in {county} County do not include a completed Infection Control Risk Assessment (ICRA) as required by NCDHSR and the FGI Guidelines for Design and Construction of Hospitals as adopted by North Carolina DHSR. For any construction activity occurring within, immediately adjacent to, or sharing an HVAC system with an occupied and licensed healthcare facility, an ICRA must be prepared by the design team in coordination with the facility's infection preventionist and submitted to NCDHSR with the permit application. The ICRA must identify the dust and airborne-contaminant risk class for each affected area, specify physical containment barriers and their locations on the floor plan, define pressure relationships between the construction zone and occupied areas, and include a written monitoring and contingency plan. Without an approved ICRA, NCDHSR cannot grant construction approval for work in or adjacent to an occupied facility.",
+    "fix_template": "1. Convene a multi-disciplinary ICRA team \u2014 including the architect, contractor, facility infection preventionist, and facility engineering staff \u2014 to complete a formal Infection Control Risk Assessment using the FGI Guidelines ICRA matrix; assign an ICRA risk class (Class I through IV) to each area affected by construction activity.\n2. Prepare an ICRA Construction Activity Plan (CAP) documenting construction zone boundaries, type and location of temporary containment barriers (dust walls, negative-pressure enclosures, or anterooms), and sequencing for construction phasing that minimizes patient exposure.\n3. Produce an ICRA floor plan overlay \u2014 clearly keyed to the architectural floor plans submitted to NCDHSR \u2014 showing all barrier locations, entry/exit points for construction personnel, route for debris removal, and adjacent patient care areas with their sensitivity class designations.\n4. Include a written ICRA monitoring protocol specifying daily pressure-differential checks at the construction zone boundary, frequency of air sampling during high-risk activities (e.g., demolition, concrete cutting), and the responsible party and escalation procedure for any ICRA breach.\n5. Submit the completed ICRA documentation \u2014 including the risk-class matrix, CAP narrative, and ICRA floor plan overlay \u2014 to the NCDHSR Construction Section with the permit application package; do not begin demolition or construction in the occupied facility until NCDHSR has issued written approval.",
+    "code_references": [
+      "10A NCAC 14C .0100",
+      "FGI Guidelines 2022 Appendix 1.A and Section 1.3",
+      "APIC 2014 ICRA Guidance",
+      "CDC Guidelines for Environmental Infection Control 2003"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "NC-HVAC-001",
+    "state": "NC",
+    "ahj": "NCDHSR",
+    "rule_source": "10A NCAC 14C",
+    "discipline": "HVAC / Operating Room Ventilation",
+    "description": "Operating room requires minimum 4 ACH outside air of the 20 ACH total; no recirculation via room fan-coil or unit ventilator units permitted",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital",
+      "Ambulatory Surgical Center"
+    ],
+    "trigger_systems": [
+      "HVAC",
+      "ventilation",
+      "outside air",
+      "air handling",
+      "fan coil"
+    ],
+    "trigger_rooms": [
+      "operating room",
+      "OR",
+      "surgical suite"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "NCDHSR PLAN REVIEW COMMENT \u2014 HVAC / OPERATING ROOM VENTILATION (NC-HVAC-001): The mechanical construction documents for the {occupancy} project in {county} County do not confirm compliance with the outside-air and recirculation requirements for operating rooms under 10A NCAC 14C .1909, ASHRAE 170-2021 Table 7.1, and the FGI Guidelines as adopted by North Carolina DHSR. The air-balance schedule submitted does not confirm that each operating room receives a minimum of 4 air changes per hour (ACH) of 100% outside air as part of the required 20 total ACH. Additionally, the mechanical design appears to include room-mounted fan-coil units, unit ventilators, or other recirculation devices within the OR, which is expressly prohibited \u2014 all supply air to the OR must be delivered through the central air-handling unit with appropriate filtration; no local recirculation units serving the OR space are permitted. These deficiencies affect patient safety through risk of surgical site infection and must be corrected before NCDHSR will approve the mechanical documents.",
+    "fix_template": "1. Revise the air-balance schedule to document both the total ACH and the outside-air ACH for each operating room; confirm a minimum of 4 ACH of 100% outside air and 20 ACH total supply air for every OR space.\n2. Verify the central air-handling unit(s) serving the OR suite include an outside-air economizer or dedicated OA damper sized to deliver at minimum 4 ACH to each OR; provide AHU schedules with outside-air CFM quantities on the mechanical drawings.\n3. Remove from the OR design any room-mounted fan-coil units, unit ventilators, induction units, or other local recirculation devices; all conditioned supply air must originate from the central AHU with minimum MERV-14 supply filtration per ASHRAE 170-2021.\n4. Provide a reflected ceiling plan for the OR showing supply air diffuser layout consistent with a unidirectional (laminar) or semi-laminar flow pattern over the surgical field per FGI Guidelines Section 2.2-3.4; confirm diffuser coverage, throw, and location relative to the surgical table.\n5. Resubmit revised mechanical drawings \u2014 including updated AHU schedules, air-balance schedule, and OR reflected ceiling plan \u2014 to the NCDHSR Construction Section; coordinate with the infection control officer to confirm the ventilation design meets ICRA requirements for the facility.",
+    "code_references": [
+      "10A NCAC 14C .1909",
+      "ASHRAE 170-2021 Table 7.1",
+      "FGI Guidelines 2022 Section 2.2-3.4",
+      "ASHRAE 62.1-2022 Section 6.2"
+    ],
+    "severity_override": "Critical"
   },
   {
     "id": "OH-EP-001",

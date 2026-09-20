@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-20T12:21:14.931704",
+  "generated_at": "2026-09-20T12:21:49.301452",
   "total_rules": 139,
   "sources": {
     "FGI": 22,
@@ -15,9 +15,9 @@
     "OH": 8
   },
   "by_severity": {
-    "High": 72,
-    "Critical": 34,
-    "Medium": 32,
+    "High": 70,
+    "Critical": 39,
+    "Medium": 29,
     "Low": 1
   },
   "by_state": {
@@ -34,20 +34,20 @@
     "OH": 8
   },
   "top_disciplines": {
-    "Infection Control": 12,
-    "Architecture": 6,
-    "Electrical / Emergency Power": 5,
+    "Infection Control": 11,
+    "Architecture": 5,
     "Surgery": 4,
     "Patient Rooms": 4,
-    "Structural / Wind": 4,
+    "Electrical / Emergency Power": 4,
+    "Infection Control / Ventilation": 4,
+    "Infection Control / Construction": 4,
+    "Fire and Life Safety": 4,
     "Emergency Department": 3,
     "Medical Gas": 3,
     "Electrical": 3,
+    "Structural / Wind": 3,
     "Fire / Life Safety": 3,
-    "Mechanical / Energy": 3,
-    "Infection Control / Ventilation": 3,
-    "Infection Control / Construction": 3,
-    "Patient Care / Room Size": 3,
-    "Fire and Life Safety": 3
+    "Emergency Power": 3,
+    "Patient Care / Room Size": 3
   }
 }
