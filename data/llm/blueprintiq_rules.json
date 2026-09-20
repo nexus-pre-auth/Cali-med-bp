@@ -3294,23 +3294,31 @@
     "id": "GA-WIN-001",
     "state": "GA",
     "ahj": "GADPH",
-    "rule_source": "GA-290-9-7",
-    "discipline": "Structural / Wind",
-    "description": "Hurricane wind design and impact glazing required for hospitals in Georgia coastal counties",
+    "rule_source": "Rule 290-9-7",
+    "discipline": "Structural / Wind Design",
+    "description": "Coastal Georgia hospitals must comply with ASCE 7-22 wind design requirements; Risk Category IV wind loads apply to all licensed hospitals",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
+      "General Acute Care Hospital",
+      "Critical Access Hospital"
     ],
-    "trigger_systems": [],
+    "trigger_systems": [
+      "structural",
+      "wind",
+      "roof",
+      "cladding",
+      "glazing"
+    ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 COASTAL WIND DESIGN: The proposed {occupancy} is located in a Georgia coastal county (Brantley, Brunswick MSA, Camden, Chatham, Glynn, Liberty, Long, or McIntosh county) subject to enhanced wind design requirements under GA DPH Rule 290-9-7 and the Georgia-adopted building code. Hospitals are Risk Category IV structures and must be designed for ASCE 7 wind loads appropriate for the coastal Georgia location, including wind-borne debris region requirements. The construction documents do not demonstrate compliance with the wind-borne debris region requirements; no impact-resistant glazing or approved protection system is specified for exterior glazing in the wind-borne debris zone. This deficiency must be corrected prior to plan approval.",
-    "fix_template": "1. Perform a wind design analysis per ASCE 7 (current Georgia-adopted edition) for the site-specific location, using Risk Category IV importance factor; document the design wind speed from ASCE 7 wind maps and include the wind design parameters on the cover sheet.\n2. Determine the wind-borne debris region boundary per ASCE 7 \u00a726.12.3 based on the design wind speed at the project site; for areas within the wind-borne debris region, specify impact-resistant glazing products (tested per ASTM E1886/E1996, Miami-Dade NOA, or Florida Building Code product approval) for all exterior windows, doors, and skylights.\n3. Provide a glazing schedule on the architectural drawings identifying the tested impact rating, product approval number, and installation requirements for all impact-resistant glazing units in the wind-borne debris zone.\n4. Confirm that roof-to-wall and wall-to-foundation connections are designed for the ASCE 7 Risk Category IV wind uplift and lateral loads; include connection details and calculations in the structural drawings.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 GA-WIN-001 (Wind Design \u2014 Coastal Risk): The structural drawings submitted for Georgia Department of Public Health (DPH) review do not demonstrate that the proposed hospital facility has been designed as a Risk Category IV structure in accordance with ASCE 7-22 Chapter 26 for wind loading, as required for Essential Facilities under the Georgia State Minimum Standard Codes and O.C.G.A. \u00a78-2-20. Hospitals are classified as Essential Facilities (Risk Category IV) and must be designed for the elevated basic wind speeds applicable to their geographic location as mapped in ASCE 7-22 Figure 26.5-1D. For facilities in coastal and near-coastal Georgia counties (Bryan, Brantley, Camden, Charlton, Chatham, Glynn, Liberty, Long, McIntosh), higher design wind speeds and additional wind-borne debris protection requirements apply. The current structural basis of design narrative does not identify the site wind speed, risk category, or compliance path for wind-borne debris region requirements.",
+    "fix_template": "1. Revise the structural basis of design to identify the site's basic wind speed from ASCE 7-22 Figure 26.5-1D for Risk Category IV; document the wind speed, exposure category, topographic factor, and all other applicable wind parameters on the structural drawings cover sheet.\n2. Confirm the facility is designed as Risk Category IV (Essential Facility) per ASCE 7-22 Table 1.5-1; apply all applicable importance factors and increased design pressures associated with Risk Category IV throughout the structural and envelope design.\n3. For projects within the wind-borne debris region (basic wind speed \u2265 130 mph or \u2265 140 mph in hurricane-prone regions per ASCE 7-22 Section 26.12.3), specify impact-resistant glazing or protective shutters for all exterior windows and doors meeting ASTM E1996/E1886; include a glazing schedule noting impact ratings for each product.\n4. Provide roof-to-wall and wall-to-foundation continuous load path details on the structural drawings demonstrating complete uplift and lateral load transfer from the roof to the foundation for the design wind event; include connection schedules and calculations.\n5. Submit the structural engineer's wind design calculations sealed by a Georgia-licensed Structural Engineer (SE) or Professional Engineer (PE) with demonstrated competency in wind design; submit calculations and signed structural drawings to Georgia DPH Office of Health Planning with the permit application per O.C.G.A. \u00a731-7-1.",
     "code_references": [
-      "GA DPH Rule 290-9-7",
-      "ASCE 7",
-      "ASTM E1886",
-      "ASTM E1996"
+      "Rule 290-9-7-.04",
+      "ASCE 7-22 Chapter 26 and Table 1.5-1",
+      "O.C.G.A. \u00a78-2-20",
+      "O.C.G.A. \u00a731-7-1",
+      "Georgia State Minimum Standard Building Code (IBC 2021 as adopted)"
     ],
     "severity_override": "High"
   },
@@ -3318,167 +3326,218 @@
     "id": "GA-EP-001",
     "state": "GA",
     "ahj": "GADPH",
-    "rule_source": "GA-290-9-7",
+    "rule_source": "Rule 290-9-7",
     "discipline": "Electrical / Emergency Power",
-    "description": "Emergency generator minimum 96-hour on-site fuel supply required for Georgia Category 1 healthcare facilities",
+    "description": "Emergency generator must provide 72-hour on-site fuel supply with 10-second automatic transfer per NFPA 110",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
+      "General Acute Care Hospital",
+      "Critical Access Hospital"
     ],
     "trigger_systems": [
-      "generator",
-      "emergency power"
+      "emergency generator",
+      "EPS",
+      "ATS",
+      "automatic transfer switch",
+      "essential electrical system"
     ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 EMERGENCY POWER / FUEL SUPPLY (96-HOUR): The electrical specifications and generator design documents for the proposed {occupancy} do not comply with GA DPH Rule 290-9-7-.13, which requires a minimum 96-hour on-site fuel supply for emergency generators at Georgia Category 1 healthcare facilities (hospitals). The submitted specifications indicate a fuel tank capacity providing less than 96 hours of generator operation at full rated load. This requirement exceeds the NFPA 110 minimum and is specific to Georgia-licensed hospitals. Revise the fuel storage system to provide the required 96-hour minimum supply and resubmit for GADPH review.",
-    "fix_template": "1. Calculate the fuel consumption rate (gallons per hour) for all emergency generators at full rated load; size the on-site fuel storage system to provide a minimum 96-hour supply at that rate and document the sizing calculation in the electrical design narrative.\n2. Show on the electrical and mechanical/plumbing drawings the revised fuel tank configuration, secondary containment, fill connections, overflow protection, level gauges, and fuel transfer pump arrangement; specify tank standards per NFPA 30 and NFPA 110 Level 1.\n3. Reference GA DPH Rule 290-9-7-.13 in the Division 26 electrical specifications for essential electrical systems, and confirm NFPA 110 Level 1 compliance for all system components.\n4. Coordinate the fuel tank installation with Georgia EPD underground or above-ground storage tank registration requirements and local authority building permit requirements.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 GA-EP-001 (Emergency Power System): The electrical construction documents submitted for Georgia DPH review do not demonstrate compliance with the emergency power supply requirements of Rule 290-9-7-.04 and NFPA 110-2019 for Level 1 systems serving licensed acute care hospitals. Specifically, the fuel storage calculation submitted provides less than 72 hours of on-site fuel at rated generator load, and the automatic transfer switch (ATS) specification does not explicitly confirm a maximum 10-second transfer time from normal power loss to emergency power availability for life safety and critical branch loads. Georgia DPH requires a minimum 72-hour on-site fuel supply and confirmed 10-second transfer for all licensed hospital essential electrical systems. These deficiencies must be corrected before Georgia DPH will issue plan approval.",
+    "fix_template": "1. Obtain certified generator fuel consumption data from the manufacturer at rated kW output; calculate required fuel tank volume for 72 continuous hours of operation at rated load; revise fuel tank sizing and include calculations in the permit submittal per Rule 290-9-7-.04 and NFPA 110-2019 Section 7.3.4.\n2. Revise the ATS specification to state a maximum 10-second transfer time from loss of normal power to emergency power delivery for all life safety branch loads; include a sequence-of-operations narrative on the electrical drawings per NFPA 70 Article 517 Part III.\n3. Provide a complete essential electrical system load schedule separated into life safety, critical, and equipment branches with connected and demand loads; confirm the generator kW rating exceeds the total demand load of all branches simultaneously.\n4. Detail secondary containment for all above-ground fuel storage tanks per Georgia EPD requirements; include a spill prevention plan reference and confirm compliance with Georgia Underground Storage Tank regulations (Rule 391-3-15) if any underground tanks are used.\n5. Schedule a pre-occupancy generator load bank test with the Georgia DPH Office of Health Planning inspector and submit a test report confirming rated kW output, voltage and frequency stability, and ATS transfer time within 10 seconds before the certificate of occupancy is issued.",
     "code_references": [
-      "GA DPH Rule 290-9-7-.13",
-      "NFPA 110",
-      "NFPA 30"
+      "Rule 290-9-7-.04",
+      "NFPA 110-2019 Level 1 Section 7.3.4",
+      "NFPA 70 Article 517",
+      "NFPA 99-2021 Chapter 6",
+      "O.C.G.A. \u00a731-7-1"
     ],
-    "severity_override": "High"
+    "severity_override": "Critical"
   },
   {
-    "id": "GA-ASC-001",
+    "id": "GA-INF-001",
     "state": "GA",
     "ahj": "GADPH",
-    "rule_source": "GA-290-9-7",
-    "discipline": "Architecture",
-    "description": "Georgia ASC operating rooms require minimum 200 SF clear floor area",
+    "rule_source": "Rule 290-9-7",
+    "discipline": "Infection Control / Ventilation",
+    "description": "AII room required in acute care hospitals; minimum negative pressure and 12 ACH total ventilation required",
     "trigger_occupancies": [
-      "Ambulatory Surgery Center",
-      "Surgical Center"
+      "Occupied Hospital",
+      "General Acute Care Hospital",
+      "Critical Access Hospital"
     ],
-    "trigger_systems": [],
+    "trigger_systems": [
+      "HVAC",
+      "ventilation",
+      "exhaust",
+      "isolation",
+      "negative pressure"
+    ],
+    "trigger_rooms": [
+      "AII room",
+      "isolation room",
+      "airborne infection isolation",
+      "negative pressure room"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "PLAN REVIEW COMMENT \u2014 GA-INF-001 (Airborne Infection Isolation Room): The construction documents submitted for Georgia DPH review under Rule 290-9-7-.03 do not demonstrate provision of an Airborne Infection Isolation (AII) room that meets the required ventilation parameters for acute care hospitals in Georgia. A minimum of one AII room must be provided with a continuous negative pressure differential of at least -0.01 in. w.g. relative to the adjacent corridor or anteroom, a minimum of 12 total air changes per hour (minimum 2 ACH outdoor air), and HEPA-filtered exhaust discharged directly to the building exterior without recirculation. The submitted mechanical schedules and room data sheets do not confirm these parameters for the designated isolation room(s), and the exhaust discharge location has not been identified on the site plan relative to air intake locations.",
+    "fix_template": "1. Clearly designate and label the AII room(s) on the floor plan; provide a room data sheet for each AII room showing negative pressure (-0.01 in. w.g. or greater), minimum 12 total ACH (minimum 2 ACH outdoor air), and HEPA exhaust per Rule 290-9-7-.03 and ASHRAE 170-2021 Table 7.1.\n2. Specify HEPA filtration (99.97% minimum efficiency at 0.3 micron) on the exhaust system for all AII rooms; indicate HEPA unit location on the mechanical floor plan and provide a manufacturer's cut sheet with filter efficiency certification.\n3. Identify exhaust outlet location on the site plan or building elevation; demonstrate minimum 25-foot horizontal separation from all outdoor air intakes, operable windows, and public pedestrian areas per ASHRAE 170-2021 Section 7.4.\n4. Specify a continuous pressure differential monitoring device with a local visual indicator at the room entrance door and a remote audible/visual alarm at the nursing station; connect the monitor output to the BAS with a documented response protocol per FGI 2022 Section 2.2-3.6.\n5. Include a start-up and verification test protocol on the mechanical drawings confirming that all AII room pressure, ACH, and filtration parameters will be verified by a qualified testing, adjusting, and balancing (TAB) agency before clinical occupancy; submit TAB report to Georgia DPH with the occupancy application.",
+    "code_references": [
+      "Rule 290-9-7-.03",
+      "ASHRAE 170-2021 Table 7.1",
+      "FGI 2022 Section 2.2-3.6",
+      "O.C.G.A. \u00a731-7-1"
+    ],
+    "severity_override": "Critical"
+  },
+  {
+    "id": "GA-SU-001",
+    "state": "GA",
+    "ahj": "GADPH",
+    "rule_source": "Rule 290-9-7",
+    "discipline": "Surgery / Room Requirements",
+    "description": "Operating room minimum 360 SF net; positive pressure relative to corridor with minimum 20 ACH total ventilation",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "General Acute Care Hospital",
+      "Surgical Hospital"
+    ],
+    "trigger_systems": [
+      "HVAC",
+      "ventilation",
+      "air handling",
+      "positive pressure"
+    ],
     "trigger_rooms": [
       "operating room",
-      "OR"
+      "OR",
+      "surgery",
+      "surgical suite"
     ],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 ASC OPERATING ROOM MINIMUM SIZE: The floor plan for the proposed ambulatory surgical treatment center does not comply with GA DPH Rule 290-9-7.03, which requires a minimum 200 SF clear floor area per operating room in Georgia-licensed ambulatory surgical centers. The clear floor area must be measured from the interior face of finished walls, excluding any fixed casework, equipment recesses, scrub sink projections, or structural columns. The submitted floor plan indicates OR clear floor area(s) below this minimum. Provide dimensioned floor plans confirming compliance with the 200 SF minimum for each operating room.",
-    "fix_template": "1. Revise the operating room floor plan to provide a minimum 200 SF net clear floor area measured from the interior face of finished walls; confirm that fixed casework, equipment alcoves, column projections, and scrub sink enclosures are excluded from the net area measurement.\n2. Provide an enlarged dimensioned plan for each OR with the net clear area calculation annotated; confirm that the surgical table, anesthesia zone, instrument back table, and surgical team circulation requirements can be accommodated within the revised layout.\n3. Include a room schedule on the drawings listing each OR's gross area and net clear area; note the applicable GA DPH Rule reference for each room's minimum area compliance.\n4. Confirm that HVAC supply and exhaust air quantities, room pressure relationships, and infection control requirements per ASHRAE 170 and GA DPH standards are maintained in the revised OR layout.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 GA-SU-001 (Operating Room \u2014 Area and Ventilation): The proposed operating room(s) as depicted in the submitted drawings do not satisfy the requirements of Georgia DPH Rule 290-9-7-.03 in one or more of the following areas: (1) minimum net floor area of 360 square feet measured from finished face of wall to finished face of wall exclusive of fixed casework and wall thickness, and/or (2) a minimum of 20 total air changes per hour with positive pressure (+0.01 in. w.g. minimum) relative to the adjacent scrub corridor and all contiguous spaces. The architectural plans do not provide dimensioned room areas with deductions for fixed elements, and the mechanical room data sheets do not confirm the required ACH and pressure relationships for the surgical suite. Both deficiencies must be addressed in the permit submittal to Georgia DPH.",
+    "fix_template": "1. Provide a dimensioned floor plan with calculated net area for each operating room; show deductions for fixed casework, built-in equipment, and columns; confirm each OR meets 360 SF net minimum per Rule 290-9-7-.03 and FGI 2022 Section 2.1-3.3.\n2. Prepare a pressure relationship diagram for the surgical suite showing all spaces and their relative pressure to adjacent spaces; confirm each OR is positive (+0.01 in. w.g. minimum) relative to the scrub corridor, sub-sterile room, and all adjoining spaces per ASHRAE 170-2021 Table 7.1.\n3. Update mechanical room data sheets to confirm a minimum of 20 total ACH for each OR with a minimum of 4 ACH outdoor air; provide engineering calculations demonstrating design airflow volumes meet the minimum ACH at design conditions.\n4. Specify ceiling-mounted supply diffusers providing unidirectional (laminar) airflow over the surgical field; diffuser array must encompass at least the operating table footprint plus a 12-inch margin on all sides; include a reflected ceiling plan showing diffuser layout per ASHRAE 170-2021 Section 7.5.\n5. Confirm OR temperature (68\u201375\u00b0F) and relative humidity (20\u201360% RH) control with independent room-level controls; add setpoints to the room data sheet and provide a control sequence of operations narrative in the mechanical specifications.",
     "code_references": [
-      "GA DPH Rule 290-9-7.03"
+      "Rule 290-9-7-.03",
+      "ASHRAE 170-2021 Table 7.1 and Section 7.5",
+      "FGI 2022 Section 2.1-3.3",
+      "O.C.G.A. \u00a731-7-1"
     ],
-    "severity_override": "High"
+    "severity_override": "Critical"
   },
   {
-    "id": "GA-IC-001",
+    "id": "GA-PR-001",
     "state": "GA",
     "ahj": "GADPH",
-    "rule_source": "GA-290-9-7",
-    "discipline": "Infection Control",
-    "description": "Written infection control construction plan required for renovation or construction in or adjacent to occupied licensed hospital areas",
+    "rule_source": "Rule 290-9-7",
+    "discipline": "Patient Care / Room Size",
+    "description": "Minimum 100 SF single-bed patient room; maximum 2 beds per room in medical/surgical units",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
-    ],
-    "trigger_systems": [],
-    "trigger_rooms": [],
-    "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 INFECTION CONTROL CONSTRUCTION PLAN: The construction document submittal for the proposed project in or adjacent to the occupied {occupancy} does not include a written infection control construction plan as required by GA DPH Rule 290-9-7-.13. The infection control plan must address physical barriers, HVAC isolation, construction traffic routing, and the specific infection control class level determined by an ICRA assessment. This plan must be available for review by DPH surveyors throughout the construction period. No infection control construction plan has been included in the current submittal. Provide this document prior to plan approval.",
-    "fix_template": "1. Prepare a written infection control construction plan that includes an ICRA matrix identifying the construction activity type and patient risk group; determine the required ICRA class level and document the specific infection control measures required for each project phase.\n2. Include in the plan: physical barrier specifications (type, height, and attachment), location of construction entry/exit points with tacky mat requirements, HEPA-filtered negative air machine requirements and monitoring protocols, and restrictions on construction activities during specific patient care hours.\n3. Show on the construction drawings (phasing plan or separate ICRA barrier plan sheet) the locations of construction containment barriers, HVAC isolation points, and construction traffic routes that avoid active patient care areas.\n4. Identify in the plan the facility-designated infection control officer responsible for ongoing compliance monitoring; confirm the plan will be maintained on-site and made available to GA DPH surveyors upon request.",
-    "code_references": [
-      "GA DPH Rule 290-9-7-.13"
-    ],
-    "severity_override": "High"
-  },
-  {
-    "id": "GA-CON-001",
-    "state": "GA",
-    "ahj": "GADPH",
-    "rule_source": "GA-31-6",
-    "discipline": "Administrative / Regulatory",
-    "description": "Georgia CON approval required before establishing new hospitals, adding beds, or major capital expenditures",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital"
-    ],
-    "trigger_systems": [],
-    "trigger_rooms": [],
-    "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 CERTIFICATE OF NEED (CON): The proposed project for the {occupancy} appears to involve the establishment of a new hospital, the addition of licensed inpatient beds, or major capital expenditures that require a Certificate of Need (CON) from the Georgia Department of Community Health (DCH) under O.C.G.A. \u00a731-6. CON approval must be obtained from the DCH Health Planning Division prior to initiation of GA DPH plan review. The current submittal does not include a CON approval letter or a DCH determination that the project is exempt from CON review. Provide this documentation before GA DPH plan review can proceed.",
-    "fix_template": "1. Determine whether the proposed project requires CON under O.C.G.A. \u00a731-6 and the DCH Certificate of Need Program rules by evaluating the project against applicable thresholds (new hospital establishment, addition of licensed beds, capital expenditure thresholds for CON review).\n2. If CON is required, submit a CON application to the Georgia Department of Community Health Health Planning Division and obtain a CON approval letter before submitting construction documents to GA DPH.\n3. If the project is below the CON threshold or otherwise exempt, obtain a written exemption determination from the DCH Health Planning Division and include it in the GA DPH construction document submittal.\n4. Include the CON approval letter or exemption determination as the first document in the GA DPH plan review submittal package; DPH plan review will not proceed for qualifying projects without this documentation.",
-    "code_references": [
-      "O.C.G.A. \u00a731-6",
-      "GA DPH Rule 290-9-7"
-    ],
-    "severity_override": "Medium"
-  },
-  {
-    "id": "GA-HH-001",
-    "state": "GA",
-    "ahj": "GADPH",
-    "rule_source": "GA-290-9-7",
-    "discipline": "Architecture / Plumbing",
-    "description": "Minimum 1 handwashing sink per 4 beds in open units; 1 per patient room in single-bed room configurations",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital"
+      "General Acute Care Hospital",
+      "Critical Access Hospital"
     ],
     "trigger_systems": [],
     "trigger_rooms": [
       "patient room",
-      "nursing unit",
-      "patient care",
-      "inpatient"
+      "medical surgical",
+      "med surg",
+      "inpatient room"
     ],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 HANDWASHING SINKS PER PATIENT BEDS: The floor plan for the proposed {occupancy} does not demonstrate compliance with GA DPH Rule 290-9-7-.06, which requires a minimum of 1 handwashing sink per 4 patient beds in open nursing unit configurations, and 1 handwashing sink per patient room in single-bed room configurations. Review of the nursing unit floor plan indicates [insufficient handwashing sinks for the proposed bed count / patient rooms without dedicated handwashing sinks at the required ratio]. Handwashing sinks must be located for convenient use by clinical staff providing direct patient care. Revise the drawings to demonstrate compliance with this sink-to-bed ratio requirement.",
-    "fix_template": "1. Count the total patient beds in each nursing unit and verify that the number of conveniently located handwashing sinks equals at minimum 1 per 4 beds for open-bay configurations, or 1 per room for single-bed room configurations; document this calculation in the plumbing design narrative.\n2. Show on the floor plan the location of each handwashing sink dedicated to patient care use; sinks must be located within or directly adjacent to patient care areas and not require passing through other patient spaces to reach.\n3. Specify handwashing sinks with gooseneck faucets and wrist-blade or sensor-actuated handles (not hand-operated knobs) to prevent recontamination after handwashing; reference GA DPH Rule 290-9-7-.06 and CDC hand hygiene guidelines in the plumbing specifications.\n4. Update the plumbing fixture count schedule to include all patient care handwashing sinks and confirm the final sink-to-bed ratio meets or exceeds the GA DPH minimum in the project compliance narrative.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 GA-PR-001 (Patient Room Size and Configuration): The submitted architectural drawings indicate patient room configurations that do not comply with the requirements of Georgia DPH Rule 290-9-7-.03. Single-bed patient rooms must provide a minimum of 100 square feet of clear floor area measured from finished wall face to finished wall face, excluding the toilet room, closets, and fixed wardrobes. Additionally, Rule 290-9-7-.03 limits patient rooms in medical/surgical units to a maximum of two (2) beds per room; ward-style multi-bed rooms with more than two beds are not permitted in Georgia licensed acute care hospitals. One or more rooms depicted on the submitted drawings fall below the 100 SF minimum or exceed the two-bed maximum configuration.",
+    "fix_template": "1. Calculate and tabulate the net clear floor area for each patient room on all nursing units; list each room with its gross dimensions, deductions for toilet room, closets, and fixed elements, and resulting net area; confirm all single-bed rooms meet 100 SF minimum per Rule 290-9-7-.03.\n2. Revise the floor plan to eliminate any patient rooms exceeding a two-bed configuration in medical/surgical or general acute care units; provide revised room count and bed count summary for each nursing unit.\n3. Show representative room furniture layouts for single-bed and double-bed rooms demonstrating a minimum 3-foot clear path on three sides of each patient bed; confirm the clear path is maintained even with standard furniture in place.\n4. Verify that each patient room provides a private toilet room directly accessible from the patient room without requiring the patient to enter the corridor; provide toilet room dimensions showing ADA-compliant clearances per Georgia accessibility requirements (O.C.G.A. \u00a730-3-1 et seq.) and ADA Standards.\n5. Confirm exterior window provision per Rule 290-9-7-.03 (windows in patient rooms providing natural light and, where feasible, outdoor views); annotate window sizes and sill heights on the floor plan; confirm minimum glazed area ratios are met.",
     "code_references": [
-      "GA DPH Rule 290-9-7-.06"
+      "Rule 290-9-7-.03",
+      "FGI 2022 Section 2.2-2.2",
+      "O.C.G.A. \u00a730-3-1 (Georgia Accessibility)",
+      "ADA Standards for Accessible Design"
     ],
     "severity_override": "High"
   },
   {
-    "id": "GA-ENV-001",
+    "id": "GA-FLS-001",
     "state": "GA",
     "ahj": "GADPH",
-    "rule_source": "GA-290-9-7",
-    "discipline": "Mechanical / Energy",
-    "description": "Georgia State Minimum Standard Energy Code compliance and mechanical commissioning required for new licensed hospital construction",
+    "rule_source": "Rule 290-9-7",
+    "discipline": "Fire and Life Safety",
+    "description": "NFPA 101-2021 Life Safety Code adopted statewide for healthcare occupancies; automatic sprinklers required throughout per NFPA 13",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
+      "General Acute Care Hospital",
+      "Critical Access Hospital"
     ],
     "trigger_systems": [
-      "HVAC",
-      "lighting"
+      "sprinkler",
+      "fire suppression",
+      "fire alarm",
+      "smoke barrier",
+      "NFPA 13"
     ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 ENERGY CODE / MECHANICAL COMMISSIONING: The construction documents for the proposed {occupancy} do not include a Georgia State Minimum Standard Energy Code (GSMEC, based on ASHRAE 90.1) compliance certification or a mechanical commissioning plan. New licensed hospital construction in Georgia must comply with the GSMEC for HVAC, lighting, and building envelope systems, and mechanical commissioning is required for all new hospital construction. No energy compliance documentation (COMcheck equivalent or Georgia ENERGYSTAR equivalent) and no commissioning plan or commissioning authority identification have been included in the submittal. Provide these documents prior to plan approval.",
-    "fix_template": "1. Complete and include Georgia State Minimum Standard Energy Code compliance documentation (COMcheck reports or equivalent energy compliance forms) for the HVAC system, lighting, and building envelope; confirm compliance with the current ASHRAE 90.1 edition as adopted by Georgia.\n2. Identify in the specifications any areas where hospital HVAC requirements (pressurization, air change rates, humidity control per ASHRAE 170) may require energy code tradeoff or exception documentation; include any required exception narratives in the energy compliance documentation.\n3. Identify an independent commissioning authority (CxA) qualified in healthcare HVAC commissioning; include a commissioning scope plan in the specifications defining pre-functional testing, functional performance testing, and final report requirements.\n4. Submit the final mechanical commissioning report as a project closeout document to GA DPH; confirm that the commissioning report includes air balance results, pressure relationship verification for all critical spaces, and temperature/humidity setpoint confirmation.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 GA-FLS-001 (Automatic Sprinkler and Life Safety Code Compliance): The fire and life safety documents submitted for Georgia DPH review do not demonstrate full compliance with NFPA 101-2021 Life Safety Code as adopted statewide under O.C.G.A. \u00a731-7-1 and enforced by Georgia DPH for licensed healthcare facilities. Specifically, the fire protection drawings indicate areas within the proposed project scope that lack automatic sprinkler coverage. Georgia licensed hospitals must be fully protected by an automatic sprinkler system designed and installed per NFPA 13-2022 throughout the building, including all closets, corridors, mechanical rooms, ceiling plenums, and interstitial spaces. Additionally, the life safety code compliance plan/code analysis does not address all smoke compartment areas for patient care floors. These omissions must be corrected before Georgia DPH will issue plan approval.",
+    "fix_template": "1. Revise fire protection drawings to provide complete automatic sprinkler coverage throughout all project areas, including rooms, corridors, closets, mechanical spaces, and ceiling plenums, per NFPA 101-2021 Section 18.3.5 and NFPA 13-2022; no unsprinklered areas are permitted in a licensed hospital.\n2. Provide hydraulic calculations and a water supply analysis for the most hydraulically demanding design area per NFPA 13-2022 Section 19.2; include a water supply test data sheet (test within 12 months) and the hydraulic calculation summary on the fire protection drawings.\n3. Revise the life safety code analysis to address smoke compartment layout for all patient care floors; confirm no smoke compartment exceeds 22,500 SF per NFPA 101-2021 Section 18.3.7; show smoke barrier locations, ratings, and door specifications on the floor plans.\n4. Specify quick-response sprinkler heads in all patient sleeping rooms and adjacent corridors per NFPA 13-2022; provide a sprinkler head schedule noting response time index (RTI), temperature rating, orifice size, and coverage area for each head type.\n5. Coordinate the sprinkler system with the fire alarm system; confirm that the sprinkler system water flow alarm initiates a supervisory signal at the fire alarm control panel and at the local monitoring station per NFPA 72-2022; include a system interface narrative in the fire alarm submittal.",
     "code_references": [
-      "O.C.G.A. \u00a78-2-1",
-      "ASHRAE 90.1",
-      "ASHRAE 170-2021"
+      "Rule 290-9-7-.04",
+      "O.C.G.A. \u00a731-7-1",
+      "NFPA 101-2021 Sections 18.3.5 and 18.3.7",
+      "NFPA 13-2022",
+      "NFPA 72-2022"
     ],
-    "severity_override": "Medium"
+    "severity_override": "Critical"
   },
   {
     "id": "GA-GEN-001",
     "state": "GA",
     "ahj": "GADPH",
-    "rule_source": "GA-290-9-7",
-    "discipline": "Administrative / Plan Review",
-    "description": "GA DPH plan review submission required with site plan, floor plans, MEP plans, and equipment schedule for licensed hospital construction",
+    "rule_source": "Rule 290-9-7",
+    "discipline": "General / Plan Review Submittal",
+    "description": "Georgia DPH construction permit required before work begins on licensed hospital facilities; submit to Office of Health Planning",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital"
+      "General Acute Care Hospital",
+      "Critical Access Hospital",
+      "Long-Term Acute Care"
     ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "PLAN REVIEW COMMENT \u2014 GA DPH PLAN REVIEW SUBMISSION REQUIREMENTS: The construction document submittal for the proposed {occupancy} is incomplete and does not meet the requirements of GA DPH Rule 290-9-7 for licensed hospital construction. A complete DPH submittal must include: a completed DPH plan review application, a project site plan, full architectural floor plans, mechanical/HVAC plans, plumbing plans, electrical plans, fire protection plans, and a medical equipment schedule. The current submittal is missing one or more of these required elements. Resubmit with a complete package including all required drawing disciplines and the completed DPH application.",
-    "fix_template": "1. Complete the Georgia DPH Health Care Facility Regulation plan review application form and include it as the first item in the submittal package; ensure all fields are completed including facility license number, project scope description, estimated construction cost, and applicant contact information.\n2. Assemble the complete construction document set per the GA DPH submittal checklist: site plan showing facility location and utility connections; architectural floor plans at minimum 1/8-inch scale; reflected ceiling plans; room schedule; mechanical HVAC plans and schedules; plumbing plans; electrical single-line diagram and lighting plans; fire protection plans; and project specifications.\n3. Include a medical equipment schedule identifying major fixed equipment (imaging systems, surgical lights, sterilizers, medical gas outlets) with equipment room dimensions, structural loading requirements, electrical requirements, and rough-in dimensions.\n4. Submit the complete package to the Georgia DPH Health Care Facility Regulation section and retain the DPH receipt of submission confirmation; plan review status inquiries can be directed to the DPH Healthcare Facility Regulation office.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 GA-GEN-001 (Georgia DPH Construction Permit): Construction documents for a licensed acute care hospital in Georgia require prior plan review and approval by the Georgia Department of Public Health, Office of Health Planning, as a condition of the facility's license under O.C.G.A. \u00a731-7-1 and Rule 290-9-7. The submitted application package is incomplete; the required Georgia DPH permit application form, applicable fee, and/or signed and sealed construction documents are missing or deficient. Georgia DPH will not process the permit application until a complete submittal is received. No construction may begin prior to written Georgia DPH approval. Commencement of work without approval constitutes a violation of Rule 290-9-7 and may result in enforcement action by Georgia DPH, including a license sanction against the facility.",
+    "fix_template": "1. Complete and submit the Georgia DPH Office of Health Planning permit application, including all required fields; ensure the application is signed by the licensed hospital's authorized representative and the engineer or architect of record per Rule 290-9-7 and O.C.G.A. \u00a731-7-1.\n2. Include two (2) complete sets of construction documents bearing the wet or electronic signature and seal of all licensed design professionals of record (architect, structural engineer, mechanical engineer, plumbing engineer, electrical engineer, fire protection engineer) registered in Georgia.\n3. Remit the applicable Georgia DPH plan review fee calculated per the current Office of Health Planning fee schedule; attach the payment receipt or fee calculation worksheet to the application.\n4. Provide a written project narrative describing the full scope of work, affected licensed categories and beds, estimated construction cost, schedule of construction phases, and proposed infection control measures for work adjacent to occupied patient care areas.\n5. Do not authorize contractors to begin construction on the licensed facility premises until written Georgia DPH plan approval is in hand; post the approval letter at the construction site and make it available to Georgia DPH inspectors, local building officials, and the facility's accreditation body upon request.",
     "code_references": [
-      "GA DPH Rule 290-9-7"
+      "Rule 290-9-7-.02",
+      "Rule 290-9-7-.04",
+      "O.C.G.A. \u00a731-7-1",
+      "O.C.G.A. \u00a731-2-7"
     ],
-    "severity_override": "Medium"
+    "severity_override": "High"
+  },
+  {
+    "id": "GA-INF-002",
+    "state": "GA",
+    "ahj": "GADPH",
+    "rule_source": "Rule 290-9-7",
+    "discipline": "Infection Control / Construction",
+    "description": "ICRA plan mandatory for all occupied hospital construction; must be filed with the permit application to Georgia DPH",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "General Acute Care Hospital",
+      "Critical Access Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "PLAN REVIEW COMMENT \u2014 GA-INF-002 (Infection Control Risk Assessment \u2014 Construction): The permit application submitted to the Georgia Department of Public Health, Office of Health Planning, does not include an Infection Control Risk Assessment (ICRA) plan as required by Rule 290-9-7-.02 for construction and renovation activities in or adjacent to occupied licensed hospital facilities. The scope of work described in the application \u2014 including demolition, above-ceiling work, and penetrations of existing walls in proximity to patient care areas \u2014 constitutes a Class III or Class IV ICRA risk activity under the APIC classification matrix. An ICRA plan addressing construction barrier type, negative pressure requirements, traffic control, dust and moisture containment, and patient relocation protocols must be submitted to and accepted by Georgia DPH before the construction permit can be issued.",
+    "fix_template": "1. Complete the ICRA risk classification matrix (per APIC guidelines or equivalent) for each phase and location of construction activity; determine the activity type (A\u2013D) and patient risk level for each phase; document the completed matrix in the ICRA plan submitted to Georgia DPH per Rule 290-9-7-.02.\n2. Develop a written ICRA plan specifying temporary construction barrier type (minimum 0.25-inch drywall for Class III activities or hard-wall isolation for Class IV), barrier installation locations, and provisions for HEPA-filtered negative air machines maintaining negative pressure within the construction zone.\n3. Provide a phasing diagram showing the sequence of construction, location of barriers at each phase, contractor entry and egress routes, and debris transport paths that avoid occupied patient care corridors; include tacky mat locations at all construction zone exits.\n4. Designate an Infection Control Risk Assessment Officer (ICRAO) responsible for pre-construction walk-throughs, daily barrier inspections, and sign-off on phased construction access; include the ICRAO's name and contact information in the submitted ICRA plan.\n5. Establish an on-site daily ICRA inspection log documenting barrier integrity, negative pressure readings at barrier penetrations, and any corrective actions taken; present the completed log to the Georgia DPH inspector during all site inspections and retain records for a minimum of three years per Rule 290-9-7 documentation requirements.",
+    "code_references": [
+      "Rule 290-9-7-.02",
+      "Rule 290-9-7-.03",
+      "APIC ICRA Matrix 2021",
+      "Joint Commission EC.02.06.05",
+      "O.C.G.A. \u00a731-7-1"
+    ],
+    "severity_override": "High"
   },
   {
     "id": "NC-WIN-001",
@@ -3678,259 +3737,198 @@
     "id": "OH-EP-001",
     "state": "OH",
     "ahj": "ODH",
-    "rule_source": "OAC 3701-83",
-    "discipline": "Emergency Power",
-    "description": "Emergency power system 96-hour fuel supply required; written load-shedding plan required and submitted with construction documents",
+    "rule_source": "OAC-3701-83",
+    "discipline": "Electrical / Emergency Power",
+    "description": "Emergency generator minimum 96-hour on-site fuel supply required for Ohio licensed hospitals",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital",
-      "Critical Access Hospital"
+      "Acute Care Hospital"
     ],
     "trigger_systems": [
-      "emergency power",
       "generator",
-      "ATS",
-      "automatic transfer switch",
-      "essential electrical system"
+      "emergency power"
     ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "ODH PLAN REVIEW COMMENT \u2014 EMERGENCY POWER (OH-EP-001): The electrical construction documents submitted for the {occupancy} project in {county} County, {city} do not demonstrate compliance with the emergency electrical system requirements of Ohio Administrative Code 3701-83-16 and the FGI Guidelines for Design and Construction of Hospitals as adopted by the Ohio Department of Health (ODH). The following deficiencies have been identified: (1) the generator fuel storage capacity has not been specified or demonstrated to provide a minimum of 96 hours of continuous operation at full essential electrical system load without resupply; and/or (2) a written load-shedding plan identifying which non-critical electrical loads will be sequentially dropped in the event of a prolonged emergency has not been included in the submission. Ohio Administrative Code 3701-83-16 requires both provisions for all licensed hospitals. Construction documents that omit or inadequately address emergency power requirements will not be approved by the ODH Plans Examination Section, and the project may not proceed to construction until these deficiencies are resolved.",
-    "fix_template": "1. Provide a generator sizing calculation on the electrical drawings or in the specifications demonstrating that the on-site fuel storage system (including tank capacity plus any permanent piping connections to a bulk fuel delivery system) is sufficient for 96 continuous hours of operation at the calculated full essential electrical system load; include a load schedule tabulating all connected essential loads.\n2. Specify the automatic transfer switch (ATS) performance: confirm that each ATS serving Type 1 essential electrical system loads (life safety and critical branches) transfers within 10 seconds of normal-power failure per NFPA 110 and FGI Guidelines Section 2.1-8.3.\n3. Prepare and include in the construction documents a written Load-Shedding Plan identifying all non-essential and deferrable loads served by the emergency generator; organize loads by priority tier and document the sequence and method (manual or automatic) by which each tier will be shed under sustained emergency conditions.\n4. Confirm on the site plan that the generator fuel tank location, secondary containment, vent pipe terminations, and fill-point access comply with Ohio EPA and local fire department requirements; note the 30-day testing and fuel-level inspection schedule in the O&M section of the specifications.\n5. Resubmit revised electrical drawings, load calculations, and Load-Shedding Plan to the ODH Plans Examination Section, 246 N. High Street, Columbus, OH 43215, for continued review and approval.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 EMERGENCY POWER / FUEL SUPPLY (96-HOUR): The electrical specifications and generator design documents for the proposed {occupancy} do not comply with OAC \u00a73701-83-54, which requires a minimum 96-hour on-site fuel supply for essential electrical system generators at Ohio-licensed hospitals. The submitted specifications indicate a fuel storage capacity providing less than 96 hours of generator operation at full rated load. This Ohio ODH requirement exceeds the NFPA 110 standard and is specific to Ohio-licensed healthcare facilities. Revise the fuel storage system to provide the required 96-hour minimum supply and resubmit construction documents to ODH for review.",
+    "fix_template": "1. Calculate the fuel consumption rate (gallons per hour) for all emergency generators at full rated load using manufacturer-certified consumption data; size the on-site fuel storage to provide a minimum 96-hour supply at that rate and document the sizing calculation in the electrical design narrative.\n2. Show on the electrical and mechanical/plumbing drawings the revised fuel tank configuration, secondary containment, fill connections, overflow/vent, level gauging, and fuel transfer pump arrangement; specify tank design per NFPA 30 and NFPA 110 Level 1.\n3. Include in Division 26 electrical specifications a reference to OAC \u00a73701-83-54 and NFPA 110 Level 1 compliance; specify that all automatic transfer switches transfer to emergency power within 10 seconds for life safety and critical branch loads per NFPA 99.\n4. Coordinate the fuel storage installation with Ohio EPA Division of Air Pollution Control and Ohio Bureau of Underground Storage Tank Regulations (BUSTR) for above-ground or underground storage tank registration; include tank registration documentation in the project closeout checklist.",
     "code_references": [
-      "OAC 3701-83-16",
-      "NFPA 110-2021 Section 7.9 and 8.3",
-      "FGI Guidelines 2022 Section 2.1-8.3",
-      "NFPA 99-2021 Chapter 6"
+      "OAC \u00a73701-83-54",
+      "NFPA 110",
+      "NFPA 30",
+      "NFPA 99"
     ],
-    "severity_override": "Critical"
-  },
-  {
-    "id": "OH-INF-001",
-    "state": "OH",
-    "ahj": "ODH",
-    "rule_source": "OAC 3701-83",
-    "discipline": "Infection Control / Ventilation",
-    "description": "Airborne Infection Isolation (AII) room required with negative pressure, minimum 12 ACH, and direct exhaust to outdoors",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital",
-      "Critical Access Hospital"
-    ],
-    "trigger_systems": [
-      "HVAC",
-      "ventilation",
-      "exhaust",
-      "air handling"
-    ],
-    "trigger_rooms": [
-      "isolation room",
-      "AII room",
-      "airborne infection isolation",
-      "negative pressure room"
-    ],
-    "trigger_seismic_zones": [],
-    "violation_template": "ODH PLAN REVIEW COMMENT \u2014 INFECTION CONTROL / VENTILATION (OH-INF-001): The mechanical construction documents submitted for the {occupancy} project in {county} County do not demonstrate compliance with the Airborne Infection Isolation (AII) room ventilation requirements of Ohio Administrative Code 3701-83-35 and ASHRAE 170-2021 Table 7.1 as adopted by ODH. The submitted mechanical drawings and/or air-balance schedule do not confirm one or more of the following mandatory requirements: (1) each AII room must be maintained at a continuous negative pressure differential with respect to the adjacent corridor and all connecting spaces; (2) a minimum of 12 total air changes per hour (ACH) must be provided, with all exhaust air discharged directly to the building exterior and not recirculated to any other space; (3) the exhaust discharge point must be located and detailed to prevent re-entrainment into any air intake per ASHRAE 170-2021. Failure to provide properly designed AII rooms places patients and staff at risk for airborne pathogen transmission and will result in denial of ODH construction approval.",
-    "fix_template": "1. Add pressure-relationship diagrams to the mechanical drawings showing a minimum negative pressure differential of -0.01 inches water gauge (2.5 Pa) in each AII room relative to the adjacent corridor and all connecting vestibule or anteroom spaces; specify continuous monitoring via a visual pressure indicator (magnahelic gauge or electronic monitor) visible from the corridor.\n2. Revise the air-balance schedule to confirm a minimum 12 total air changes per hour in each AII room; identify supply CFM, exhaust CFM, and net pressure relationship for each room and provide a room-by-room summary table on the mechanical drawings.\n3. Route all AII room exhaust ductwork to dedicated exhaust fans that discharge directly to the building exterior; show the exhaust fan locations and duct routing on mechanical floor plans and roof plan, and confirm that discharge points are a minimum of 25 feet from any operable window or air intake per ASHRAE 170-2021 and local jurisdiction requirements.\n4. Specify that no air from the AII room exhaust system is recirculated to any other space; if a heat-recovery device is used on the exhaust system, specify a non-cross-contaminating type (run-around coil or rotary wheel with purge sector) and provide documentation of the manufacturer's leakage performance.\n5. Resubmit revised mechanical drawings, pressure-relationship diagrams, and air-balance schedule to the ODH Plans Examination Section in Columbus for review and approval; coordinate with the facility infection preventionist to document ICRA measures during construction.",
-    "code_references": [
-      "OAC 3701-83-35",
-      "ASHRAE 170-2021 Table 7.1",
-      "FGI Guidelines 2022 Section 2.1-3.6",
-      "CDC Guidelines for Environmental Infection Control 2003"
-    ],
-    "severity_override": "Critical"
-  },
-  {
-    "id": "OH-SU-001",
-    "state": "OH",
-    "ahj": "ODH",
-    "rule_source": "OAC 3701-83",
-    "discipline": "Surgical Suite / HVAC",
-    "description": "Operating room minimum 360 SF net; 20 ACH total; humidity 20-60 percent; temperature 68-75 degrees F required",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital",
-      "Ambulatory Surgical Center"
-    ],
-    "trigger_systems": [
-      "HVAC",
-      "ventilation",
-      "humidity control",
-      "temperature control"
-    ],
-    "trigger_rooms": [
-      "operating room",
-      "OR",
-      "surgical suite",
-      "procedure room"
-    ],
-    "trigger_seismic_zones": [],
-    "violation_template": "ODH PLAN REVIEW COMMENT \u2014 SURGICAL SUITE / HVAC (OH-SU-001): Review of the architectural and mechanical construction documents for the {occupancy} project in {county} County reveals noncompliance with the operating room design standards required by Ohio Administrative Code 3701-83-37 and the FGI Guidelines for Design and Construction of Hospitals as adopted by ODH. One or more of the following mandatory requirements have not been met: (1) the net clear floor area of one or more operating rooms is less than the required minimum of 360 square feet, exclusive of fixed and moveable equipment; (2) the air-balance schedule does not confirm a minimum of 20 total air changes per hour; (3) the HVAC design does not specify or demonstrate maintenance of relative humidity within the 20% to 60% range; and/or (4) the temperature control specifications do not confirm maintenance of a temperature range of 68\u00b0F to 75\u00b0F when the OR is in use. All four requirements are mandatory under OAC 3701-83-37. Documents with unresolved OR deficiencies will not receive ODH approval.",
-    "fix_template": "1. Add net clear floor area calculations for each operating room to the architectural floor plan; confirm a minimum of 360 square feet net, measured from finished face of wall to finished face of wall and excluding fixed casework, columns, equipment bays, and structural projections; revise room dimensions or layout as needed.\n2. Update the air-balance schedule on the mechanical drawings to list for each OR: supply air CFM, exhaust air CFM, total ACH, outside-air ACH, and pressure relationship (positive with respect to all adjacent spaces); confirm a minimum 20 total ACH and minimum 4 OA ACH per ASHRAE 170-2021 Table 7.1.\n3. Specify humidity monitoring and control: include a humidifier and dehumidification capability in the AHU or in-room, sized and controlled to maintain RH between 20% and 60% at all occupied times; specify BAS alarms for RH values outside this range and document a response protocol.\n4. Specify temperature control system capable of maintaining 68\u00b0F to 75\u00b0F in each OR under full surgical load and all seasons; provide equipment schedules confirming sensible cooling and heating capacity; specify thermostat locations inside the OR and confirm that nursing staff can request setpoint adjustments within the permitted range.\n5. Resubmit revised architectural floor plans and mechanical drawings, including the updated OR air-balance schedule, AHU equipment schedule, and HVAC control sequence, to the ODH Plans Examination Section for review and approval.",
-    "code_references": [
-      "OAC 3701-83-37",
-      "ASHRAE 170-2021 Table 7.1",
-      "FGI Guidelines 2022 Section 2.2-3.4",
-      "NFPA 99-2021 Chapter 6"
-    ],
-    "severity_override": "Critical"
+    "severity_override": "High"
   },
   {
     "id": "OH-PR-001",
     "state": "OH",
     "ahj": "ODH",
-    "rule_source": "OAC 3701-83",
-    "discipline": "Patient Room / Architectural",
-    "description": "Minimum 100 SF single-occupancy patient room; 80 SF per bed double-occupancy; in-room toilet required for ICU patient rooms",
+    "rule_source": "OAC-3701-83",
+    "discipline": "Architecture",
+    "description": "Patient room minimum 120 SF clear with 13-ft clear dimension required; private toilet room required for new construction",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital",
-      "Critical Access Hospital"
+      "Acute Care Hospital"
     ],
     "trigger_systems": [],
     "trigger_rooms": [
       "patient room",
-      "patient bedroom",
-      "ICU room",
-      "intensive care unit",
-      "semi-private room"
+      "inpatient",
+      "medical surgical"
     ],
     "trigger_seismic_zones": [],
-    "violation_template": "ODH PLAN REVIEW COMMENT \u2014 PATIENT ROOM / ARCHITECTURAL (OH-PR-001): The architectural construction documents submitted for the {occupancy} project in {county} County do not comply with the minimum patient room area requirements and toilet access standards of Ohio Administrative Code 3701-83-32 and the FGI Guidelines as adopted by ODH. The following deficiencies have been identified: (1) one or more single-occupancy patient rooms appear to provide less than 100 square feet of clear floor area, exclusive of toilet rooms, closets, vestibules, and alcoves; (2) one or more double-occupancy (two-bed) rooms appear to provide less than 80 square feet of clear floor area per bed space; and/or (3) one or more patient rooms designated as intensive care unit (ICU) beds do not provide an in-room toilet and handwashing station within the room envelope as required by OAC 3701-83-32 for ICU settings. These standards are prerequisites for ODH facility licensure and must be addressed in revised construction documents.",
-    "fix_template": "1. Provide net clear floor area calculations on the architectural floor plan for every patient room; confirm single-occupancy rooms are 100 SF minimum and double-occupancy rooms provide 80 SF per bed space, measuring from finished face of wall and excluding toilet rooms, closets, lockers, vestibule areas, and fixed equipment footprints.\n2. Revise any non-compliant rooms by adjusting room dimensions, removing non-essential fixed elements from the room footprint, or reconfiguring the floor plan; clearly dimension all revised patient rooms on the submitted drawings.\n3. For all ICU patient room positions, confirm that a private toilet room with water closet and handwashing sink is provided within the room envelope and accessible without entering a public corridor; show the toilet room on the floor plan with interior dimensions and confirm ADA-compliant accessible clearances per the 2010 ADA Standards as adopted in Ohio.\n4. Verify that all patient toilet rooms comply with Ohio plumbing code (OPC) requirements for fixture supply and drain connections; confirm handwashing sinks in patient rooms meet ODH infection control standards with hands-free (sensor or wrist-blade) operation specified in the plumbing fixture schedule.\n5. Resubmit revised architectural floor plans with room-by-room area calculations and annotated toilet adjacency diagrams to the ODH Plans Examination Section, 246 N. High Street, Columbus, OH 43215, for review and approval.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 PATIENT ROOM MINIMUM DIMENSIONS: The floor plan for the proposed {occupancy} does not demonstrate compliance with OAC \u00a73701-83-54, which specifies minimum patient room dimensions for Ohio-licensed hospitals. Single-bed patient rooms must provide a minimum clear floor area of 120 SF exclusive of toilet room, closet, and vestibule areas, with a minimum clear dimension of 13 feet measured between finished wall faces. Additionally, for new hospital construction, a private toilet room with water closet and lavatory must be provided within each patient room without requiring access through the corridor. One or more patient rooms on the submitted floor plan do not meet these minimum requirements. Revise the drawings to demonstrate compliance.",
+    "fix_template": "1. Revise the patient room floor plan to achieve a minimum 120 SF clear floor area measured exclusive of the toilet room, entry vestibule or alcove, and wardrobe/closet areas; confirm the minimum 13-foot clear dimension between finished wall faces in at least one direction and annotate both measurements on the floor plan.\n2. Provide a private toilet room directly accessible from each patient room (not through the corridor) in all new construction; the toilet room must contain at minimum a water closet and lavatory and meet ADA accessibility requirements per the Ohio Building Code (2010 ADA Standards).\n3. Include dimensioned enlarged plans for each patient room type at minimum 1/4-inch scale showing bed position, headwall equipment, toilet room, circulation clearance at bed sides and foot (minimum 3 feet clear at foot and each side for transfer), and door swing.\n4. Update the room schedule to reflect the revised dimensions; identify each room's net clear area and confirm compliance with OAC \u00a73701-83-54 minimum standards in the project code compliance matrix submitted to ODH.",
     "code_references": [
-      "OAC 3701-83-32",
-      "FGI Guidelines 2022 Section 2.2-2.2",
-      "ADA Standards for Accessible Design 2010",
-      "Ohio Plumbing Code (OPC) 2017"
+      "OAC \u00a73701-83-54",
+      "FGI 2022 \u00a72.1-2.1.1",
+      "2010 ADA Standards"
     ],
     "severity_override": "High"
+  },
+  {
+    "id": "OH-ASC-001",
+    "state": "OH",
+    "ahj": "ODH",
+    "rule_source": "OAC-3702-11",
+    "discipline": "Architecture",
+    "description": "Ohio licensed ambulatory surgical facilities require minimum 200 SF clear floor area per operating room",
+    "trigger_occupancies": [
+      "Ambulatory Surgery Center",
+      "Surgical Center"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [
+      "operating room",
+      "OR"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "PLAN REVIEW COMMENT \u2014 ASC OPERATING ROOM MINIMUM SIZE: The floor plan for the proposed ambulatory surgical facility does not comply with OAC \u00a73702-11-13, which requires a minimum 200 SF clear floor area per operating room in Ohio-licensed ambulatory surgical facilities. The clear floor area must be measured from the interior face of finished walls, excluding fixed casework, equipment recesses, column projections, and scrub sink enclosures. The submitted floor plan indicates one or more operating rooms with clear floor areas below the 200 SF minimum. Provide dimensioned floor plans confirming compliance with the minimum clear area requirement for each OR prior to ODH plan approval.",
+    "fix_template": "1. Revise the operating room floor plan to achieve a minimum 200 SF net clear floor area measured from the interior face of finished walls, excluding fixed casework, equipment alcoves, column projections, and scrub sink enclosures.\n2. Provide an enlarged dimensioned floor plan for each OR annotating the net clear area calculation; confirm that the surgical table, anesthesia zone, instrument tables, and surgical team circulation requirements are accommodated within the revised layout per FGI 2022 ambulatory surgery guidelines.\n3. Include an OR room schedule listing each room's gross area and net clear area; reference OAC \u00a73702-11-13 in the compliance notation for each OR.\n4. Verify that HVAC supply and exhaust air quantities, room pressurization, and filtration requirements per ASHRAE 170 and ODH standards are maintained in the revised OR configuration; provide a revised mechanical room schedule if needed.",
+    "code_references": [
+      "OAC \u00a73702-11-13",
+      "FGI 2022 Part 2 Chapter 3",
+      "ASHRAE 170-2021"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "OH-IC-001",
+    "state": "OH",
+    "ahj": "ODH",
+    "rule_source": "OAC-3701-83",
+    "discipline": "Infection Control",
+    "description": "Comprehensive ICRA plan with class level and physical barrier requirements required for construction in occupied Ohio licensed hospital areas",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "PLAN REVIEW COMMENT \u2014 INFECTION CONTROL RISK ASSESSMENT: The construction documents submitted for the proposed project affecting occupied areas of the {occupancy} do not include a comprehensive Infection Control Risk Assessment (ICRA) plan as required by OAC \u00a73701-83-12. Ohio ODH requires that construction documents for projects affecting occupied licensed hospital areas include a written ICRA identifying the ICRA class level (based on patient risk group and construction activity type) and specifying the physical barrier construction requirements and HVAC isolation measures for each project phase. No ICRA document has been included in the current submittal. Provide the required ICRA prior to ODH plan approval.",
+    "fix_template": "1. Complete an ICRA matrix with the facility infection preventionist identifying the patient risk group and construction activity class for each phase of the project; document the resulting ICRA class level and reference OAC \u00a73701-83-12 in the ICRA report.\n2. Specify in the ICRA the physical barrier types required for the determined class level (e.g., sealed drywall barriers from floor to deck for Class III/IV), HEPA-filtered negative air machine placement and negative pressure monitoring requirements, and construction entry/exit protocols.\n3. Show on the construction documents (phasing plan or dedicated ICRA barrier plan sheet) the locations of all physical barriers for each construction phase, HVAC damper isolation points, negative air machine locations, and construction traffic routes.\n4. Identify the facility infection control officer responsible for ICRA compliance monitoring during construction; confirm the ICRA plan will be maintained on-site and made available for review by ODH surveyors upon request; include the infection control officer's name and contact information in the ICRA report.",
+    "code_references": [
+      "OAC \u00a73701-83-12"
+    ],
+    "severity_override": "High"
+  },
+  {
+    "id": "OH-PHR-001",
+    "state": "OH",
+    "ahj": "ODH",
+    "rule_source": "OAC-4729-17",
+    "discipline": "Architecture / Pharmacy",
+    "description": "Ohio hospital pharmacies must comply with Ohio Board of Pharmacy regulations and USP 797/800 for sterile and hazardous drug compounding",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [
+      "pharmacy",
+      "clean room",
+      "sterile compounding"
+    ],
+    "trigger_seismic_zones": [],
+    "violation_template": "PLAN REVIEW COMMENT \u2014 PHARMACY / STERILE COMPOUNDING: The pharmacy design for the proposed {occupancy} does not demonstrate compliance with OAC Chapter 4729-17 (Ohio Board of Pharmacy regulations) and USP Chapters 797 and 800 for sterile and hazardous drug compounding areas. The construction documents do not include a clean room pressure relationship diagram, HVAC design parameters confirming ISO classification of each compounding space, or documentation addressing USP 800 hazardous drug area requirements. Ohio hospital pharmacy construction must also be coordinated with the Ohio State Board of Pharmacy in addition to ODH. Provide the required pharmacy design documentation prior to plan approval.",
+    "fix_template": "1. Provide a pressure relationship diagram for the pharmacy clean room suite indicating the ISO classification of each space (ISO 5 primary engineering control, ISO 7 buffer room, ISO 8 ante room), directional airflow, and differential pressure setpoints per USP 797 and USP 800.\n2. Include HVAC design parameters on the mechanical drawings for each clean room space: supply air volume (total ACH and minimum outdoor ACH), HEPA filtration efficiency (99.99% for final filter), temperature (66\u201372\u00b0F), relative humidity (30\u201360%), and room pressurization direction (positive for sterile compounding areas, negative for USP 800 hazardous drug handling rooms).\n3. Specify that all clean room construction finishes (walls, floors, ceilings, pass-through enclosures) are non-shedding, non-porous, seamless, and capable of withstanding pharmaceutical-grade cleaning and disinfecting agents; include USP 797 and USP 800 as governing standards in the pharmacy design specifications.\n4. Coordinate the pharmacy design review with the Ohio State Board of Pharmacy (OBP); notify ODH during the plan review process of OBP coordination and include any OBP correspondence or pre-application meeting notes in the ODH submittal package.",
+    "code_references": [
+      "OAC \u00a74729-17",
+      "OAC \u00a73701-83-54",
+      "USP 797",
+      "USP 800"
+    ],
+    "severity_override": "Medium"
   },
   {
     "id": "OH-FLS-001",
     "state": "OH",
     "ahj": "ODH",
-    "rule_source": "OAC 3701-83",
-    "discipline": "Fire and Life Safety",
-    "description": "Ohio Fire Code Chapter 19 healthcare occupancies; NFPA 101-2021 and NFPA 13 automatic sprinklers required throughout",
+    "rule_source": "OAC-3701-83",
+    "discipline": "Fire Protection",
+    "description": "Complete automatic fire sprinkler system per NFPA 13 required throughout all new Ohio licensed hospital construction; major renovations (>50% alteration) require full sprinkler retrofit",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital",
-      "Critical Access Hospital",
-      "Ambulatory Surgical Center"
+      "Acute Care Hospital"
     ],
     "trigger_systems": [
       "sprinkler",
-      "fire suppression",
-      "fire alarm",
       "fire protection"
     ],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "ODH PLAN REVIEW COMMENT \u2014 FIRE AND LIFE SAFETY (OH-FLS-001): The fire protection and life safety construction documents submitted for the {occupancy} project in {county} County do not demonstrate compliance with the Ohio Fire Code (OFC) Chapter 19 governing healthcare occupancies, the 2021 edition of NFPA 101 (Life Safety Code) as adopted by ODH, and NFPA 13 (Standard for the Installation of Sprinkler Systems). Specifically, the submitted documents do not adequately confirm: (1) that an automatic sprinkler system designed and installed in accordance with NFPA 13 is provided throughout the entire facility, including all mechanical spaces, storage rooms, and interstitial areas; (2) that the fire alarm system meets NFPA 72 requirements with full coverage notification appliances and voice evacuation; and/or (3) that the construction type, occupancy separation, corridor fire ratings, and exit access travel distances comply with NFPA 101-2021 Chapter 18 for new healthcare occupancies or Chapter 19 for existing healthcare occupancies. ODH will not issue plan approval for healthcare facilities with unresolved fire and life safety deficiencies.",
-    "fix_template": "1. Provide complete NFPA 13 sprinkler system drawings including: a site and floor-plan layout showing all sprinkler head types and locations, hydraulic calculations with water supply analysis, riser diagram, and a specification section referencing the NFPA 13 edition being applied; confirm full building coverage including all storage, mechanical, and interstitial spaces.\n2. Submit NFPA 72 fire alarm system drawings including initiating device locations, notification appliance layout, mass-notification or voice-evacuation system design, fire alarm control panel (FACP) location, and a complete system narrative; confirm supervised automatic sprinkler water-flow and tamper-switch monitoring.\n3. Provide a code analysis on the drawings or in a separate code compliance narrative demonstrating compliance with NFPA 101-2021 Chapter 18 (new) or Chapter 19 (existing): confirm construction type, occupancy classification, compartmentation (smoke compartment areas \u2264 22,500 SF), fire-rated corridor construction, exit access travel distances, and suite arrangements.\n4. Coordinate with the Ohio State Fire Marshal's Office (OSFM) and local fire department for separate fire protection system permits; provide ODH with a copy of the OSFM or local fire department approval before ODH issues a final construction approval.\n5. Resubmit coordinated fire protection, fire alarm, and architectural code-compliance drawings to the ODH Plans Examination Section and confirm that the local Authority Having Jurisdiction has been notified of the project.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 AUTOMATIC FIRE SPRINKLER SYSTEM: The fire protection drawings for the proposed {occupancy} do not demonstrate that a complete automatic fire sprinkler system per NFPA 13 is provided throughout the entire new hospital building as required by the Ohio Building Code (OBC) \u00a7903 and OAC \u00a73701-83. All areas of a new Ohio-licensed hospital must be protected by an automatic fire sprinkler system, including mechanical and electrical rooms, storage areas, interstitial spaces, concealed ceiling spaces, and all occupied areas. Additionally, for renovation projects where alterations exceed 50% of the building value, the Ohio Building Code requires that the entire existing building be fully sprinklered as part of the project. The current drawings do not show complete sprinkler coverage. Revise the drawings accordingly.",
+    "fix_template": "1. Revise the fire protection drawings to show complete automatic sprinkler coverage throughout all areas of the building per NFPA 13 (Ohio Building Code adopted edition), including concealed ceiling spaces, mechanical and electrical rooms, and all occupied and unoccupied areas.\n2. For renovation projects: calculate the estimated construction cost as a percentage of current assessed building replacement cost; if the renovation exceeds 50% of building value, prepare and include a phased sprinkler retrofit plan for the entire existing building as part of this project.\n3. Provide a hydraulic design summary note on the fire protection drawings confirming the design density, area of application, water supply data (public water flow test or private supply specifications), and residual pressure at the most remote sprinkler; include in the Division 21 specifications.\n4. Specify sprinkler head types appropriate for each area (semi-recessed or concealed in patient rooms, quick-response in hazardous areas); in behavioral health areas, coordinate with the architectural team to specify anti-ligature concealed sprinkler heads.",
     "code_references": [
-      "OAC 3701-83-20",
-      "Ohio Fire Code (OFC) 2023 Chapter 19",
-      "NFPA 101-2021 Chapters 18 and 19",
-      "NFPA 13-2022",
-      "NFPA 72-2022"
+      "OBC \u00a7903",
+      "OAC \u00a73701-83",
+      "NFPA 13",
+      "NFPA 101"
     ],
-    "severity_override": "Critical"
+    "severity_override": "High"
+  },
+  {
+    "id": "OH-CON-001",
+    "state": "OH",
+    "ahj": "ODH",
+    "rule_source": "ORC-3702-51",
+    "discipline": "Administrative / Regulatory",
+    "description": "Ohio CON required for hospital capital expenditures exceeding $1.5 million or addition of services/beds; must precede ODH plan review",
+    "trigger_occupancies": [
+      "Occupied Hospital",
+      "Acute Care Hospital"
+    ],
+    "trigger_systems": [],
+    "trigger_rooms": [],
+    "trigger_seismic_zones": [],
+    "violation_template": "PLAN REVIEW COMMENT \u2014 CERTIFICATE OF NEED (CON): The proposed project for the {occupancy} appears to involve capital expenditures exceeding $1.5 million and/or the addition of new inpatient beds or healthcare services that require a Certificate of Need (CON) from the Ohio Department of Health under ORC \u00a73702.51. CON approval must be obtained before ODH plan review can be initiated for qualifying projects. The current submittal does not include a CON approval letter or an ODH determination confirming the project does not require CON review. Provide this documentation before ODH plan review will proceed.",
+    "fix_template": "1. Determine whether the proposed project meets the CON threshold under ORC \u00a73702.51 by evaluating the total capital expenditure against the current Ohio CON threshold ($1.5 million for hospital projects) and whether the project involves adding new licensed beds or regulated healthcare services.\n2. If CON is required, submit a CON application to the Ohio Department of Health Certificate of Need Program and obtain a CON approval letter before submitting construction documents to ODH Bureau of Survey and Certification.\n3. If the project does not require CON (below threshold, replacement-in-kind, or exempt category under ORC \u00a73702.51), obtain a written CON exemption determination from the ODH Certificate of Need Program and include it in the ODH plan review submittal package.\n4. Include the CON approval letter or written exemption determination as the first document in the ODH construction document submittal; ODH will not initiate plan review for qualifying projects without this documentation.",
+    "code_references": [
+      "ORC \u00a73702.51"
+    ],
+    "severity_override": "Medium"
   },
   {
     "id": "OH-GEN-001",
     "state": "OH",
     "ahj": "ODH",
-    "rule_source": "OAC 3701-83",
-    "discipline": "Plan Review / General",
-    "description": "Ohio Department of Health plan review required; submit to Columbus office before beginning construction on any licensed healthcare facility",
+    "rule_source": "OAC-3701-83",
+    "discipline": "Administrative / Plan Review",
+    "description": "ODH Bureau of Survey and Certification plan review submission required with completed application, floor plans, MEP plans, and project narrative",
     "trigger_occupancies": [
       "Occupied Hospital",
-      "Acute Care Hospital",
-      "Critical Access Hospital",
-      "Ambulatory Surgical Center",
-      "Nursing Home"
+      "Acute Care Hospital"
     ],
     "trigger_systems": [],
     "trigger_rooms": [],
     "trigger_seismic_zones": [],
-    "violation_template": "ODH PLAN REVIEW COMMENT \u2014 PLAN REVIEW / GENERAL (OH-GEN-001): This comment is issued pursuant to Ohio Administrative Code 3701-83-05, which requires that construction documents for the new construction, substantial renovation, or alteration of any ODH-licensed healthcare facility be submitted to and approved by the Ohio Department of Health Plans Examination Section before construction may begin. A review of the submission package for the {occupancy} project in {county} County, {city} indicates that the submittal is incomplete. One or more of the following elements are missing or deficient: (a) a completed ODH Building Project Registration form; (b) design professional seals and signatures from licensed Ohio architects and engineers of record on all discipline drawings; (c) a project description or program statement identifying the scope of work, affected licensed occupancy, bed count changes, and project cost; and/or (d) evidence of a concurrent local building department permit application. Beginning construction without a written ODH plan approval is a violation of OAC 3701-83-05 and may result in a Stop Work Order, required correction of non-compliant work at the owner's expense, and delay of ODH facility licensure.",
-    "fix_template": "1. Complete and submit the ODH Building Project Registration form available on the ODH Health Care Regulation website; include the ODH facility license number, facility address, name of the owner's representative, total estimated construction cost, and names of all licensed Ohio design professionals of record.\n2. Ensure all construction drawings are sealed, signed, and dated by a licensed Ohio architect (architectural drawings) and licensed Ohio professional engineers (structural, mechanical, electrical, plumbing, and fire protection drawings) per Ohio Revised Code Chapter 4703 and Chapter 4733; unlicensed or out-of-state seals require a specific authorization from the applicable Ohio licensing board.\n3. Prepare a written project description covering: project type (new construction, addition, renovation, change of use), affected departments, scope of licensed services impacted, any change to licensed bed count or service types, phasing plan, and estimated construction schedule.\n4. Submit three (3) paper sets of complete construction documents (or electronic submission through the ODH e-Plans portal) to the ODH Plans Examination Section, 246 N. High Street, 7th Floor, Columbus, OH 43215; include all architectural, structural, mechanical, electrical, plumbing, fire protection, and civil drawings, together with specifications and energy compliance documentation.\n5. Submit a concurrent application for a local building permit to the Authority Having Jurisdiction (AHJ) having local building code enforcement jurisdiction over the project site; provide ODH with a copy of the local permit application receipt, and do not begin construction until both the ODH written approval and the local building permit are in hand.",
+    "violation_template": "PLAN REVIEW COMMENT \u2014 ODH PLAN REVIEW SUBMISSION REQUIREMENTS: The construction document submittal for the proposed {occupancy} is incomplete and does not meet the requirements of OAC \u00a73701-83-02 for Ohio licensed hospital construction. A complete ODH Bureau of Survey and Certification plan review submittal must include a completed ODH application form, floor plans (minimum 1/8-inch scale), mechanical/HVAC and plumbing plans, electrical plans, fire protection plans, a project narrative describing the scope of work, and the applicable plan review fee. The current submittal is missing one or more of these required elements. Resubmit with a complete package prior to ODH review.",
+    "fix_template": "1. Complete the ODH Bureau of Survey and Certification plan review application form (available from ODH) in full, including facility name, ODH license number, project scope description, estimated construction cost, bed count impact, and authorized signature from the facility administrator.\n2. Prepare a project narrative (minimum 2 pages) describing the scope of work, affected patient care areas, occupancy classification, fire protection approach, and infection control strategy; include the narrative in the submittal package.\n3. Assemble the complete construction document set per the ODH submittal checklist: site plan; architectural floor plans, sections, and schedules at minimum 1/8-inch scale; reflected ceiling plans; mechanical HVAC plans and schedules; plumbing plans; electrical single-line diagram and lighting plans; fire protection plans; and project specifications.\n4. Submit the complete package including applicable plan review fee to the ODH Bureau of Survey and Certification, 246 North High Street, Columbus, OH 43215; retain the ODH acknowledgment of submittal receipt for permit tracking and follow up on plan review status with the assigned ODH plan reviewer.",
     "code_references": [
-      "OAC 3701-83-05",
-      "OAC 3701-83-02",
-      "Ohio Revised Code \u00a73702.30",
-      "Ohio Revised Code \u00a74703 (Architecture)",
-      "Ohio Revised Code \u00a74733 (Engineering)"
+      "OAC \u00a73701-83-02"
     ],
-    "severity_override": "High"
-  },
-  {
-    "id": "OH-GEN-002",
-    "state": "OH",
-    "ahj": "ODH",
-    "rule_source": "OAC 3701-83",
-    "discipline": "Licensure / Certificate of Occupancy",
-    "description": "Certificate of Occupancy from local AHJ and ODH survey required before the facility may open or expand licensed services",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital",
-      "Critical Access Hospital",
-      "Ambulatory Surgical Center",
-      "Nursing Home"
-    ],
-    "trigger_systems": [],
-    "trigger_rooms": [],
-    "trigger_seismic_zones": [],
-    "violation_template": "ODH PLAN REVIEW COMMENT \u2014 LICENSURE / CERTIFICATE OF OCCUPANCY (OH-GEN-002): This comment is issued as advance notice of the two-step approval process required before any newly constructed or renovated space within the {occupancy} facility in {county} County may be placed into service or occupied by patients. Pursuant to Ohio Administrative Code 3701-83-07, the facility must obtain: (1) a Certificate of Occupancy (CO) issued by the local Authority Having Jurisdiction (the local building department) confirming that the construction meets the adopted local building code; and (2) a completed ODH on-site survey by an ODH Healthcare Surveyor confirming that the completed space meets all applicable ODH licensing regulations before the facility begins providing services from that space. Neither approval alone is sufficient \u2014 both must be obtained before patients may be seen in the new or renovated area. ODH will schedule the on-site survey only after the facility notifies ODH in writing that construction is complete and a local CO has been issued. Occupying or providing services in a space before both approvals are obtained is a licensing violation under Ohio Revised Code \u00a73702.30.",
-    "fix_template": "1. Upon substantial completion of construction, schedule and pass all required inspections with the local building department; obtain the final Certificate of Occupancy (CO) or Temporary Certificate of Occupancy (TCO) from the local AHJ and retain the original for the facility's permanent records.\n2. Upon receipt of the local CO or TCO, notify the ODH Healthcare Regulatory Section in writing \u2014 including the ODH facility license number, name of the licensed administrator, a description of the completed space, and a copy of the local CO \u2014 to request an ODH on-site licensure survey; allow a minimum of 30 days for ODH to schedule the survey.\n3. Ensure the facility is fully ready for the ODH survey before the survey date: all equipment is installed and operational, staff are trained and in place, required policies and procedures are in place, and the space is furnished and ready for patient use; a survey finding of substantial non-compliance will require a repeat survey and may delay licensure.\n4. Do not allow patients to occupy the new or renovated space, or to receive services from it, until the ODH Surveyor has provided written notice of a satisfactory survey outcome and ODH has issued an amended or updated facility license covering the new space or service.\n5. Retain copies of the local CO, ODH survey report, and the updated ODH license in the facility's permanent regulatory compliance files and make them available for inspection upon request by ODH or any accreditation body.",
-    "code_references": [
-      "OAC 3701-83-07",
-      "OAC 3701-83-05",
-      "Ohio Revised Code \u00a73702.30",
-      "Ohio Revised Code \u00a73702.11"
-    ],
-    "severity_override": "High"
-  },
-  {
-    "id": "OH-PHARM-001",
-    "state": "OH",
-    "ahj": "ODH",
-    "rule_source": "OAC 3701-83",
-    "discipline": "Pharmacy / Sterile Compounding",
-    "description": "Sterile compounding pharmacy must comply with USP Chapter 797; negative pressure ISO 7 cleanroom required for hazardous drug compounding",
-    "trigger_occupancies": [
-      "Occupied Hospital",
-      "Acute Care Hospital",
-      "Critical Access Hospital"
-    ],
-    "trigger_systems": [
-      "HVAC",
-      "ventilation",
-      "exhaust",
-      "cleanroom",
-      "pharmacy"
-    ],
-    "trigger_rooms": [
-      "pharmacy",
-      "sterile compounding",
-      "cleanroom",
-      "IV room",
-      "ante-room",
-      "buffer room",
-      "hazardous drug"
-    ],
-    "trigger_seismic_zones": [],
-    "violation_template": "ODH PLAN REVIEW COMMENT \u2014 PHARMACY / STERILE COMPOUNDING (OH-PHARM-001): The construction documents submitted for the sterile compounding pharmacy within the {occupancy} project in {county} County do not demonstrate compliance with USP General Chapter <797> (Pharmaceutical Compounding \u2014 Sterile Preparations) as required by the Ohio State Board of Pharmacy (OSBP) and referenced by Ohio Administrative Code 3715-27, or with applicable ODH facility design requirements. The following deficiencies have been identified: (1) the pharmacy cleanroom suite does not clearly demonstrate ISO 7 (Class 10,000) or better air cleanliness classification for the buffer room where sterile preparations are compounded, with continuous positive pressure maintained with respect to the ante-room and adjacent non-classified areas for non-hazardous compounds; (2) for any space designated for Category 1 or Category 2 sterile hazardous drug (HD) compounding, the construction documents do not specify a negative-pressure ISO 7 buffer room with a positive-pressure ISO 7 ante-room, with all HD room exhaust discharged directly to the building exterior through HEPA filtration; and/or (3) the air-balance schedule and room pressure diagrams required to verify cleanroom pressure cascades are not included in the mechanical submission. Failure to design the compounding pharmacy to USP <797> standards may result in denial of the Ohio State Board of Pharmacy operating license and ODH facility approval.",
-    "fix_template": "1. Classify each cleanroom space in the pharmacy suite by ISO cleanroom classification (ISO 5, ISO 7, or ISO 8) on the architectural floor plan; confirm the buffer room(s) achieve ISO 7 at a minimum and that a primary engineering control (PEC) with ISO 5 conditions (laminar airflow hood or biological safety cabinet) is located within the buffer room.\n2. For non-hazardous sterile compounding: specify the buffer room at a continuous positive pressure differential of at least +0.02 to +0.05 inches water gauge (5\u201312.5 Pa) relative to the ante-room, and the ante-room at positive pressure relative to the adjacent general pharmacy or corridor; provide a pressure-cascade diagram on the mechanical drawings.\n3. For hazardous drug (HD) sterile compounding: specify the HD buffer room at a continuous negative pressure of at least -0.01 to -0.03 inches water gauge (-2.5 to -7.5 Pa) relative to the ante-room, and the ante-room at positive pressure relative to the adjacent corridor; provide dedicated HEPA-filtered exhaust for the HD buffer room discharging directly to the building exterior; confirm no recirculation of HD room exhaust air to any other space.\n4. Update the air-balance schedule to list supply CFM, exhaust CFM, net pressure, total ACH, and ISO classification for each cleanroom space; confirm a minimum of 30 ACPH (air changes per hour) in each ISO 7 buffer room per USP <797> Table 5 and FGI Guidelines recommendations; include a room-by-room pressure-cascade diagram as a dedicated mechanical drawing sheet.\n5. Coordinate the pharmacy construction documents with the Ohio State Board of Pharmacy (OSBP) registration requirements under OAC 4729-17 and provide ODH with a copy of the OSBP facility registration or pre-application correspondence; resubmit revised mechanical drawings and pharmacy floor plan to the ODH Plans Examination Section, 246 N. High Street, Columbus, OH 43215, for review and approval.",
-    "code_references": [
-      "OAC 3715-27",
-      "OAC 4729-17 (OSBP Sterile Compounding)",
-      "USP General Chapter <797> 2023",
-      "FGI Guidelines 2022 Section 2.2-8",
-      "ASHRAE 170-2021 Table 7.1"
-    ],
-    "severity_override": "Critical"
+    "severity_override": "Medium"
   }
 ]
