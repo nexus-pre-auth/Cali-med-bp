@@ -67,6 +67,15 @@ MAX_PDF_PAGES = 500
 SUPABASE_URL         = os.getenv("SUPABASE_URL", "")
 SUPABASE_ANON_KEY    = os.getenv("SUPABASE_ANON_KEY", "")
 SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+SUPABASE_JWT_SECRET  = os.getenv("SUPABASE_JWT_SECRET", "")  # Settings > API > JWT Secret
+
+# Stripe
+STRIPE_SECRET_KEY      = os.getenv("STRIPE_SECRET_KEY", "")       # sk_live_... or sk_test_...
+STRIPE_WEBHOOK_SECRET  = os.getenv("STRIPE_WEBHOOK_SECRET", "")   # whsec_...
+STRIPE_PRICE_REVIEW    = os.getenv("STRIPE_PRICE_REVIEW", "")     # price_... one-time $299
+STRIPE_PRICE_MONTHLY   = os.getenv("STRIPE_PRICE_MONTHLY", "")    # price_... subscription $499/mo
+STRIPE_SUCCESS_URL     = os.getenv("STRIPE_SUCCESS_URL", "https://medblueprints.com/welcome")
+STRIPE_CANCEL_URL      = os.getenv("STRIPE_CANCEL_URL",  "https://medblueprints.com/#pricing")
 
 # blueprintIQ rules API (replaces local JSON when set)
 BLUEPRINTIQ_API_URL  = os.getenv("BLUEPRINTIQ_API_URL", "")   # e.g. https://api.blueprintiq.net

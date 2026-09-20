@@ -439,14 +439,19 @@ def serve(host: str, port: int, no_learning: bool) -> None:
 
     from src.api.feedback_endpoints import feedback_router
     from src.api.query_endpoints    import query_router
+    from src.api.billing_endpoints  import billing_router, webhook_router
+    from src.api.firms_endpoints    import firms_router
 
     app = FastAPI(
-        title="HCAI Compliance Engine",
-        description="Real-time AHJ feedback collection, continuous learning, and NL query.",
-        version="2.0.0",
+        title="Medblueprints / CodeBlue Compliance Engine",
+        description="Healthcare construction compliance review, AHJ feedback loop, and billing.",
+        version="3.0.0",
     )
     app.include_router(feedback_router)
     app.include_router(query_router)
+    app.include_router(billing_router)
+    app.include_router(webhook_router)
+    app.include_router(firms_router)
 
     # Serve the dashboard HTML at /feedback/dashboard/ui
     templates_dir = Path(__file__).parent / "templates"

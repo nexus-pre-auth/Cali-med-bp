@@ -530,16 +530,42 @@
   </div>
 </section>
 
+<!-- AUTH MODAL -->
+<div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:12px; padding:40px; max-width:420px; width:90%; position:relative;">
+    <button onclick="closeModal()" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:#718096;">&times;</button>
+    <h2 style="color:#1A365D; margin-bottom:8px;" id="modal-title">Create your account</h2>
+    <p style="color:#718096; font-size:.9rem; margin-bottom:24px;" id="modal-sub">Sign up free — then choose your plan.</p>
+
+    <div id="auth-error" style="display:none; background:#FFF5F5; border-left:4px solid #E53E3E; padding:10px 14px; border-radius:4px; margin-bottom:16px; font-size:.85rem; color:#C53030;"></div>
+
+    <input id="auth-email" type="email" placeholder="Work email" autocomplete="email"
+      style="width:100%; padding:12px 14px; border:1px solid #E2E8F0; border-radius:8px; font-size:1rem; margin-bottom:12px; outline:none;">
+    <input id="auth-password" type="password" placeholder="Password (min 8 chars)" autocomplete="new-password"
+      style="width:100%; padding:12px 14px; border:1px solid #E2E8F0; border-radius:8px; font-size:1rem; margin-bottom:20px; outline:none;">
+
+    <button id="auth-submit" onclick="handleAuth()"
+      style="width:100%; background:#1A365D; color:#fff; border:none; padding:14px; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer;">
+      Continue
+    </button>
+
+    <p style="text-align:center; margin-top:16px; font-size:.85rem; color:#718096;">
+      <span id="modal-switch-text">Already have an account?</span>
+      <a href="#" onclick="toggleMode(); return false;" id="modal-switch-link" style="color:#2B6CB0; font-weight:600;">Sign in</a>
+    </p>
+  </div>
+</div>
+
 <!-- CTA -->
 <section class="cta-section" id="get-started">
   <div class="container">
     <h2>Ready to stop losing money on back-checks?</h2>
     <p>Upload your project documents and get your HCAI compliance report in under 5 minutes.</p>
-    <a href="mailto:hello@medblueprints.com?subject=Plan Review Request" class="btn-primary" style="font-size: 1.1rem; padding: 16px 40px;">
-      Request a Review — $299
-    </a>
+    <button onclick="startCheckout('payment')" class="btn-primary" style="font-size: 1.1rem; padding: 16px 40px; border:none; cursor:pointer;">
+      Review My Plans — $299
+    </button>
     <p style="margin-top: 20px; font-size: .85rem; opacity: .65;">
-      No subscription required. Results in minutes. Cancel anytime.
+      No subscription required. Results in minutes.
     </p>
   </div>
 </section>
@@ -559,6 +585,143 @@
     professional engineering judgment.
   </p>
 </footer>
+
+<script>
+  // ── Config ────────────────────────────────────────────────────────────────
+  const API = '';  // same-origin via Netlify proxy; set to Railway URL in prod
+  const SUPABASE_URL = '';   // injected at deploy time via Netlify env
+  const SUPABASE_ANON = '';  // injected at deploy time via Netlify env
+
+  // ── Pending checkout mode (payment | subscription) ───────────────────────
+  let _checkoutMode = 'payment';
+  let _signInMode   = false;
+
+  // ── Auth modal ────────────────────────────────────────────────────────────
+  function openModal() {
+    document.getElementById('auth-modal').style.display = 'flex';
+    document.getElementById('auth-email').focus();
+  }
+  function closeModal() {
+    document.getElementById('auth-modal').style.display = 'none';
+  }
+  function toggleMode() {
+    _signInMode = !_signInMode;
+    document.getElementById('modal-title').textContent = _signInMode ? 'Sign in' : 'Create your account';
+    document.getElementById('modal-sub').textContent   = _signInMode ? 'Welcome back.' : 'Sign up free — then choose your plan.';
+    document.getElementById('modal-switch-text').textContent = _signInMode ? "Don't have an account?" : 'Already have an account?';
+    document.getElementById('modal-switch-link').textContent = _signInMode ? 'Sign up' : 'Sign in';
+  }
+
+  // ── Start checkout: open auth modal first if not signed in ───────────────
+  function startCheckout(mode) {
+    _checkoutMode = mode || 'payment';
+    const token = sessionStorage.getItem('mb_token');
+    if (token) {
+      doCheckout(token);
+    } else {
+      openModal();
+    }
+  }
+
+  // ── Wire existing pricing buttons ─────────────────────────────────────────
+  document.querySelectorAll('a[href="#get-started"]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      const mode = el.closest('.plan')?.querySelector('.plan-price')?.textContent?.includes('month')
+        ? 'subscription' : 'payment';
+      startCheckout(mode);
+    });
+  });
+
+  // ── Auth form submit ──────────────────────────────────────────────────────
+  async function handleAuth() {
+    const email    = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const btn      = document.getElementById('auth-submit');
+    const errBox   = document.getElementById('auth-error');
+
+    if (!email || password.length < 8) {
+      showError('Please enter a valid email and password (min 8 characters).');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Please wait…';
+    errBox.style.display = 'none';
+
+    try {
+      const endpoint = _signInMode ? '/auth/v1/token?grant_type=password' : '/auth/v1/signup';
+      const resp = await fetch((SUPABASE_URL || '') + endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON || '',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        showError(data.msg || data.error_description || 'Authentication failed.');
+        return;
+      }
+
+      const token = data.access_token;
+      sessionStorage.setItem('mb_token', token);
+      closeModal();
+      await doCheckout(token);
+    } catch (err) {
+      showError('Network error. Please try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Continue';
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('auth-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  // ── Redirect to Stripe Checkout ───────────────────────────────────────────
+  async function doCheckout(token) {
+    try {
+      const resp = await fetch(`${API}/billing/checkout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ mode: _checkoutMode }),
+      });
+
+      if (resp.status === 404) {
+        // Firm not onboarded yet — create profile then retry
+        await fetch(`${API}/firms/onboard`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ name: 'My Firm' }),
+        });
+        return doCheckout(token);
+      }
+
+      const data = await resp.json();
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+      } else {
+        alert('Something went wrong. Please email hello@medblueprints.com');
+      }
+    } catch (err) {
+      alert('Network error reaching the server. Please try again.');
+    }
+  }
+
+  // ── Keyboard: close modal on Escape ──────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
 
 </body>
 </html>

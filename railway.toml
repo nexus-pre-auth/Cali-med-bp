@@ -2,15 +2,23 @@
 # https://docs.railway.app/reference/config-as-code
 #
 # Required environment variables (set in Railway dashboard):
-#   ANTHROPIC_API_KEY     — Claude AI for comment generation
-#   SUPABASE_URL          — Supabase project URL
-#   SUPABASE_SERVICE_KEY  — Supabase service role key (server-side only)
-#   SUPABASE_ANON_KEY     — Supabase anon key
+#   ANTHROPIC_API_KEY      — Claude AI for comment generation
+#   SUPABASE_URL           — Supabase project URL
+#   SUPABASE_SERVICE_KEY   — Supabase service role key (server-side only)
+#   SUPABASE_ANON_KEY      — Supabase anon key
+#   SUPABASE_JWT_SECRET    — Supabase Settings > API > JWT Secret
+#   STRIPE_SECRET_KEY      — Stripe secret key (sk_live_... or sk_test_...)
+#   STRIPE_WEBHOOK_SECRET  — Stripe webhook signing secret (whsec_...)
+#   STRIPE_PRICE_REVIEW    — Stripe price ID for one-time $299 review
+#   STRIPE_PRICE_MONTHLY   — Stripe price ID for $499/month subscription
 #
 # Optional:
+#   STRIPE_SUCCESS_URL    — Redirect after successful payment (default: medblueprints.com/welcome)
+#   STRIPE_CANCEL_URL     — Redirect after cancelled payment
 #   ALERT_WEBHOOK_URL     — Slack/Teams webhook for performance alerts
 #   ALERT_EMAIL_*         — SMTP settings for daily digest emails
 #   BATCH_MAX_WORKERS     — Parallel PDF workers (default: 4)
+#   BLUEPRINTIQ_API_URL   — blueprintIQ rules API (replaces local JSON when set)
 
 [build]
   builder    = "NIXPACKS"
