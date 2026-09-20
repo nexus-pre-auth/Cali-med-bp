@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-09-20T12:18:25.182225",
+  "total_rules": 131,
+  "sources": {
+    "FGI": 22,
+    "CA": 15,
+    "TX": 16,
+    "NY": 16,
+    "FL": 14,
+    "WA": 12,
+    "IL": 10,
+    "PA": 10,
+    "GA": 8,
+    "NC": 8
+  },
+  "by_severity": {
+    "High": 67,
+    "Medium": 32,
+    "Critical": 31,
+    "Low": 1
+  },
+  "by_state": {
+    "all": 22,
+    "TX": 16,
+    "NY": 16,
+    "CA": 15,
+    "FL": 14,
+    "WA": 12,
+    "IL": 10,
+    "PA": 10,
+    "GA": 8,
+    "NC": 8
+  },
+  "top_disciplines": {
+    "Infection Control": 13,
+    "Architecture": 5,
+    "Surgery": 4,
+    "Patient Rooms": 4,
+    "Structural / Wind": 4,
+    "Emergency Department": 3,
+    "Medical Gas": 3,
+    "Electrical": 3,
+    "Fire / Life Safety": 3,
+    "Emergency Power": 3,
+    "Mechanical / Energy": 3,
+    "Electrical / Emergency Power": 3,
+    "Hand Hygiene": 2,
+    "Structural / Seismic": 2,
+    "Plumbing": 2
+  },
+  "files": {
+    "jsonl": "blueprintiq_rules.jsonl",
+    "json": "blueprintiq_rules.json",
+    "system_prompt": "system_prompt_rules.txt"
+  }
+}
