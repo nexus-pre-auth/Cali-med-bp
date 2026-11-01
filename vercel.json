@@ -1,0 +1,39 @@
+{
+  "outputDirectory": "public",
+  "buildCommand": "",
+  "installCommand": "",
+  "framework": null,
+
+  "rewrites": [
+    { "source": "/feedback/:path*",  "destination": "https://api.medblueprints.com/feedback/:path*"  },
+    { "source": "/query/:path*",     "destination": "https://api.medblueprints.com/query/:path*"     },
+    { "source": "/billing/:path*",   "destination": "https://api.medblueprints.com/billing/:path*"   },
+    { "source": "/webhooks/:path*",  "destination": "https://api.medblueprints.com/webhooks/:path*"  },
+    { "source": "/firms/:path*",     "destination": "https://api.medblueprints.com/firms/:path*"     },
+    { "source": "/docs",             "destination": "https://api.medblueprints.com/docs"             },
+    { "source": "/openapi.json",     "destination": "https://api.medblueprints.com/openapi.json"     }
+  ],
+
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options",        "value": "DENY"                            },
+        { "key": "X-Content-Type-Options", "value": "nosniff"                         },
+        { "key": "Referrer-Policy",        "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy",     "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ],
+
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL":      "@supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase_anon_key"
+  }
+}
