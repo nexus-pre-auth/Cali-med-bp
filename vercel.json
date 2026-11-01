@@ -10,6 +10,7 @@
     { "source": "/billing/:path*",   "destination": "https://api.medblueprints.com/billing/:path*"   },
     { "source": "/webhooks/:path*",  "destination": "https://api.medblueprints.com/webhooks/:path*"  },
     { "source": "/firms/:path*",     "destination": "https://api.medblueprints.com/firms/:path*"     },
+    { "source": "/review/:path*",    "destination": "https://api.medblueprints.com/review/:path*"    },
     { "source": "/docs",             "destination": "https://api.medblueprints.com/docs"             },
     { "source": "/openapi.json",     "destination": "https://api.medblueprints.com/openapi.json"     }
   ],
