@@ -77,6 +77,9 @@ STRIPE_PRICE_MONTHLY   = os.getenv("STRIPE_PRICE_MONTHLY", "")    # price_... su
 STRIPE_SUCCESS_URL     = os.getenv("STRIPE_SUCCESS_URL", "https://medblueprints.com/welcome")
 STRIPE_CANCEL_URL      = os.getenv("STRIPE_CANCEL_URL",  "https://medblueprints.com/#pricing")
 
+# Email delivery (Resend preferred; SMTP as fallback)
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+
 # blueprintIQ rules API (replaces local JSON when set)
 BLUEPRINTIQ_API_URL  = os.getenv("BLUEPRINTIQ_API_URL", "")   # e.g. https://api.blueprintiq.net
 BLUEPRINTIQ_API_KEY  = os.getenv("BLUEPRINTIQ_API_KEY", "")

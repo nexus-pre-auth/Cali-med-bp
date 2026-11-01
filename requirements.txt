@@ -12,6 +12,8 @@ pydantic>=2.0.0
 supabase>=2.4.0
 stripe>=9.0.0
 python-jose[cryptography]>=3.3.0
+resend>=2.0.0
+python-multipart>=0.0.9
 
 # cffi is a transitive dep of cryptography (used by pdfminer/pdfplumber).
 # Pinning it here ensures the compiled C backend is available in CI.

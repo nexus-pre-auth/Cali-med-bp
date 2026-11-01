@@ -441,6 +441,7 @@ def serve(host: str, port: int, no_learning: bool) -> None:
     from src.api.query_endpoints    import query_router
     from src.api.billing_endpoints  import billing_router, webhook_router
     from src.api.firms_endpoints    import firms_router
+    from src.api.review_endpoints   import review_router
 
     app = FastAPI(
         title="Medblueprints / CodeBlue Compliance Engine",
@@ -452,6 +453,7 @@ def serve(host: str, port: int, no_learning: bool) -> None:
     app.include_router(billing_router)
     app.include_router(webhook_router)
     app.include_router(firms_router)
+    app.include_router(review_router)
 
     # Serve the dashboard HTML at /feedback/dashboard/ui
     templates_dir = Path(__file__).parent / "templates"

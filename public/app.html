@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medblueprints — Run a Review</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1A365D; --blue: #2B6CB0; --sky: #3182CE;
+      --critical: #E53E3E; --high: #DD6B20; --medium: #D69E2E; --low: #38A169;
+      --bg: #F7FAFC; --white: #fff; --border: #E2E8F0; --text: #2D3748; --gray: #718096;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAV */
+    nav { background: var(--navy); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 16px; font-size: .85rem; }
+    .nav-right a { color: rgba(255,255,255,.75); text-decoration: none; }
+    .nav-right a:hover { color: #fff; }
+    #nav-credits { background: rgba(255,255,255,.15); color: #fff; padding: 4px 12px; border-radius: 999px; font-size: .8rem; }
+
+    /* LAYOUT */
+    .shell { max-width: 1100px; margin: 0 auto; padding: 32px 16px; display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 720px) { .shell { grid-template-columns: 1fr; } }
+
+    /* UPLOAD CARD */
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+    .card h2 { font-size: 1.1rem; color: var(--navy); margin-bottom: 20px; }
+
+    label.field-label { display: block; font-size: .8rem; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; margin-top: 16px; }
+    input[type="text"], select, textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+      font-size: .95rem; color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--sky); background: #fff; }
+    textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+
+    /* DROP ZONE */
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: 10px; padding: 32px 16px;
+      text-align: center; cursor: pointer; transition: all .2s; margin-top: 16px;
+      position: relative;
+    }
+    .drop-zone.hover { border-color: var(--sky); background: #EBF8FF; }
+    .drop-zone.has-file { border-color: var(--low); background: #F0FFF4; border-style: solid; }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .drop-icon { font-size: 2rem; margin-bottom: 8px; }
+    .drop-text { font-size: .9rem; color: var(--gray); }
+    .drop-filename { font-size: .85rem; color: var(--low); font-weight: 600; margin-top: 6px; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--gray); font-size: .8rem; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* SUBMIT BUTTON */
+    .btn-submit {
+      width: 100%; margin-top: 24px; padding: 14px; background: var(--navy); color: #fff;
+      border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .btn-submit:hover:not(:disabled) { background: var(--blue); transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* PROGRESS */
+    .progress-steps { margin-top: 20px; display: none; }
+    .step { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: .9rem; color: var(--gray); }
+    .step.active { color: var(--sky); font-weight: 600; }
+    .step.done { color: var(--low); }
+    .step-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+    .step.active .step-dot { background: var(--sky); animation: pulse 1s infinite; }
+    .step.done .step-dot { background: var(--low); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    /* RESULTS PANEL */
+    .results-panel { display: none; }
+    .results-panel.visible { display: block; }
+
+    .summary-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .pill { padding: 10px 20px; border-radius: 8px; color: #fff; font-weight: 700; font-size: 1rem; }
+    .pill-critical { background: var(--critical); }
+    .pill-high     { background: var(--high); }
+    .pill-medium   { background: var(--medium); }
+    .pill-low      { background: var(--low); }
+    .pill-total    { background: #4A5568; }
+
+    .violation-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .vc-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .badge { padding: 3px 10px; border-radius: 999px; color: #fff; font-size: .75rem; font-weight: 700; }
+    .badge-Critical { background: var(--critical); }
+    .badge-High     { background: var(--high); }
+    .badge-Medium   { background: var(--medium); }
+    .badge-Low      { background: var(--low); }
+    .rule-id { font-family: monospace; font-size: .8rem; color: var(--gray); }
+    .discipline { font-weight: 600; font-size: .9rem; }
+    .vc-body { padding: 16px; }
+    .sec-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; color: var(--gray); letter-spacing: .05em; margin-bottom: 4px; }
+    .ahj-box { background: #EBF8FF; border-left: 4px solid var(--sky); padding: 10px 14px; border-radius: 0 4px 4px 0; margin-bottom: 12px; font-size: .9rem; line-height: 1.5; }
+    .fix-box { background: #F0FFF4; border-left: 4px solid var(--low); padding: 10px 14px; border-radius: 0 4px 4px 0; margin-bottom: 12px; font-size: .9rem; white-space: pre-line; line-height: 1.5; }
+    .cite-list { font-size: .8rem; color: var(--gray); padding-left: 18px; }
+    .cite-list li { margin-bottom: 2px; }
+
+    .download-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .btn-dl { padding: 9px 18px; border-radius: 6px; font-size: .85rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--navy); text-decoration: none; }
+    .btn-dl:hover { background: var(--bg); border-color: var(--blue); }
+
+    /* EMPTY / ERROR states */
+    .empty { text-align: center; padding: 60px 20px; color: var(--gray); }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .error-box { background: #FFF5F5; border-left: 4px solid var(--critical); padding: 14px 18px; border-radius: 4px; color: #C53030; font-size: .9rem; margin-bottom: 16px; display: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Medblueprints</a>
+  <div class="nav-right">
+    <span id="nav-credits">Loading…</span>
+    <a href="#" onclick="signOut(); return false;">Sign out</a>
+  </div>
+</nav>
+
+<div class="shell">
+
+  <!-- LEFT: Upload form -->
+  <div>
+    <div class="card">
+      <h2>New Compliance Review</h2>
+
+      <div id="error-box" class="error-box"></div>
+
+      <label class="field-label">Project name</label>
+      <input type="text" id="project-name" placeholder="e.g. Riverside Medical Center — Phase 2" value="">
+
+      <label class="field-label">Upload PDF</label>
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept=".pdf" onchange="onFileSelected(this)">
+        <div class="drop-icon">📄</div>
+        <div class="drop-text">Drag &amp; drop a PDF, or click to browse</div>
+        <div class="drop-filename" id="drop-filename" style="display:none;"></div>
+      </div>
+
+      <div class="divider">or paste text</div>
+
+      <textarea id="text-input" placeholder="Paste project description, spec section, or drawing notes here…"></textarea>
+
+      <button class="btn-submit" id="submit-btn" onclick="submitReview()">Run Compliance Check →</button>
+
+      <div class="progress-steps" id="progress-steps">
+        <div class="step" id="step-upload"><div class="step-dot"></div>Uploading document…</div>
+        <div class="step" id="step-parse"><div class="step-dot"></div>Parsing &amp; extracting conditions…</div>
+        <div class="step" id="step-match"><div class="step-dot"></div>Matching compliance rules…</div>
+        <div class="step" id="step-generate"><div class="step-dot"></div>Generating AHJ comments…</div>
+        <div class="step" id="step-done"><div class="step-dot"></div>Report ready</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Results -->
+  <div>
+    <div class="empty" id="empty-state">
+      <div class="empty-icon">🏥</div>
+      <p style="font-size:1rem; font-weight:600; color:#4A5568;">No review yet</p>
+      <p style="margin-top:8px; font-size:.9rem;">Upload a PDF or paste project text to run your compliance check.</p>
+    </div>
+
+    <div class="results-panel" id="results-panel">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+        <h2 id="results-title" style="font-size:1.2rem; color:var(--navy);"></h2>
+        <span id="results-state" style="font-size:.85rem; color:var(--gray);"></span>
+      </div>
+
+      <div class="summary-row" id="summary-row"></div>
+
+      <div class="download-bar" id="download-bar"></div>
+
+      <div id="violations-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API = '';   // same-origin via Vercel/Netlify proxy
+
+  // ── Auth gate ─────────────────────────────────────────────────────────────
+  const token = sessionStorage.getItem('mb_token');
+  if (!token) { window.location.href = '/#get-started'; }
+
+  // ── Load firm status ──────────────────────────────────────────────────────
+  async function loadStatus() {
+    try {
+      const r = await apiFetch('/firms/me');
+      const d = await r.json();
+      const limit = d.reviews_limit === -1 ? '∞' : (d.reviews_limit - d.reviews_used);
+      document.getElementById('nav-credits').textContent =
+        d.is_subscribed ? `${d.tier} — unlimited` : `${limit} review${limit === 1 ? '' : 's'} left`;
+    } catch { document.getElementById('nav-credits').textContent = ''; }
+  }
+  loadStatus();
+
+  // ── File drop zone ────────────────────────────────────────────────────────
+  const dz = document.getElementById('drop-zone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('hover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('hover'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('hover');
+    const f = e.dataTransfer.files[0];
+    if (f) setFile(f);
+  });
+
+  let _file = null;
+  function onFileSelected(input) { if (input.files[0]) setFile(input.files[0]); }
+  function setFile(f) {
+    _file = f;
+    dz.classList.add('has-file');
+    const fn = document.getElementById('drop-filename');
+    fn.textContent = f.name;
+    fn.style.display = 'block';
+    document.getElementById('drop-zone').querySelector('.drop-text').textContent = 'File selected — click to change';
+    if (!document.getElementById('project-name').value)
+      document.getElementById('project-name').value = f.name.replace(/\.pdf$/i, '').replace(/[-_]/g, ' ');
+  }
+
+  // ── Progress steps ────────────────────────────────────────────────────────
+  const steps = ['upload', 'parse', 'match', 'generate', 'done'];
+  function setStep(name) {
+    steps.forEach((s, i) => {
+      const el = document.getElementById(`step-${s}`);
+      const idx = steps.indexOf(name);
+      el.className = 'step' + (i < idx ? ' done' : i === idx ? ' active' : '');
+    });
+  }
+
+  // ── Submit review ─────────────────────────────────────────────────────────
+  async function submitReview() {
+    const name = document.getElementById('project-name').value.trim() || 'Healthcare Project';
+    const text = document.getElementById('text-input').value.trim();
+    hideError();
+
+    if (!_file && !text) { showError('Upload a PDF or paste project text first.'); return; }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Running review…';
+    document.getElementById('progress-steps').style.display = 'block';
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('results-panel').classList.remove('visible');
+
+    setStep('upload');
+
+    try {
+      let resp;
+      if (_file) {
+        const fd = new FormData();
+        fd.append('file', _file);
+        fd.append('project_name', name);
+        setStep('parse');
+        resp = await apiFetch('/review/submit', { method: 'POST', body: fd, noJson: true });
+      } else {
+        setStep('parse');
+        const fd = new FormData();
+        fd.append('text', text);
+        fd.append('project_name', name);
+        resp = await apiFetch('/review/submit', { method: 'POST', body: fd, noJson: true });
+      }
+
+      setStep('match');
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        if (resp.status === 402) {
+          showError('No review credits remaining. <a href="/#pricing" style="color:var(--sky)">Purchase more →</a>');
+        } else {
+          showError(err.detail || `Error ${resp.status}`);
+        }
+        return;
+      }
+
+      setStep('generate');
+      const data = await resp.json();
+      setStep('done');
+      renderResults(data);
+      loadStatus();
+    } catch (e) {
+      showError('Network error — please try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Run Compliance Check →';
+    }
+  }
+
+  // ── Render results ────────────────────────────────────────────────────────
+  function renderResults(data) {
+    document.getElementById('empty-state').style.display = 'none';
+    const panel = document.getElementById('results-panel');
+    panel.classList.add('visible');
+
+    document.getElementById('results-title').textContent = data.project_name;
+    document.getElementById('results-state').textContent =
+      `${data.state}${data.occupancy_type ? ' · ' + data.occupancy_type : ''} · ${data.total_violations} violation${data.total_violations !== 1 ? 's' : ''}`;
+
+    // Summary pills
+    const summary = document.getElementById('summary-row');
+    summary.innerHTML = `
+      <div class="pill pill-critical">Critical: ${data.critical}</div>
+      <div class="pill pill-high">High: ${data.high}</div>
+      <div class="pill pill-medium">Medium: ${data.medium}</div>
+      <div class="pill pill-low">Low: ${data.low}</div>
+      <div class="pill pill-total">Total: ${data.total_violations}</div>
+    `;
+
+    // Download buttons
+    const dlBar = document.getElementById('download-bar');
+    dlBar.innerHTML = '';
+    if (data.review_id && data.review_id !== 'local') {
+      const htmlBtn = document.createElement('a');
+      htmlBtn.href = `/review/${data.review_id}/html`;
+      htmlBtn.className = 'btn-dl';
+      htmlBtn.target = '_blank';
+      htmlBtn.textContent = '⬇ Download HTML Report';
+      dlBar.appendChild(htmlBtn);
+    }
+    const jsonBtn = document.createElement('a');
+    jsonBtn.href = 'data:application/json,' + encodeURIComponent(JSON.stringify(data, null, 2));
+    jsonBtn.download = `${data.project_name.replace(/\s+/g, '_')}_report.json`;
+    jsonBtn.className = 'btn-dl';
+    jsonBtn.textContent = '⬇ JSON';
+    dlBar.appendChild(jsonBtn);
+
+    // Violation cards
+    const list = document.getElementById('violations-list');
+    list.innerHTML = '';
+    if (!data.violations.length) {
+      list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div><p style="font-weight:600;">No violations detected.</p></div>';
+      return;
+    }
+    data.violations.forEach((v, i) => {
+      const citations = (v.citations || []).map(c => `<li>${c}</li>`).join('');
+      list.insertAdjacentHTML('beforeend', `
+        <div class="violation-card">
+          <div class="vc-header">
+            <span class="badge badge-${v.severity}">${v.severity}</span>
+            <span class="rule-id">${v.rule_id}</span>
+            <span class="discipline">${v.discipline}</span>
+          </div>
+          <div class="vc-body">
+            <div class="sec-label">AHJ Plan Review Comment</div>
+            <div class="ahj-box">${v.ahj_comment}</div>
+            <div class="sec-label">Step-by-Step Fix</div>
+            <div class="fix-box">${v.fix_instructions}</div>
+            <div class="sec-label">Code Citations</div>
+            <ul class="cite-list">${citations}</ul>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function apiFetch(path, opts = {}) {
+    const headers = { 'Authorization': `Bearer ${token}` };
+    if (!opts.noJson && !opts.body) headers['Content-Type'] = 'application/json';
+    return fetch(API + path, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
+  }
+
+  function showError(msg) {
+    const b = document.getElementById('error-box');
+    b.innerHTML = msg;
+    b.style.display = 'block';
+  }
+  function hideError() { document.getElementById('error-box').style.display = 'none'; }
+
+  function signOut() {
+    sessionStorage.removeItem('mb_token');
+    window.location.href = '/';
+  }
+
+  // Show welcome message after successful checkout redirect
+  if (new URLSearchParams(location.search).get('welcome') === '1') {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.style = 'position:fixed;top:72px;right:20px;background:#F0FFF4;border:1px solid #38A169;padding:14px 20px;border-radius:8px;font-size:.9rem;color:#2F855A;z-index:999;box-shadow:0 2px 12px rgba(0,0,0,.1)';
+      el.textContent = '✅ Payment confirmed — your review credit is ready!';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 6000);
+    }, 500);
+  }
+</script>
+
+</body>
+</html>
