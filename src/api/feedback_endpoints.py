@@ -8,6 +8,8 @@ Mount this router in the FastAPI app created by main.py's `serve` command:
 
 from __future__ import annotations
 
+import os
+from pathlib import Path
 from typing import List, Optional
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
@@ -18,8 +20,17 @@ from src.ml.trainer import ModelTrainer
 
 feedback_router = APIRouter(prefix="/feedback", tags=["feedback"])
 
-_processor = FeedbackProcessor()
-_trainer   = ModelTrainer()
+# On read-only serverless filesystems (Vercel), only /tmp is writable; the
+# processor/trainer create their storage dirs at import time. Allow an override
+# and default to /tmp on Vercel so the app can load. Data written there is
+# ephemeral -- use Supabase for durable storage in that environment.
+_data_root = Path(os.getenv("HCAI_DATA_DIR") or ("/tmp/hcai-data" if os.getenv("VERCEL") else "data"))
+
+_processor = FeedbackProcessor(
+    storage_path=_data_root / "feedback",
+    metrics_path=_data_root / "metrics",
+)
+_trainer   = ModelTrainer(model_dir=_data_root / "models")
 
 
 # ---------------------------------------------------------------------------

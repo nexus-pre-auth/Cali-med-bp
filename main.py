@@ -17,6 +17,7 @@ Usage:
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -425,10 +426,9 @@ def serve(host: str, port: int, no_learning: bool) -> None:
     """
     try:
         import uvicorn
-        from fastapi import FastAPI
-        from fastapi.responses import HTMLResponse
-        from fastapi.staticfiles import StaticFiles
     except ImportError:
+        uvicorn = None
+    if uvicorn is None or not HAS_FASTAPI:
         _print(
             "[red]Error: fastapi and uvicorn are required for `serve`. "
             "Run: pip install fastapi uvicorn[standard][/red]"
@@ -437,50 +437,83 @@ def serve(host: str, port: int, no_learning: bool) -> None:
         )
         sys.exit(1)
 
-    from src.api.feedback_endpoints import feedback_router
-    from src.api.query_endpoints    import query_router
-
-    app = FastAPI(
-        title="HCAI Compliance Engine",
-        description="Real-time AHJ feedback collection, continuous learning, and NL query.",
-        version="2.0.0",
-    )
-    app.include_router(feedback_router)
-    app.include_router(query_router)
-
-    # Serve the dashboard HTML at /feedback/dashboard/ui
-    templates_dir = Path(__file__).parent / "templates"
-
-    @app.get("/feedback/dashboard/ui", response_class=HTMLResponse, include_in_schema=False)
-    async def dashboard_ui():
-        html_path = templates_dir / "feedback_dashboard.html"
-        if not html_path.exists():
-            return HTMLResponse("<h1>Dashboard template not found</h1>", status_code=404)
-        return HTMLResponse(html_path.read_text())
-
-    # Start continuous learning scheduler
-    if not no_learning:
-        try:
-            from src.ml.continuous_learning import ContinuousLearningPipeline
-            pipeline = ContinuousLearningPipeline()
-
-            @app.on_event("startup")
-            async def start_pipeline():
-                pipeline.start()
-
-            @app.on_event("shutdown")
-            async def stop_pipeline():
-                pipeline.stop()
-
-        except ImportError:
-            _print("Warning: APScheduler not installed; continuous learning disabled.")
+    server_app = create_app(enable_learning=not no_learning)
 
     _print(f"\n[bold green]HCAI Feedback API[/bold green] listening on http://{host}:{port}" if HAS_RICH
            else f"\nHCAI Feedback API listening on http://{host}:{port}")
     _print(f"  Dashboard UI : http://{host}:{port}/feedback/dashboard/ui")
     _print(f"  API docs     : http://{host}:{port}/docs\n")
 
-    uvicorn.run(app, host=host, port=port)
+    uvicorn.run(server_app, host=host, port=port)
+
+
+# ---------------------------------------------------------------------------
+# ASGI app factory
+#
+# The FastAPI app is built at module level (see `app` below) so that ASGI hosts
+# that import this file directly -- Vercel's Python runtime, `uvicorn main:app`,
+# etc. -- can find a top-level `app`. The `serve` CLI command reuses the same
+# factory, so Railway's `python main.py serve` behaves exactly as before.
+# ---------------------------------------------------------------------------
+
+try:
+    from fastapi import FastAPI
+    from fastapi.responses import HTMLResponse
+    HAS_FASTAPI = True
+except ImportError:
+    HAS_FASTAPI = False
+
+
+def create_app(enable_learning: bool = False):
+    """Build the FastAPI app (feedback + NL query routers, dashboard UI)."""
+    from src.api.feedback_endpoints import feedback_router
+    from src.api.query_endpoints    import query_router
+
+    fastapi_app = FastAPI(
+        title="HCAI Compliance Engine",
+        description="Real-time AHJ feedback collection, continuous learning, and NL query.",
+        version="2.0.0",
+    )
+    fastapi_app.include_router(feedback_router)
+    fastapi_app.include_router(query_router)
+
+    # Serve the dashboard HTML at /feedback/dashboard/ui
+    templates_dir = Path(__file__).parent / "templates"
+
+    @fastapi_app.get("/feedback/dashboard/ui", response_class=HTMLResponse, include_in_schema=False)
+    async def dashboard_ui():
+        html_path = templates_dir / "feedback_dashboard.html"
+        if not html_path.exists():
+            return HTMLResponse("<h1>Dashboard template not found</h1>", status_code=404)
+        return HTMLResponse(html_path.read_text())
+
+    # Start continuous learning scheduler (long-running servers only)
+    if enable_learning:
+        try:
+            from src.ml.continuous_learning import ContinuousLearningPipeline
+            pipeline = ContinuousLearningPipeline()
+
+            @fastapi_app.on_event("startup")
+            async def start_pipeline():
+                pipeline.start()
+
+            @fastapi_app.on_event("shutdown")
+            async def stop_pipeline():
+                pipeline.stop()
+
+        except ImportError:
+            _print("Warning: APScheduler not installed; continuous learning disabled.")
+
+    return fastapi_app
+
+
+# Module-level ASGI app for serverless / ASGI hosts (e.g. Vercel, `uvicorn main:app`).
+# The background retraining scheduler is off here: serverless functions don't keep
+# a process alive. Set ENABLE_CONTINUOUS_LEARNING=1 to turn it on for a
+# long-running `uvicorn main:app` deployment.
+app = create_app(
+    enable_learning=os.getenv("ENABLE_CONTINUOUS_LEARNING", "").lower() in ("1", "true", "yes")
+) if HAS_FASTAPI else None
 
 
 # ---------------------------------------------------------------------------
