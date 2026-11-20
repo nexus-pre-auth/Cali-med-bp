@@ -15,6 +15,7 @@ from typing import Optional
 import config
 from src.engine.rule_matcher import MatchedViolation
 from src.rag.knowledge_base import HCAIKnowledgeBase
+from src.engine.rules_repository import RulesRepository
 
 try:
     import anthropic
@@ -33,14 +34,16 @@ class EnrichedViolation:
     rag_passages_used: list[str]
 
 
-_SYSTEM_PROMPT = """You are an expert HCAI (Healthcare Construction Analysis and Inspection) plan reviewer
-for California healthcare construction projects. You write AHJ (Authority Having Jurisdiction)-style
-plan review comments that are:
+_SYSTEM_PROMPT = """You are an expert AHJ (Authority Having Jurisdiction) plan reviewer for healthcare
+construction projects. You write plan review comments that are:
 - Precise and technically accurate
-- Grounded in Title 24 California Building Code, OSHPD/HCAI Policy Intent Notices (PINs),
-  and Construction Advisory Notices (CANs)
-- Professional and clear, as if written by a senior HCAI engineer
+- Grounded in the applicable state AHJ rules, FGI Guidelines, and local amendments
+- Professional and clear, as if written by a senior state health department engineer
 - Actionable — each comment tells the design team exactly what to fix
+
+When a structured rules catalog is provided below, ground your comments in those exact rules:
+reference the Rule ID, cite the violation language, and base the fix instructions on the
+fix template. Use the code_references from the rule as your citations.
 
 Format your response as valid JSON with these keys:
 {
@@ -98,24 +101,26 @@ class AHJCommentGenerator:
         self,
         knowledge_base: Optional[HCAIKnowledgeBase] = None,
         api_key: Optional[str] = None,
+        rules_repo: Optional[RulesRepository] = None,
     ) -> None:
         self._kb = knowledge_base
+        self._rules_repo: RulesRepository = rules_repo or RulesRepository()
         api_key = api_key or config.ANTHROPIC_API_KEY
         if HAS_ANTHROPIC and api_key:
             self._client = anthropic.Anthropic(api_key=api_key)
         else:
             self._client = None
 
-    def enrich(self, violations: list[MatchedViolation]) -> list[EnrichedViolation]:
+    def enrich(
+        self,
+        violations: list[MatchedViolation],
+        conditions=None,
+    ) -> list[EnrichedViolation]:
         """Enrich a list of violations with AHJ comments."""
-        enriched = []
-        for v in violations:
-            ev = self._enrich_one(v)
-            enriched.append(ev)
-        return enriched
+        state_code = getattr(conditions, "state_code", "CA") if conditions else "CA"
+        return [self._enrich_one(v, state_code) for v in violations]
 
-    def _enrich_one(self, violation: MatchedViolation) -> EnrichedViolation:
-        # Retrieve RAG context
+    def _enrich_one(self, violation: MatchedViolation, state_code: str = "CA") -> EnrichedViolation:
         query = f"{violation.discipline} {violation.description} {' '.join(violation.code_references)}"
         rag_passages: list[dict] = []
         if self._kb:
@@ -127,7 +132,7 @@ class AHJCommentGenerator:
         rag_texts = [p["text"] for p in rag_passages]
 
         if self._client:
-            return self._generate_with_claude(violation, rag_passages, rag_texts)
+            return self._generate_with_claude(violation, rag_passages, rag_texts, state_code)
         else:
             return self._generate_fallback(violation, rag_texts)
 
@@ -136,16 +141,26 @@ class AHJCommentGenerator:
         violation: MatchedViolation,
         rag_passages: list[dict],
         rag_texts: list[str],
+        state_code: str = "CA",
     ) -> EnrichedViolation:
         import json as _json
 
         user_prompt = _build_user_prompt(violation, rag_passages)
 
+        rules_context = self._rules_repo.as_llm_context(
+            state_code=state_code,
+            discipline_filter=violation.discipline,
+            max_rules=20,
+        )
+        system_prompt = _SYSTEM_PROMPT
+        if rules_context:
+            system_prompt = _SYSTEM_PROMPT + "\n\n## Applicable Compliance Rules\n\n" + rules_context
+
         try:
             message = self._client.messages.create(
                 model=config.CLAUDE_MODEL,
                 max_tokens=1024,
-                system=_SYSTEM_PROMPT,
+                system=system_prompt,
                 messages=[{"role": "user", "content": user_prompt}],
             )
             raw = message.content[0].text.strip()

@@ -22,6 +22,9 @@ from pydantic import BaseModel
 
 import config
 from src.api.auth import CurrentFirm
+from src.engine.rules_repository import RulesRepository
+
+_rules_repo = RulesRepository()
 
 log = logging.getLogger(__name__)
 
@@ -82,7 +85,7 @@ def _run_pipeline(text: str, project_name: str) -> dict:
     conditions = extractor.extract(doc)
     violations = engine.evaluate(conditions)
 
-    generator  = AHJCommentGenerator(use_rag=bool(config.ANTHROPIC_API_KEY))
+    generator  = AHJCommentGenerator(rules_repo=_rules_repo)
     enriched   = generator.enrich(violations, conditions)
 
     html = render_html_report(enriched, conditions, project_name)
